@@ -6,12 +6,6 @@ from pack.ImageManager import ImageManager
 from PIL import Image, UnidentifiedImageError
 from gpiozero import LED, Button
 
-Red    = LED(17)
-Yellow = LED(27)
-Blue   = LED(22)
-button = Button(5, bounce_time=0.2)
-Num = 0
-
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 RAW_DIR = os.path.join(SCRIPT_DIR, 'raw_images')
 FILTERED_DIR = os.path.join(SCRIPT_DIR, 'filtered_images')
@@ -70,27 +64,22 @@ observer.schedule(
 # Filter System
 # =========================
 
+Num = 0
+
 def Filter(image):
-
     match Num:
-
         case 1:
             Filter1(image)
-
         case 2:
             Filter2(image)
-
         case 3:
             Filter3(image)
-
         case _:
             Filter0(image)
 
 
 def ChangeFilter():
-
     global Num
-
     Num += 1
 
     if Num >= 4:
@@ -98,18 +87,21 @@ def ChangeFilter():
 
     print(f"Current Filter: {Num}")
 
-    LED_Active(Num)
+    # LED_Active(Num)
 
+# Red    = LED(17)
+# Yellow = LED(27)
+# Blue   = LED(22)
 
-def LED_Active(N):
-    Red.off()
-    Yellow.off()
-    Blue.off()
+# def LED_Active(N):
+#     Red.off()
+#     Yellow.off()
+#     Blue.off()
 
-    match N:
-        case 1: Red.on()
-        case 2: Yellow.on()
-        case 3: Blue.on()
+#     match N:
+#         case 1: Red.on()
+#         case 2: Yellow.on()
+#         case 3: Blue.on()
 
 
 # =========================
@@ -118,8 +110,8 @@ def LED_Active(N):
 
 def Filter0(image):
 
-    image.convertToEdgeBinary(50, 0, 100)
-    # image.convertToGrayscale()
+    # image.convertToEdgeBinary(50, 0, 100)
+    image.convertToGrayscale()
 
     print("Filter 0")
 
@@ -148,8 +140,10 @@ def Filter3(image):
 # Main
 # =========================
 
+# button = Button(5, bounce_time=0.2)
+
 def main():
-    button.when_pressed = ChangeFilter
+    # button.when_pressed = ChangeFilter
     observer.start()
 
     try:
