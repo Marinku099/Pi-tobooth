@@ -48,7 +48,8 @@ int oscam_capture(int fd, int n_frames, struct buffer *buffers) {
         // put buffer back to queue
 		if (ioctl(fd, VIDIOC_QBUF, &buf) == -1) {
 			fprintf(stderr, "QBUF (requeue) failed: %s\n", strerror(errno));
-			exit(EXIT_FAILURE);
+			return -1;
 		}
 	}
+	return 0;
 }

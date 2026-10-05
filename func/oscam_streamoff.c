@@ -6,6 +6,8 @@ int oscam_streamoff(int fd, enum v4l2_buf_type *type){
     // VIDIOC_STREAMOFF: end the capture stream
 	if (ioctl(fd, VIDIOC_STREAMOFF, type) == -1) {
 		fprintf(stderr, "Streamoff is failed: %s\n", strerror(errno));
-		exit(EXIT_FAILURE);
+		return -1;
 	}
+
+	return 0;
 }

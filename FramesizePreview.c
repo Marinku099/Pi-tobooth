@@ -4,6 +4,7 @@
 #include <errno.h>
 #include <string.h>
 #include <unistd.h>
+#include <poll.h>
 #include <sys/ioctl.h>
 #include <sys/mman.h>
 #include <linux/videodev2.h>
@@ -33,6 +34,10 @@ int main(void) {
 		fprintf(stderr, "Failed to open %s: %s\n", dev_name, strerror(errno));
 		exit(EXIT_FAILURE);
 	}
+
+	struct pollfd pfd;
+	pfd.fd = fd;
+	pfd.events = POLLIN;
 	
 	// Specification of Camera
 	struct v4l2_capability cap;
@@ -105,126 +110,151 @@ int main(void) {
 		printf("successful set %dx%d -> real image size %ux%u, sizeimage= %u bytes (%.1f KB)\n",
            		sizes[i].width, sizes[i].height,
            		fmt.fmt.pix.width, fmt.fmt.pix.height, fmt.fmt.pix.sizeimage, fmt.fmt.pix.sizeimage/1024.0);
-	}
 
-
-
-	// --- Request buffer for Images ---
-	
-	// VIDIOC_REQBUFS for initiate memory mapping
-	struct v4l2_requestbuffers reqbuf;
-	memset(&reqbuf, 0, sizeof(reqbuf));
-
-	reqbuf.count = 4;
-	reqbuf.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
-	reqbuf.memory = V4L2_MEMORY_MMAP;
-
-	if (ioctl(fd, VIDIOC_REQBUFS, &reqbuf) == -1) {
-		fprintf(stderr, "VIDIOC_REQBUFS failed: %s\n", strerror(errno));
-		exit(EXIT_FAILURE);
-	}
-
-	printf("driver set to %u buffers\n", reqbuf.count);
-
-
-
-	struct buffer *buffers = calloc(reqbuf.count, sizeof(*buffers));
-
-	if (buffers == NULL) {
-		fprintf(stderr, "calloc failed for %u buffers\n", reqbuf.count);
-		exit(EXIT_FAILURE);
-	}
-	printf("calloc ok, buffers = %p\n", (void *)buffers);
-	 
-	for (unsigned int i = 0; i < reqbuf.count; i++) {
-		struct v4l2_buffer buf;
-		memset(&buf, 0, sizeof(buf));
-
-		buf.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
-		buf.memory = V4L2_MEMORY_MMAP;
-		buf.index = i;
-
-		if (ioctl(fd, VIDIOC_QUERYBUF, &buf) == -1) {
-			fprintf(stderr, "QUERYBUF index %u is failed: %s\n", i, strerror(errno));
-			exit(EXIT_FAILURE);
-		}
-
-		buffers[i].length = buf.length;
-		buffers[i].start = mmap(NULL, buf.length, 
-								PROT_READ | PROT_WRITE, MAP_SHARED, fd, buf.m.offset);
-
-		if (buffers[i].start == MAP_FAILED) {
-			fprintf(stderr, "mmap index %u is failed: %s\n", i, strerror(errno));
-			exit(EXIT_FAILURE);
-		}
-	}
-
-	for (unsigned int i = 0; i < reqbuf.count; i++) {
-		struct v4l2_buffer buf;
-		memset(&buf, 0, sizeof(buf));
-
-		buf.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
-		buf.memory = V4L2_MEMORY_MMAP;
-		buf.index = i;
-
-		if (ioctl(fd, VIDIOC_QBUF, &buf) == -1) {
-			fprintf(stderr, "qbuf index %u is failed: %s\n", i, strerror(errno));
-			exit(EXIT_FAILURE);
-		}
-	}
-
-	enum v4l2_buf_type type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
-
-	if (ioctl(fd, VIDIOC_STREAMON, &type) == -1) {
-		fprintf(stderr, "Streamon is failed: %s\n", strerror(errno));
-		exit(EXIT_FAILURE);
-	}
-
-	int n_frames = 1;
-
-	for (int frame = 0; frame < n_frames; frame++) {
-		struct v4l2_buffer buf;
-		memset(&buf, 0, sizeof(buf));
-
-		buf.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
-		buf.memory = V4L2_MEMORY_MMAP;
-
-		if (ioctl(fd, VIDIOC_DQBUF, &buf) == -1) {
-			fprintf(stderr, "dqbuf at frame %d is failed: %s\n", frame, strerror(errno));
-			exit(EXIT_FAILURE);
-		}
-
-		printf("At frame %d: buffer index=%u, byteused=%d\n", frame, buf.index, buf.bytesused);
-
-
+		// --- Request buffer for Images ---
 		
-		char filename[64];
-		snprintf(filename, sizeof(filename), "capture_%03d.jpg", frame);
-		FILE *fp = fopen(filename, "wb");
-		if (fp == NULL) {
-			fprintf(stderr, "cannot open file %s: %s\n", filename, strerror(errno));
-		} else {
-			fwrite(buffers[buf.index].start, buf.bytesused, 1, fp);
-			fclose(fp);
-			printf("save %s\n", filename);
-		}
+		// VIDIOC_REQBUFS for initiate memory mapping
+		struct v4l2_requestbuffers reqbuf;
+		memset(&reqbuf, 0, sizeof(reqbuf));
 
-		if (ioctl(fd, VIDIOC_QBUF, &buf) == -1) {
-			fprintf(stderr, "QBUF (requeue) failed: %s\n", strerror(errno));
+		reqbuf.count = 4;
+		reqbuf.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+		reqbuf.memory = V4L2_MEMORY_MMAP;
+
+		if (ioctl(fd, VIDIOC_REQBUFS, &reqbuf) == -1) {
+			fprintf(stderr, "VIDIOC_REQBUFS failed: %s\n", strerror(errno));
 			exit(EXIT_FAILURE);
 		}
-	}
 
-	if (ioctl(fd, VIDIOC_STREAMOFF, &type) == -1) {
-		fprintf(stderr, "Streamoff is failed: %s\n", strerror(errno));
-		exit(EXIT_FAILURE);
-	}
+		printf("driver set to %u buffers\n", reqbuf.count);
 
-	for (unsigned int i = 0; i < reqbuf.count; i++) {
-		munmap(buffers[i].start, buffers[i].length);
-	}
+		struct buffer *buffers = calloc(reqbuf.count, sizeof(*buffers));
 
-	free(buffers);
+		if (buffers == NULL) {
+			fprintf(stderr, "calloc failed for %u buffers\n", reqbuf.count);
+			exit(EXIT_FAILURE);
+		}
+		printf("calloc ok, buffers = %p\n", (void *)buffers);
+		
+		for (unsigned int j = 0; j < reqbuf.count; j++) {
+			struct v4l2_buffer buf;
+			memset(&buf, 0, sizeof(buf));
+
+			buf.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+			buf.memory = V4L2_MEMORY_MMAP;
+			buf.index = j;
+
+			if (ioctl(fd, VIDIOC_QUERYBUF, &buf) == -1) {
+				fprintf(stderr, "QUERYBUF index %u is failed: %s\n", j, strerror(errno));
+				exit(EXIT_FAILURE);
+			}
+
+			buffers[j].length = buf.length;
+			buffers[j].start = mmap(NULL, buf.length, 
+									PROT_READ | PROT_WRITE, MAP_SHARED, fd, buf.m.offset);
+
+			if (buffers[j].start == MAP_FAILED) {
+				fprintf(stderr, "mmap index %u is failed: %s\n", j, strerror(errno));
+				exit(EXIT_FAILURE);
+			}
+		}
+
+		for (unsigned int j = 0; j < reqbuf.count; j++) {
+			struct v4l2_buffer buf;
+			memset(&buf, 0, sizeof(buf));
+
+			buf.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+			buf.memory = V4L2_MEMORY_MMAP;
+			buf.index = j;
+
+			if (ioctl(fd, VIDIOC_QBUF, &buf) == -1) {
+				fprintf(stderr, "qbuf index %u is failed: %s\n", j, strerror(errno));
+				exit(EXIT_FAILURE);
+			}
+		}
+
+		enum v4l2_buf_type type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+
+		if (ioctl(fd, VIDIOC_STREAMON, &type) == -1) {
+			fprintf(stderr, "Streamon is failed: %s\n", strerror(errno));
+			exit(EXIT_FAILURE);
+		}
+
+		int n_frames = 4;
+
+		for (int frame = 0; frame < n_frames; frame++) {
+			struct v4l2_buffer buf;
+			memset(&buf, 0, sizeof(buf));
+
+			buf.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+			buf.memory = V4L2_MEMORY_MMAP;
+
+			int ret = poll(&pfd, 1, 3000);   // รอสูงสุด 3000 ms (3 วินาที)
+
+			if (ret == -1) {
+				fprintf(stderr, "poll error: %s\n", strerror(errno));
+				exit(EXIT_FAILURE);
+			} else if (ret == 0) {
+				fprintf(stderr, "timeout: ไม่มีเฟรมมาใน 3 วินาที ข้ามเฟรมนี้\n");
+				continue; 
+			} else {
+				if (ioctl(fd, VIDIOC_DQBUF, &buf) == -1) {
+					fprintf(stderr, "dqbuf at frame %d is failed: %s\n", frame, strerror(errno));
+					exit(EXIT_FAILURE);
+				}
+			}
+
+			if (buf.flags & V4L2_BUF_FLAG_ERROR) {
+				fprintf(stderr, "เฟรมเสีย (bytesused=%u) ข้ามไป\n", buf.bytesused);
+				ioctl(fd, VIDIOC_QBUF, &buf);
+				continue;   // กลับไปรอเฟรมถัดไป ไม่เขียนไฟล์เฟรมนี้
+			}
+
+			printf("At frame %d: buffer index=%u, byteused=%d\n", frame, buf.index, buf.bytesused);
+
+
+			
+			char filename[64];
+			snprintf(filename, sizeof(filename), "capture_%dx%d.jpg", sizes[i].width, sizes[i].height);
+			FILE *fp = fopen(filename, "wb");
+			if (fp == NULL) {
+				fprintf(stderr, "cannot open file %s: %s\n", filename, strerror(errno));
+			} else {
+				fwrite(buffers[buf.index].start, buf.bytesused, 1, fp);
+				fclose(fp);
+				printf("save %s\n", filename);
+			}
+
+			if (ioctl(fd, VIDIOC_QBUF, &buf) == -1) {
+				fprintf(stderr, "QBUF (requeue) failed: %s\n", strerror(errno));
+				exit(EXIT_FAILURE);
+			}
+		}
+
+		if (ioctl(fd, VIDIOC_STREAMOFF, &type) == -1) {
+			fprintf(stderr, "Streamoff is failed: %s\n", strerror(errno));
+			exit(EXIT_FAILURE);
+		}
+
+		for (unsigned int j = 0; j < reqbuf.count; j++) {
+			munmap(buffers[j].start, buffers[j].length);
+		}
+
+		free(buffers);
+
+		memset(&reqbuf, 0, sizeof(reqbuf));
+		reqbuf.count  = 0;
+		reqbuf.type   = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+		reqbuf.memory = V4L2_MEMORY_MMAP;
+
+		if (ioctl(fd, VIDIOC_REQBUFS, &reqbuf) == -1) {
+			fprintf(stderr, "REQBUFS(0) cleanup failed: %s\n", strerror(errno));
+			exit(EXIT_FAILURE);
+		}
+
+		usleep(500000);
+	}
+	
 	close(fd);
 	return 0;
 }
