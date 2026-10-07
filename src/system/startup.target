@@ -1,0 +1,6 @@
+[Unit]
+Description=modules for photobooth programme
+Wants=startup@main.service startup@webcam.service startup@filter.service startup@printer.service startup@file_system.service
+
+[Install]
+WantedBy=multi-user.target
