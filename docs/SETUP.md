@@ -14,7 +14,7 @@ startup.target
 
 ```
 sudo apt update
-sudo apt install -y git build-essential python3 python3-pip python3-venv
+sudo apt install -y git build-essential pkg-config libsystemd-dev python3 python3-pip python3-venv
 git clone https://github.com/Marinku099/Pi-tobooth
 ```
 
