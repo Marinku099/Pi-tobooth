@@ -15,7 +15,7 @@ startup.target
 ```
 sudo apt update
 sudo apt install -y git build-essential python3 python3-pip python3-venv
-git clone <repo-url> ~/Pi-tobooth
+git clone https://github.com/Marinku099/Pi-tobooth
 ```
 
 ## 2. Photo directories
@@ -82,7 +82,7 @@ Each team fills in its own row.
 |---|---|---|---|
 | `main` | System | TBD | `make` |
 | `webcam` | Capture | TBD | `make` |
-| `filter` | Filter | `exec /home/<user>/Pi-tobooth/.venv/bin/python3 -u /home/<user>/Pi-tobooth/src/filters/Filter.py` | venv |
+| `filter` | Filter | `exec /home/<user>/Pi-tobooth/.venv/bin/python3 -u /home/<user>/Pi-tobooth/src/filters/ImageProcessing.py` | venv |
 | `printer` | Printer | TBD | `make` |
 | `file_system` | Storage | TBD | `make` |
 
@@ -105,7 +105,36 @@ python3 -m venv ~/Pi-tobooth/.venv
 3. Repeat step 4.
 4. `sudo systemctl restart startup.target`
 
-## 9. Test the pipeline
+## 9. Test on a PC or VM
+
+For quick tests without `sudo`, `/var/lib`, or systemd, use the repo's `test/` folder:
+
+```
+test/raw_images/        input
+test/filtered_images/   output
+```
+
+Point the config variables at it and run the program directly:
+
+```
+cd ~/Pi-tobooth
+export PHOTOBOOTH_RAW_DIR=$PWD/test/raw_images
+export PHOTOBOOTH_FILTERED_DIR=$PWD/test/filtered_images
+.venv/bin/python3 -u src/filters/ImageProcessing.py
+```
+
+In a second terminal, drop in an image under a new name and check the output:
+
+```
+cp test/raw_images/Test_Image.jpg test/raw_images/new.jpg
+ls test/filtered_images
+```
+
+- The watcher only reacts to new files. Existing images in `test/raw_images/` are ignored.
+- The exports last for that terminal session only.
+- `test/` is for development. The Pi uses `/var/lib/photobooth/`.
+
+## 10. Test the installed pipeline
 
 ```
 cp test.jpg /var/lib/photobooth/raw/
@@ -115,7 +144,7 @@ journalctl -u startup@filter -n 20
 
 Reboot and run `systemctl status 'startup@*'` to check autostart.
 
-## 10. Troubleshooting
+## 11. Troubleshooting
 
 | Symptom | Fix |
 |---|---|
@@ -129,7 +158,7 @@ Reboot and run `systemctl status 'startup@*'` to check autostart.
 | `ModuleNotFoundError` | Service isn't using the venv's `python3` |
 | Config change ignored | `sudo systemctl restart startup@<name>` |
 
-## 11. Uninstall
+## 12. Uninstall
 
 ```
 sudo systemctl disable --now startup.target
