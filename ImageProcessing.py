@@ -5,6 +5,7 @@ from watchdog.events import FileSystemEventHandler
 from pack.ImageManager import ImageManager
 from PIL import Image, UnidentifiedImageError
 from gpiozero import LED, Button
+from systemd import journal
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 RAW_DIR = os.path.join(SCRIPT_DIR, 'raw_images')
@@ -32,10 +33,10 @@ class ExampleHandler(FileSystemEventHandler):
         if event.is_directory:
             return
 
-        print(f"New file detected: {event.src_path}")
+        journal.send(f"New file detected: {event.src_path}")
 
         if not wait_until_ready(event.src_path):
-            print(f"Skipped (file never became readable): {event.src_path}")
+            journal.send(f"Skipped (file never became readable): {event.src_path}")
             return
 
         image = ImageManager()
@@ -48,7 +49,7 @@ class ExampleHandler(FileSystemEventHandler):
 
         image.write(output_path)
 
-        print("Finished processing and saved to filtered_images.")
+        journal.send("Finished processing and saved to filtered_images.")
 
 
 observer = Observer()
@@ -85,7 +86,7 @@ def ChangeFilter():
     if Num >= 4:
         Num = 0
 
-    print(f"Current Filter: {Num}")
+    journal.send(f"Current Filter: {Num}")
 
     # LED_Active(Num)
 
@@ -113,28 +114,27 @@ def Filter0(image):
     # image.convertToEdgeBinary(50, 0, 100)
     image.convertToGrayscale()
 
-    print("Filter 0")
+    journal.send("Filter 0")
 
 
 def Filter1(image):
 
     Filter0(image)
 
-    print("Filter 1")
+    journal.send("Filter 1")
 
 
 def Filter2(image):
 
     Filter0(image)
 
-    print("Filter 2")
+    journal.send("Filter 2")
 
 
 def Filter3(image):
+    image.convertToPencilSketch()
 
-    Filter0(image)
-
-    print("Filter 3")
+    journal.send("Filter 3: Pencil Sketch")
 
 # =========================
 # Main
@@ -155,7 +155,7 @@ def main():
 
         observer.stop()
 
-        print("Observer stopped.")
+        journal.send("Observer stopped.")
 
     observer.join()
 
