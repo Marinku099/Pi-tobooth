@@ -16,6 +16,7 @@ case $1 in
                 ;;
         "file_system")
                 echo "running file system module"
+                exec /usr/local/bin/storage
                 ;;
         *)
                 echo "error"
