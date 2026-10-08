@@ -14,9 +14,9 @@ int main(){
         printf("init succesfully\n");
     }
 
-    for(;;){
-        sleep(3);
-        printf("running fs....");
-    }
+    // for(;;){
+    //     sleep(3);
+    //     printf("running fs....\n");
+    // }
     return 0;
 }
