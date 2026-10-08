@@ -1,4 +1,4 @@
-from PIL import Image
+from PIL import Image, ImageFilter, ImageOps
 import numpy as np
 import random
 import math
@@ -102,15 +102,6 @@ class ImageManager:
                     data[x, y, 2] = 0
 
     def convertToEdgeBinary(self, threshold, edgeColor=0, darkThreshold=60):
-        """
-        Black & white edge map (like convertToBinary, but thresholds the
-        gradient magnitude instead of the intensity).
-        threshold     : gradient magnitude needed to count as an edge (try 60-150)
-        edgeColor     : 0   -> black edges on white background
-                        255 -> white edges on black background
-        darkThreshold : pixels with gray < darkThreshold are filled solid black
-                        (use 0 to disable)
-        """
         global data
 
         # 1) grayscale copy (same formula as convertToGrayscale), don't touch data yet
@@ -1671,6 +1662,69 @@ class ImageManager:
                         stack.append((nx, ny))
 
         return pixels
+
+    def convertToPencilSketch(self):
+        global data
+
+        # ไว้ปรับแต่งค่า ฟิวเตอ
+        ANGLE = 57        # มุมเส้น "/" (ยิ่งมากยิ่งชัน)
+        LENGTH = 45       # ความยาวเส้น (ปรับตามขนาดภาพอัตโนมัติ)
+        LINE = 0.40       # ความเข้มลายเส้นดินสอ
+        EDGE = 0.30       # ความเข้มเส้นขอบ
+        MIX = 0.55        # สัดส่วนโทนภาพเดิม (มาก = เงาเยอะ, น้อย = เส้นขอบเด่น)
+        PAPER = 0.97      # ความสว่างพื้นกระดาษ
+        GRAIN = 0.015     # เกรนกระดาษ
+        
+
+        rng = np.random.default_rng(7)
+
+        gray_img = ImageOps.autocontrast(Image.fromarray(self.data).convert("L"), cutoff=0.5)
+        gray = np.array(gray_img, np.float32) / 255.0
+        h, w = gray.shape
+        sc = max(h, w) / 1000.0
+
+        def blur(a, r):
+            return np.array(Image.fromarray((np.clip(a, 0, 1) * 255).astype(np.uint8)).filter(ImageFilter.GaussianBlur(max(r, 0.1))), np.float32) / 255.0
+        sm = blur(gray, 0.6 * sc)
+        bl = blur(1 - sm, 2.5 * sc)
+        dodge = np.clip(sm / np.maximum(1 - bl, 1 / 255), 0, 1)
+        base = (MIX * sm + (1 - MIX) * dodge) ** 1.3
+
+        g = blur(gray, 1.2 * sc)
+        gy, gx = np.gradient(g)
+        mag = np.hypot(gx, gy)
+        mag = mag / (np.percentile(mag, 98) + 1e-6)
+        t = np.clip((mag - 0.15) / 0.6, 0, 1)
+        edge = blur(t * t * (3 - 2 * t), 0.5 * sc)
+
+        def strokes(L, ang):
+            L = max(int(L * sc), 5)
+            s = int(np.hypot(h, w)) + L + 2
+            n = rng.random((s, s), dtype=np.float32)
+            c = np.pad(np.cumsum(n, axis=1, dtype=np.float32), ((0, 0), (1, 0)))
+            a = (c[:, L:] - c[:, :-L]) / L
+            a = (a - a.mean()) / (a.std() + 1e-6)
+            im = Image.fromarray(np.clip(a * 40 + 128, 0, 255).astype(np.uint8))
+            im = im.rotate(ang, resample=Image.BICUBIC)
+            left = (im.width - w) // 2
+            top = (im.height - h) // 2
+            return (np.array(im.crop((left, top, left + w, top + h)), np.float32) - 128) / 40.0
+
+        st = 0.7 * strokes(LENGTH, ANGLE) + 0.3 * strokes(LENGTH * 0.6, ANGLE + 4)
+        lines = np.clip(-st * 0.8, 0, 1.2)
+        weight = 0.5 + 0.5 * (1 - base)
+
+        result = base * PAPER
+        result = result * (1 - lines * LINE * weight) - edge * EDGE * 0.5
+        result = result + rng.normal(0, 1, (h, w)).astype(np.float32) * GRAIN
+
+        lo, hi = np.percentile(result, [0.5, 99.5])
+        result = np.clip((result - lo) / (hi - lo + 1e-6), 0, 1)
+        result = (0.06 + 0.94 * result) * 0.97
+        result = Image.fromarray((np.clip(result, 0, 1) * 255).astype(np.uint8))
+
+        self.data = np.array(result.convert("RGB"))
+        data = self.data
 
 class Component:
     def __init__(self, pixels, width, height, minX, maxX, minY, maxY):

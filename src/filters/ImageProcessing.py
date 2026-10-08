@@ -13,7 +13,7 @@ FILTERED_DIR = os.environ["PHOTOBOOTH_FILTERED_DIR"]
 def wait_until_ready(path, timeout=10, interval=0.2):
     """Wait until the file is unlocked and a complete, readable image."""
     deadline = time.time() + timeout
-    while time.time() < deadline:
+    while time.time() < deadline:   
         try:
             with open(path, "rb") as f:
                 Image.open(f).load()
@@ -32,7 +32,7 @@ class ExampleHandler(FileSystemEventHandler):
         journal.send(f"New file detected: {event.src_path}")
 
         if not wait_until_ready(event.src_path):
-            print(f"Skipped (file never became readable): {event.src_path}")
+            journal.send(f"Skipped (file never became readable): {event.src_path}")
             return
 
         image = ImageManager()
@@ -45,7 +45,7 @@ class ExampleHandler(FileSystemEventHandler):
 
         image.write(output_path)
 
-        print("Finished processing and saved to filtered_images.")
+        journal.send("Finished processing and saved to filtered_images.")
 
 
 observer = Observer()
@@ -82,7 +82,7 @@ def ChangeFilter():
     if Num >= 4:
         Num = 0
 
-    print(f"Current Filter: {Num}")
+    journal.send(f"Current Filter: {Num}")
 
     # LED_Active(Num)
 
@@ -117,21 +117,20 @@ def Filter1(image):
 
     Filter0(image)
 
-    print("Filter 1")
+    journal.send("Filter 1")
 
 
 def Filter2(image):
 
     Filter0(image)
 
-    print("Filter 2")
+    journal.send("Filter 2")
 
 
 def Filter3(image):
+    image.convertToPencilSketch()
 
-    Filter0(image)
-
-    print("Filter 3")
+    journal.send("Filter 3: Pencil Sketch")
 
 # =========================
 # Main
