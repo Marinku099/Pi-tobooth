@@ -1,4 +1,4 @@
-install: storage
-	install -m 755 storage /usr/local/bin/storage
+all clean install:
+	$(MAKE) -C src/storage $@
 
-.PHONY: clean install
+.PHONY: all clean install
