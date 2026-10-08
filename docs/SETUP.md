@@ -18,14 +18,7 @@ sudo apt install -y git build-essential pkg-config libsystemd-dev python3 python
 git clone https://github.com/Marinku099/Pi-tobooth
 ```
 
-## 2. Photo directories
-
-```
-sudo mkdir -p /var/lib/photobooth/raw /var/lib/photobooth/filtered
-sudo chown -R $USER:$USER /var/lib/photobooth
-```
-
-## 3. Config
+## 2. Config
 
 ```
 sudo mkdir -p /etc/photobooth
@@ -35,19 +28,23 @@ sudo sed -i 's/\r$//' /etc/photobooth/config.env
 
 Format: `KEY=value`, no spaces around `=`, no `export`. New keys go in `config.env.example`
 
-## 4. Install startup files
+## 3. Build and install
 
 From the repo root:
 
 ```
 cd ~/Pi-tobooth
+make
+sudo make install
 sudo install -m 755 src/system/startup.sh /usr/local/bin/startup.sh
 sudo install -m 644 src/system/startup@.service /etc/systemd/system/startup@.service
 sudo install -m 644 src/system/startup.target /etc/systemd/system/startup.target
 sudo systemctl daemon-reload
 ```
 
-Re-run after changing any of these files. `git pull` does not update installed copies.
+- `make` compiles every C module.
+- `sudo make install` copies the built programs to `/usr/local/bin`.
+- After every `git pull`, re-run this step, then `sudo systemctl restart startup.target`.
 
 | File | Role |
 |---|---|
@@ -55,16 +52,18 @@ Re-run after changing any of these files. `git pull` does not update installed c
 | `startup@.service` | Template. `%i` is the module name |
 | `startup.target` | Groups all modules |
 
-## 5. Start
+## 4. Start
 
 ```
 sudo systemctl enable --now startup.target
 systemctl status 'startup@*'
 ```
 
+The storage module creates `/var/lib/photobooth/{raw,filtered,tmp}` on first start (via `fs_init`). Other modules that start before it may restart once (5 s) until the folders exist.
+
 Until the real programs replace the `echo` lines in `startup.sh`, each module prints one line and exits. `inactive (dead)` is expected.
 
-## 6. Commands
+## 5. Commands
 
 | Task | Command |
 |---|---|
@@ -74,7 +73,7 @@ Until the real programs replace the `echo` lines in `startup.sh`, each module pr
 | Log of one | `journalctl -u startup@filter -f` |
 | Log of all | `journalctl -u 'startup@*' -f` |
 
-## 7. Modules
+## 6. Modules
 
 Each team fills in its own row.
 
@@ -84,7 +83,7 @@ Each team fills in its own row.
 | `webcam` | Capture | TBD | `make` |
 | `filter` | Filter | `exec /home/<user>/Pi-tobooth/.venv/bin/python3 -u /home/<user>/Pi-tobooth/src/filters/ImageProcessing.py` | venv |
 | `printer` | Printer | TBD | `make` |
-| `file_system` | Storage | TBD | `make` |
+| `file_system` | Storage | `exec /usr/local/bin/storage` | `make` |
 
 Rules for each branch:
 - End with `exec <program>`. No `&`.
@@ -98,14 +97,14 @@ python3 -m venv ~/Pi-tobooth/.venv
 ~/Pi-tobooth/.venv/bin/pip install -r ~/Pi-tobooth/src/filters/requirements.txt
 ```
 
-## 8. New module
+## 7. New module
 
 1. Add a branch in `src/system/startup.sh`.
 2. Add `startup@<name>.service` to `Wants=` in `src/system/startup.target`.
-3. Repeat step 4.
+3. Repeat step 3.
 4. `sudo systemctl restart startup.target`
 
-## 9. Test on a PC or VM
+## 8. Test on a PC or VM
 
 For quick tests without `sudo`, `/var/lib`, or systemd, use the repo's `test/` folder:
 
@@ -134,17 +133,17 @@ ls test/filtered_images
 - The exports last for that terminal session only.
 - `test/` is for development. The Pi uses `/var/lib/photobooth/`.
 
-## 10. Test the installed pipeline
+## 9. Test the installed pipeline
 
 ```
-cp test.jpg /var/lib/photobooth/raw/
+sudo cp test.jpg /var/lib/photobooth/raw/
 ls /var/lib/photobooth/filtered
 journalctl -u startup@filter -n 20
 ```
 
 Reboot and run `systemctl status 'startup@*'` to check autostart.
 
-## 11. Troubleshooting
+## 10. Troubleshooting
 
 | Symptom | Fix |
 |---|---|
@@ -152,13 +151,13 @@ Reboot and run `systemctl status 'startup@*'` to check autostart.
 | `203/EXEC`, "Permission denied" | `sudo chmod +x /usr/local/bin/startup.sh` |
 | `inactive (dead)` right after start | Branch exits. End it with `exec <program>` |
 | Restarts every 5 s | Program is failing: `journalctl -u startup@<name> -n 50` |
-| Empty `journalctl` | Output buffering. See step 7 |
+| Empty `journalctl` | Output buffering. See step 6 |
 | `error` in log | No branch for that module name in `startup.sh` |
 | Exit code 127 | Use `python3`, not `python` |
 | `ModuleNotFoundError` | Service isn't using the venv's `python3` |
 | Config change ignored | `sudo systemctl restart startup@<name>` |
 
-## 12. Uninstall
+## 11. Uninstall
 
 ```
 sudo systemctl disable --now startup.target

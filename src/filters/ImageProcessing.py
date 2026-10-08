@@ -7,8 +7,9 @@ from PIL import Image, UnidentifiedImageError
 from gpiozero import LED, Button
 from systemd import journal
 
-RAW_DIR = os.environ["PHOTOBOOTH_RAW_DIR"]
-FILTERED_DIR = os.environ["PHOTOBOOTH_FILTERED_DIR"]
+DIR = os.environ["PHOTOBOOTH_DIR"]
+RAW_DIR = os.path.join(DIR, "raw")
+FILTERED_DIR = os.path.join(DIR, "filtered")
 
 def wait_until_ready(path, timeout=10, interval=0.2):
     """Wait until the file is unlocked and a complete, readable image."""
