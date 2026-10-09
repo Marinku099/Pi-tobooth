@@ -9,6 +9,7 @@ case $1 in
                 ;;
         "filter")
                 echo "running filter module"
+                exec /home/username/Pi-tobooth/.venv/bin/python3 -u /home/username/Pi-tobooth/src/filters/ImageProcessing.py
                 ;;
         "printer")
                 echo "running printer module"
