@@ -4,7 +4,7 @@ from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 from pack.ImageManager import ImageManager
 from PIL import Image, UnidentifiedImageError
-from gpiozero import LED, Button
+#from gpiozero import LED, Button
 from systemd import journal
 
 DIR = os.environ["PHOTOBOOTH_DIR"]

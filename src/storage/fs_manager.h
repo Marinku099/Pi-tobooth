@@ -74,7 +74,6 @@ double fs_get_disk_free_percent(const char *path);
 long long fs_get_media_usage_bytes(void);
 
 int fs_cleanup_old_files(const char *base_directory,
-                         double threshold_percent,
                          long long max_media_bytes);
 
 // int cache_init(image_cache_t *cache, size_t max_size_bytes);

@@ -572,7 +572,6 @@ static int delete_oldest_safe_pair(const image_metadata_t *raw_list,
 }
 
 int fs_cleanup_old_files(const char *base_directory,
-                         double threshold_percent,
                          long long max_media_bytes)
 {
     image_metadata_t *raw_list;
@@ -608,7 +607,7 @@ int fs_cleanup_old_files(const char *base_directory,
             break;
         }
 
-        if (free_percent >= threshold_percent &&
+        if (free_percent >= FS_DISK_FREE_THRESHOLD_PERCENT &&
             !(quota_enabled && media_usage_bytes > max_media_bytes)) {
             break; /* พื้นที่พอแล้ว ไม่ต้องลบต่อ */
         }

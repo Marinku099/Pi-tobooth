@@ -63,6 +63,7 @@ int main()
         __attribute__((aligned(__alignof__(struct inotify_event))));
     const struct inotify_event *event;
     ssize_t size;
+    double remaining_space;
     for (;;)
     {
         size = read(fd, buf, sizeof(buf));
@@ -79,12 +80,21 @@ int main()
         {
             event = (const struct inotify_event *)ptr;
 
-            if (event->mask & IN_CREATE)
-                printf("IN_CREATE: ");
+            if (event->mask & IN_CREATE){
+                printf("IN_CREATE\n");
+                remaining_space = fs_get_disk_free_percent(dir);
+                printf("remaining space: %.2f percent\n",remaining_space);
+                if(remaining_space < FS_DISK_FREE_THRESHOLD_PERCENT){
+                    printf("insufficient space, cleaning...\n");
+                    fs_cleanup_old_files(dir, FS_DEFAULT_MEDIA_QUOTA_BYTES);
+                    remaining_space = fs_get_disk_free_percent(dir);
+                    printf("remaining space: %.2lf\n",remaining_space);
+                }
+            }
             if (event->mask & IN_CLOSE_WRITE)
-                printf("IN_CLOSE_WRITE");
+                printf("IN_CLOSE_WRITE\n");
             if (event->mask & IN_DELETE)
-                printf("IN_DELETE");
+                printf("IN_DELETE\n");
 
             /* Print the name of the watched directory.  */
             for (size_t i = 0; i < 2; i++)
