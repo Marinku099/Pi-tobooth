@@ -29,7 +29,6 @@ def wait_until_ready(path, timeout=10, interval=0.2):
     return False
 
 def process_image(src_path):
-    """Filter one image from raw and save it to filtered (shared by handler and startup scan)."""
     if not wait_until_ready(src_path):
         # journal.send(f"Skipped (file never became readable): {src_path}")
         return
@@ -47,8 +46,7 @@ def process_image(src_path):
     # journal.send(f"Finished processing and saved to filtered_images: {filename}")
 
 def process_pending():
-    """Run at every observer start: filter files that exist in raw but not in filtered.
-    Files that exist only in filtered are ignored."""
+
     filtered_names = set(os.listdir(FILTERED_DIR))
 
     pending = [
@@ -142,22 +140,20 @@ def ChangeFilter():
 
 def Filter0(image):
 
-    # image.convertToEdgeBinary(50, 0, 100)
     image.convertToGrayscale()
-
+    
     # journal.send("Filter 0")
-
 
 def Filter1(image):
 
-    Filter0(image)
+    image.convertToDither()
 
     # journal.send("Filter 1")
 
 
 def Filter2(image):
 
-    Filter0(image)
+    image.convertToEmboss()
 
     # journal.send("Filter 2")
 
