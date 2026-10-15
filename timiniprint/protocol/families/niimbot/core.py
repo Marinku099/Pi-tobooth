@@ -1,0 +1,655 @@
+from __future__ import annotations
+
+from abc import ABC, abstractmethod
+from dataclasses import dataclass
+from enum import IntEnum
+from typing import Callable, Iterable
+
+from ....raster import PixelFormat, RasterBuffer
+from ...encoding import pack_line
+from ...steps import ProtocolReplyExpectation, ProtocolReplyMatcher, ProtocolStep
+from ..base import PrintJobRequest
+
+_BIT_COUNTS = tuple(bin(value).count("1") for value in range(256))
+
+
+class NiimbotRequest(IntEnum):
+    CONNECT = 0xC1
+    PRINT_START = 0x01
+    PAGE_START = 0x03
+    SET_PAGE_SIZE = 0x13
+    PRINT_QUANTITY = 0x15
+    PRINT_BITMAP_ROW_INDEXED = 0x83
+    PRINT_BITMAP_ROW = 0x85
+    PRINT_EMPTY_ROW = 0x84
+    PRINTER_CHECK_LINE = 0x86
+    PRINT_CLEAR = 0x20
+    PAGE_END = 0xE3
+    PRINT_STATUS = 0xA3
+    PRINT_END = 0xF3
+    PRINTER_INFO = 0x40
+    PRINTER_STATUS_DATA = 0xA5
+    SET_DENSITY = 0x21
+    SET_LABEL_TYPE = 0x23
+
+
+class NiimbotResponse(IntEnum):
+    NOT_SUPPORTED = 0x00
+    CONNECT = 0xC2
+    PRINT_START = 0x02
+    PAGE_START = 0x04
+    SET_PAGE_SIZE = 0x14
+    PRINT_QUANTITY = 0x16
+    PRINT_CLEAR = 0x30
+    PAGE_END = 0xE4
+    PRINTER_PAGE_INDEX = 0xE0
+    PRINT_STATUS = 0xB3
+    PRINT_END = 0xF4
+    PRINT_ERROR = 0xDB
+    PRINTER_CHECK_LINE = 0xD3
+    PRINTER_INFO_MODEL_ID = 0x48
+    PRINTER_STATUS_DATA = 0xB5
+    SET_DENSITY = 0x31
+    SET_LABEL_TYPE = 0x33
+
+
+class NiimbotConnectResult(IntEnum):
+    DISCONNECTED = 0
+    CONNECTED = 1
+    CONNECTED_NEW = 2
+    CONNECTED_V3 = 3
+    FIRMWARE_ERRORS = 90
+
+
+class NiimbotLabelType(IntEnum):
+    WITH_GAPS = 1
+    TRANSPARENT = 5
+
+
+@dataclass(frozen=True)
+class NiimbotPacket:
+    command: int
+    data: bytes
+
+
+class NiimbotReplyDecoder:
+    """Incremental ordinary-frame decoder; retain fragments and validate XOR."""
+
+    def __init__(self) -> None:
+        self._buffer = bytearray()
+
+    def feed(self, data: bytes) -> tuple[NiimbotPacket, ...]:
+        self._buffer.extend(data)
+        packets = []
+        while self._buffer:
+            start = self._buffer.find(b"\x55\x55")
+            if start < 0:
+                self._buffer[:] = self._buffer[-1:] if self._buffer[-1] == 0x55 else b""
+                break
+            del self._buffer[:start]
+            if len(self._buffer) < 4:
+                break
+            size = self._buffer[3] + 7
+            if len(self._buffer) < size:
+                break
+            try:
+                packet, = parse_packets(bytes(self._buffer[:size]))
+            except ValueError:
+                del self._buffer[0]
+                continue
+            packets.append(packet)
+            del self._buffer[:size]
+        return tuple(packets)
+
+
+@dataclass(frozen=True)
+class _NiimbotRowEncoder:
+    indexed_row_threshold: int = 6
+    counts_mode: str = "auto"
+    check_line_interval: int | None = None
+    check_line_timeout_sec: float = 10.0
+    head_width_pixels: int | None = None
+
+    def encode(self, raster: RasterBuffer) -> tuple[tuple[int, int, bytes], ...]:
+        """Return (absolute row, repeat count, frame), split at block boundaries."""
+        rows = _coalesced_rows(raster)
+        encoded = []
+        for row in rows:
+            for offset, repeat, check_line in _repeat_chunks(
+                row.repeat,
+                row_number=row.row_number,
+                check_line_interval=self.check_line_interval,
+            ):
+                row_number = row.row_number + offset
+                if row.row_data is None:
+                    packet = frame(
+                        NiimbotRequest.PRINT_EMPTY_ROW,
+                        _u16be(row_number) + bytes([repeat]),
+                    )
+                elif row.black_pixels_count <= self.indexed_row_threshold:
+                    packet = frame(
+                        NiimbotRequest.PRINT_BITMAP_ROW_INDEXED,
+                        _u16be(row_number)
+                        + bytes(
+                            _count_pixels(
+                                row.row_data,
+                                self.head_width_pixels or raster.width,
+                                mode=self.counts_mode,
+                            )
+                        )
+                        + bytes([repeat])
+                        + _index_pixels(row.row_data),
+                    )
+                else:
+                    packet = frame(
+                        NiimbotRequest.PRINT_BITMAP_ROW,
+                        _u16be(row_number)
+                        + bytes(
+                            _count_pixels(
+                                row.row_data,
+                                self.head_width_pixels or raster.width,
+                                mode=self.counts_mode,
+                            )
+                        )
+                        + bytes([repeat])
+                        + row.row_data,
+                    )
+                encoded.append((row_number, repeat, packet))
+        return tuple(encoded)
+
+    def build_steps(self, raster: RasterBuffer) -> tuple[ProtocolStep, ...]:
+        steps = []
+        for row_number, repeat, packet in self.encode(raster):
+            steps.append(ProtocolStep.send(f"image row {row_number}", packet))
+            if self.check_line_interval and (row_number + repeat) % self.check_line_interval == 0:
+                check_line = row_number + repeat - 1
+                expected_check = _u16be(check_line) + b"\x01"
+                steps.append(ProtocolStep.query(
+                    f"check line {check_line}",
+                    frame(NiimbotRequest.PRINTER_CHECK_LINE, expected_check),
+                    expect=ProtocolReplyExpectation.NONE,
+                    timeout_sec=self.check_line_timeout_sec,
+                    reply_matcher=response_matcher(
+                        NiimbotResponse.PRINTER_CHECK_LINE,
+                        data_matches=lambda data, expected=expected_check: data == expected,
+                    ),
+                ))
+        return tuple(steps)
+
+
+@dataclass(frozen=True)
+class _NiimbotPrintTask(ABC):
+    protocol_variant: str
+    row_encoder: _NiimbotRowEncoder
+    label_type: int = int(NiimbotLabelType.WITH_GAPS)
+    packet_timeout_sec: float = 1.0
+    page_timeout_sec: float = 10.0
+    status_poll_interval_sec: float = 0.3
+    status_timeout_sec: float = 5.0
+
+    def build_job(self, request: PrintJobRequest) -> tuple[ProtocolStep, ...]:
+        if request.image_pipeline.encoding.value != "niimbot_d110":
+            raise ValueError(
+                f"Unsupported NIIMBOT image encoding: {request.image_pipeline.encoding.value}"
+            )
+        raster = request.require_raster(PixelFormat.BW1)
+        raster.validate()
+        density = request.density if request.density is not None else 2
+        steps: list[ProtocolStep] = []
+        if request.is_first_page:
+            steps.extend(self._print_start_steps(request, density))
+        steps.extend(self._page_steps(raster))
+        steps.extend(self._after_page_steps(request))
+        if request.is_last_page:
+            steps.extend(self._finish_steps(request))
+        return tuple(steps)
+
+    def _print_start_steps(
+        self,
+        request: PrintJobRequest,
+        density: int,
+    ) -> tuple[ProtocolStep, ...]:
+        return (
+            self._query(
+                "set density",
+                frame(NiimbotRequest.SET_DENSITY, bytes([density & 0xFF])),
+                NiimbotResponse.SET_DENSITY,
+            ),
+            self._query(
+                "set label type",
+                frame(NiimbotRequest.SET_LABEL_TYPE, bytes([self.label_type & 0xFF])),
+                NiimbotResponse.SET_LABEL_TYPE,
+            ),
+            self._query(
+                "print start",
+                frame(NiimbotRequest.PRINT_START),
+                NiimbotResponse.PRINT_START,
+            ),
+        )
+
+    def _page_steps(self, raster: RasterBuffer) -> tuple[ProtocolStep, ...]:
+        steps = [
+            self._query(
+                "print clear",
+                frame(NiimbotRequest.PRINT_CLEAR),
+                NiimbotResponse.PRINT_CLEAR,
+            ),
+            self._query(
+                "page start",
+                frame(NiimbotRequest.PAGE_START),
+                NiimbotResponse.PAGE_START,
+            ),
+            self._query(
+                "set page size",
+                frame(NiimbotRequest.SET_PAGE_SIZE, self._page_size_data(raster)),
+                NiimbotResponse.SET_PAGE_SIZE,
+                timeout_sec=self.page_timeout_sec,
+            ),
+            self._query(
+                "print quantity",
+                frame(NiimbotRequest.PRINT_QUANTITY, _u16be(1)),
+                NiimbotResponse.PRINT_QUANTITY,
+            ),
+        ]
+        steps.extend(self.row_encoder.build_steps(raster))
+        steps.append(
+            self._query(
+                "page end",
+                frame(NiimbotRequest.PAGE_END),
+                NiimbotResponse.PAGE_END,
+                timeout_sec=self.page_timeout_sec,
+            )
+        )
+        return tuple(steps)
+
+    @abstractmethod
+    def _page_size_data(self, raster: RasterBuffer) -> bytes:
+        raise NotImplementedError
+
+    @abstractmethod
+    def _after_page_steps(self, request: PrintJobRequest) -> tuple[ProtocolStep, ...]:
+        raise NotImplementedError
+
+    def _finish_steps(self, request: PrintJobRequest) -> tuple[ProtocolStep, ...]:
+        return (
+            self._query(
+                "print end",
+                frame(NiimbotRequest.PRINT_END),
+                NiimbotResponse.PRINT_END,
+                matcher=print_end_success_matcher(),
+                reply_required=True,
+            ),
+        )
+
+    def _query(
+        self,
+        label: str,
+        packet: bytes,
+        expected: NiimbotResponse,
+        *,
+        timeout_sec: float | None = None,
+        matcher: ProtocolReplyMatcher | None = None,
+        reply_required: bool = True,
+    ) -> ProtocolStep:
+        return ProtocolStep.query(
+            label,
+            packet,
+            expect=ProtocolReplyExpectation.NONE,
+            timeout_sec=self.packet_timeout_sec if timeout_sec is None else timeout_sec,
+            reply_matcher=matcher or response_matcher(expected, data_matches=lambda data: bool(data and data[0] == 1)),
+            reply_required=reply_required,
+        )
+
+
+class _D11V1PrintTask(_NiimbotPrintTask):
+    def _page_size_data(self, raster: RasterBuffer) -> bytes:
+        return _u16be(raster.height)
+
+    def _after_page_steps(self, request: PrintJobRequest) -> tuple[ProtocolStep, ...]:
+        if not request.is_last_page:
+            return ()
+        return (
+            ProtocolStep.wait(
+                "page index",
+                reply_matcher=page_index_done_matcher(request.page_count),
+                timeout_sec=self.status_timeout_sec,
+                reply_required=True,
+            ),
+        )
+
+
+class _D110PrintTask(_NiimbotPrintTask):
+    def _page_size_data(self, raster: RasterBuffer) -> bytes:
+        return _u16be(raster.height) + _u16be(raster.width)
+
+    def _after_page_steps(self, request: PrintJobRequest) -> tuple[ProtocolStep, ...]:
+        return (
+            ProtocolStep.query(
+                "print status",
+                frame(NiimbotRequest.PRINT_STATUS),
+                expect=ProtocolReplyExpectation.NONE,
+                timeout_sec=self.packet_timeout_sec,
+                reply_matcher=print_status_done_matcher(request.page_index),
+                reply_required=True,
+                repeat_interval_sec=self.status_poll_interval_sec,
+                repeat_timeout_sec=self.status_timeout_sec,
+                include_in_payload=False,
+            ),
+        )
+
+
+def frame(command: int | NiimbotRequest, data: bytes = b"\x01") -> bytes:
+    command_int = int(command) & 0xFF
+    payload = bytes(data)
+    checksum = command_int ^ len(payload)
+    for value in payload:
+        checksum ^= value
+    packet = (
+        b"\x55\x55"
+        + bytes([command_int, len(payload)])
+        + payload
+        + bytes([checksum & 0xFF])
+        + b"\xAA\xAA"
+    )
+    if command_int == int(NiimbotRequest.CONNECT):
+        return b"\x03" + packet
+    return packet
+
+
+def parse_packets(raw: bytes) -> tuple[NiimbotPacket, ...]:
+    data = bytes(raw)
+    packets: list[NiimbotPacket] = []
+    offset = 0
+    while offset < len(data):
+        if data[offset : offset + 2] != b"\x55\x55":
+            raise ValueError("Invalid NIIMBOT packet head")
+        if offset + 6 > len(data):
+            raise ValueError("Incomplete NIIMBOT packet")
+        command = data[offset + 2]
+        length = data[offset + 3]
+        payload_start = offset + 4
+        checksum_index = payload_start + length
+        tail_start = checksum_index + 1
+        tail_end = tail_start + 2
+        if tail_end > len(data):
+            raise ValueError("Incomplete NIIMBOT packet")
+        if data[tail_start:tail_end] != b"\xAA\xAA":
+            raise ValueError("Invalid NIIMBOT packet tail")
+        payload = data[payload_start:checksum_index]
+        if _checksum(command, payload) != data[checksum_index]:
+            raise ValueError("Invalid NIIMBOT packet checksum")
+        packets.append(NiimbotPacket(command=command, data=payload))
+        offset = tail_end
+    return tuple(packets)
+
+
+def response_matcher(
+    expected: NiimbotResponse | Iterable[NiimbotResponse],
+    *,
+    data_matches: Callable[[bytes], bool] | None = None,
+) -> ProtocolReplyMatcher:
+    expected_ids = _response_ids(expected)
+
+    def complete(raw: bytes) -> bool:
+        return any(packet.command in expected_ids for packet in _safe_parse_packets(raw))
+
+    def matches(raw: bytes | None) -> bool:
+        if raw is None:
+            return False
+        for packet in _safe_parse_packets(raw):
+            if packet.command not in expected_ids:
+                continue
+            if data_matches is None or data_matches(packet.data):
+                return True
+        return False
+
+    return ProtocolReplyMatcher(complete=complete, matches=matches)
+
+
+def print_status_done_matcher(expected_page: int) -> ProtocolReplyMatcher:
+    expected_pages = max(1, int(expected_page))
+
+    def status_done(payload: bytes) -> bool:
+        return len(payload) >= 2 and int.from_bytes(payload[:2], "big") >= expected_pages
+
+    return response_matcher(NiimbotResponse.PRINT_STATUS, data_matches=status_done)
+
+
+def page_index_done_matcher(expected_page: int) -> ProtocolReplyMatcher:
+    expected_pages = max(1, int(expected_page))
+
+    def page_done(raw: bytes | None) -> bool:
+        if raw is None:
+            return False
+        for packet in _safe_parse_packets(raw):
+            if packet.command != int(NiimbotResponse.PRINTER_PAGE_INDEX):
+                continue
+            if len(packet.data) >= 2 and int.from_bytes(packet.data[:2], "big") >= expected_pages:
+                return True
+        return False
+
+    return ProtocolReplyMatcher(complete=lambda raw: page_done(raw), matches=page_done)
+
+
+def print_end_success_matcher() -> ProtocolReplyMatcher:
+    return response_matcher(
+        NiimbotResponse.PRINT_END,
+        data_matches=lambda payload: bool(payload and payload[0] == 1),
+    )
+
+
+def build_niimbot_job(request: PrintJobRequest) -> tuple[ProtocolStep, ...]:
+    if request.protocol_variant == "d11_auto":
+        raise ValueError(
+            "NIIMBOT D11 requires a live protocol-version probe before building a job"
+        )
+    print_task = PRINT_TASK_BY_VARIANT.get(request.protocol_variant or "d110")
+    if print_task is None:
+        raise ValueError(f"Unsupported NIIMBOT protocol variant: {request.protocol_variant!r}")
+    return print_task.build_job(request)
+
+
+def connect_packet() -> bytes:
+    return frame(NiimbotRequest.CONNECT)
+
+
+def model_id_query_packet() -> bytes:
+    return frame(NiimbotRequest.PRINTER_INFO, bytes([0x08]))
+
+
+def status_data_query_packet() -> bytes:
+    return frame(NiimbotRequest.PRINTER_STATUS_DATA)
+
+
+def connect_result_from_reply(raw: bytes | None) -> NiimbotConnectResult | None:
+    if raw is None:
+        return None
+    for packet in _safe_parse_packets(raw):
+        if packet.command == NiimbotResponse.CONNECT and packet.data:
+            try:
+                return NiimbotConnectResult(packet.data[0])
+            except ValueError:
+                return None
+    return None
+
+
+def model_id_from_reply(raw: bytes | None) -> int | None:
+    if raw is None:
+        return None
+    for packet in _safe_parse_packets(raw):
+        if packet.command != int(NiimbotResponse.PRINTER_INFO_MODEL_ID):
+            continue
+        if len(packet.data) == 1:
+            return packet.data[0] << 8
+        if len(packet.data) == 2:
+            return int.from_bytes(packet.data, "big")
+    return None
+
+
+def protocol_version_from_status_data(raw: bytes | None) -> int | None:
+    if raw is None:
+        return None
+    for packet in _safe_parse_packets(raw):
+        if packet.command != int(NiimbotResponse.PRINTER_STATUS_DATA):
+            continue
+        if len(packet.data) <= 12:
+            return None
+        encoded = packet.data[11] * 100 + packet.data[12]
+        if 204 <= encoded < 300:
+            return 3
+        if encoded >= 302:
+            return 5
+        if encoded == 300 or encoded == 301:
+            return 4
+        return None
+    return None
+
+
+@dataclass(frozen=True)
+class _EncodedRow:
+    row_number: int
+    repeat: int
+    black_pixels_count: int
+    row_data: bytes | None
+
+
+def _coalesced_rows(raster: RasterBuffer) -> tuple[_EncodedRow, ...]:
+    if raster.pixel_format is not PixelFormat.BW1:
+        raise ValueError("NIIMBOT requires BW1 raster data")
+    rows: list[_EncodedRow] = []
+    pixels = list(raster.pixels)
+    for row_number in range(raster.height):
+        line = pixels[row_number * raster.width : (row_number + 1) * raster.width]
+        black_pixels_count = sum(1 for pixel in line if pixel)
+        row_data = None if black_pixels_count == 0 else pack_line(line, lsb_first=False)
+        new_row = _EncodedRow(
+            row_number=row_number,
+            repeat=1,
+            black_pixels_count=black_pixels_count,
+            row_data=row_data,
+        )
+        if rows and _same_row(rows[-1], new_row):
+            previous = rows[-1]
+            rows[-1] = _EncodedRow(
+                row_number=previous.row_number,
+                repeat=previous.repeat + 1,
+                black_pixels_count=previous.black_pixels_count,
+                row_data=previous.row_data,
+            )
+        else:
+            rows.append(new_row)
+    return tuple(rows)
+
+
+def _same_row(left: _EncodedRow, right: _EncodedRow) -> bool:
+    return left.row_data == right.row_data
+
+
+def _repeat_chunks(
+    repeat: int,
+    *,
+    row_number: int = 0,
+    check_line_interval: int | None = None,
+) -> tuple[tuple[int, int, int | None], ...]:
+    chunks = []
+    remaining = max(0, int(repeat))
+    offset = 0
+    while remaining > 0:
+        chunk = min(255, remaining)
+        check_line = None
+        if check_line_interval is not None:
+            if check_line_interval <= 0:
+                raise ValueError("NIIMBOT check-line interval must be positive")
+            absolute_row = row_number + offset
+            rows_to_check = check_line_interval - (absolute_row % check_line_interval)
+            chunk = min(chunk, rows_to_check)
+            if (absolute_row + chunk) % check_line_interval == 0:
+                check_line = absolute_row + chunk - 1
+        chunks.append((offset, chunk, check_line))
+        offset += chunk
+        remaining -= chunk
+    return tuple(chunks)
+
+
+def _count_pixels(
+    row_data: bytes,
+    row_width_pixels: int,
+    *,
+    mode: str = "auto",
+) -> tuple[int, int, int]:
+    if mode not in {"auto", "split", "total", "total_be", "regional"}:
+        raise ValueError(f"Unsupported NIIMBOT pixel-count mode: {mode}")
+    if mode == "regional":
+        boundary = row_width_pixels // 3
+        if boundary <= 0:
+            raise ValueError("NIIMBOT regional counts require a positive head width")
+        parts = [0, 0, 0]
+        for x in range(len(row_data) * 8):
+            if row_data[x // 8] & (0x80 >> (x % 8)):
+                parts[min(2, x // boundary)] += 1
+        return tuple(value & 0xFF for value in parts)
+    chunk_size = row_width_pixels // 8 // 3
+    split = (
+        mode not in ("total", "total_be")
+        and chunk_size > 0
+        and len(row_data) <= chunk_size * 3
+    )
+    total = 0
+    parts = [0, 0, 0]
+    for byte_index, value in enumerate(row_data):
+        chunk_index = byte_index // chunk_size if chunk_size else 0
+        bit_count = _BIT_COUNTS[value]
+        total += bit_count
+        if split and chunk_index < 3:
+            parts[chunk_index] += bit_count
+    if split:
+        return parts[0], parts[1], parts[2]
+    if mode == "total_be":
+        return (0, (total >> 8) & 0xFF, total & 0xFF)
+    return (0, total & 0xFF, (total >> 8) & 0xFF)
+
+
+def _index_pixels(row_data: bytes) -> bytes:
+    indexes = bytearray()
+    for byte_pos, value in enumerate(row_data):
+        for bit_pos in range(8):
+            if value & (1 << (7 - bit_pos)):
+                indexes += _u16be(byte_pos * 8 + bit_pos)
+    return bytes(indexes)
+
+
+def _response_ids(expected: NiimbotResponse | Iterable[NiimbotResponse]) -> frozenset[int]:
+    if isinstance(expected, NiimbotResponse):
+        return frozenset({int(expected)})
+    return frozenset(int(value) for value in expected)
+
+
+def _safe_parse_packets(raw: bytes) -> tuple[NiimbotPacket, ...]:
+    return NiimbotReplyDecoder().feed(raw)
+
+
+def _checksum(command: int, payload: bytes) -> int:
+    value = command ^ len(payload)
+    for item in payload:
+        value ^= item
+    return value & 0xFF
+
+
+def _u16be(value: int) -> bytes:
+    return int(value).to_bytes(2, "big", signed=False)
+
+
+_SHARED_ROW_ENCODER = _NiimbotRowEncoder()
+
+D11_PRINT_TASK = _D11V1PrintTask(
+    protocol_variant="d11_v1",
+    row_encoder=_SHARED_ROW_ENCODER,
+)
+D110_PRINT_TASK = _D110PrintTask(
+    protocol_variant="d110",
+    row_encoder=_SHARED_ROW_ENCODER,
+)
+PRINT_TASK_BY_VARIANT = {
+    D11_PRINT_TASK.protocol_variant: D11_PRINT_TASK,
+    D110_PRINT_TASK.protocol_variant: D110_PRINT_TASK,
+}

@@ -1,0 +1,491 @@
+from __future__ import annotations
+
+from ..raster import PixelFormat, RasterBuffer, RasterSet
+from .commands import (
+    blackening_cmd,
+    dev_state_cmd,
+    energy_cmd,
+    feed_paper_cmd,
+    paper_cmd,
+    print_mode_cmd,
+)
+from .encoding import build_line_packets
+from .families import PrintJobRequest, get_protocol_behavior
+from .family import ProtocolFamily
+from .plan import ProtocolPlan
+from .runtime import RuntimePrintCapabilities
+from .steps import ProtocolStep
+from .types import ImagePipelineConfig, PageFlow, PaperMode
+
+
+def _build_family_job(request: PrintJobRequest) -> ProtocolPlan | None:
+    behavior = get_protocol_behavior(request.protocol_family)
+    if behavior.job_builder is None:
+        return None
+    return behavior.job_builder(request)
+
+
+def _resolve_image_pipeline(
+    protocol_family: ProtocolFamily | str,
+    image_pipeline: ImagePipelineConfig | None,
+) -> ImagePipelineConfig:
+    family = ProtocolFamily.from_value(protocol_family)
+    if image_pipeline is not None:
+        return image_pipeline
+    return get_protocol_behavior(family).default_image_pipeline
+
+
+def _validate_request(request: PrintJobRequest) -> None:
+    request.raster_set.validate()
+    behavior = get_protocol_behavior(request.protocol_family)
+    supported_paper_modes = behavior.supported_paper_modes_for(request.protocol_variant)
+    if request.paper_mode is not None and request.paper_mode not in supported_paper_modes:
+        raise ValueError(
+            f"{request.protocol_family.value} does not support paper mode {request.paper_mode.value}"
+        )
+    image_encoding_support = behavior.image_encoding_support_for(request.protocol_variant, request.paper_mode)
+    supported_by_encoding = image_encoding_support.get(request.image_pipeline.encoding)
+    if supported_by_encoding is None:
+        raise ValueError(
+            f"{request.protocol_family.value} does not support image encoding "
+            f"{request.image_pipeline.encoding.value}"
+        )
+    supported_formats = {
+        pixel_format
+        for formats in image_encoding_support.values()
+        for pixel_format in formats
+    }
+    for pixel_format in request.image_pipeline.formats:
+        if pixel_format not in supported_formats:
+            raise ValueError(
+                f"{request.protocol_family.value} does not support raster format "
+                f"{pixel_format.value}"
+            )
+    if request.image_pipeline.default_format not in supported_by_encoding:
+        raise ValueError(
+            f"{request.protocol_family.value} image encoding "
+            f"{request.image_pipeline.encoding.value} does not support "
+            f"{request.image_pipeline.default_format.value}"
+        )
+    request.require_raster(request.image_pipeline.default_format)
+
+
+def _build_request(
+    raster_set: RasterSet,
+    is_text: bool,
+    speed: int | None,
+    energy: int,
+    density: int | None,
+    blackening: int,
+    lsb_first: bool,
+    protocol_family: ProtocolFamily | str,
+    protocol_variant: str | None,
+    feed_padding: int,
+    dev_dpi: int,
+    can_print_label: bool,
+    post_print_feed_count: int,
+    left_padding_pixels: int,
+    one_length: int,
+    a4xii: bool,
+    a4_sheet_max_height: int | None,
+    image_pipeline: ImagePipelineConfig | None,
+    paper_mode: PaperMode | None = None,
+    page_index: int = 1,
+    page_count: int = 1,
+    page_flow: PageFlow = PageFlow.PAGED,
+    runtime_capabilities: RuntimePrintCapabilities | None = None,
+    image_energy: int | None = None,
+    back_paper_num: int | None = None,
+) -> PrintJobRequest:
+    family = ProtocolFamily.from_value(protocol_family)
+    request = PrintJobRequest(
+        image_energy=image_energy,
+        back_paper_num=back_paper_num,
+        raster_set=raster_set,
+        image_pipeline=_resolve_image_pipeline(family, image_pipeline),
+        is_text=is_text,
+        speed=speed,
+        energy=energy,
+        blackening=blackening,
+        lsb_first=lsb_first,
+        protocol_family=family,
+        protocol_variant=protocol_variant,
+        feed_padding=feed_padding,
+        dev_dpi=dev_dpi,
+        can_print_label=can_print_label,
+        density=density,
+        post_print_feed_count=post_print_feed_count,
+        left_padding_pixels=left_padding_pixels,
+        one_length=one_length,
+        a4xii=a4xii,
+        a4_sheet_max_height=a4_sheet_max_height,
+        paper_mode=paper_mode,
+        page_index=page_index,
+        page_count=page_count,
+        page_flow=page_flow,
+        runtime_capabilities=runtime_capabilities,
+    )
+    _validate_request(request)
+    return request
+
+
+def _require_speed(request: PrintJobRequest) -> int:
+    if request.speed is None:
+        raise ValueError(f"{request.protocol_family.value} requires speed defaults")
+    return request.speed
+
+
+def _build_print_payload(
+    pixels: list[int],
+    width: int,
+    is_text: bool,
+    speed: int | None,
+    energy: int,
+    lsb_first: bool,
+    protocol_family: ProtocolFamily | str,
+    protocol_variant: str | None = None,
+    can_print_label: bool = False,
+    image_pipeline: ImagePipelineConfig | None = None,
+    paper_mode: PaperMode | None = None,
+) -> bytes:
+    raster = RasterBuffer(pixels=pixels, width=width, pixel_format=PixelFormat.BW1)
+    return _build_print_payload_from_raster(
+        raster=raster,
+        is_text=is_text,
+        speed=speed,
+        energy=energy,
+        lsb_first=lsb_first,
+        protocol_family=protocol_family,
+        protocol_variant=protocol_variant,
+        can_print_label=can_print_label,
+        image_pipeline=image_pipeline,
+        paper_mode=paper_mode,
+    )
+
+
+def _build_print_payload_from_raster(
+    raster: RasterBuffer,
+    is_text: bool,
+    speed: int | None,
+    energy: int,
+    lsb_first: bool,
+    protocol_family: ProtocolFamily | str,
+    protocol_variant: str | None = None,
+    can_print_label: bool = False,
+    image_pipeline: ImagePipelineConfig | None = None,
+    paper_mode: PaperMode | None = None,
+) -> bytes:
+    return _build_print_payload_from_raster_set(
+        raster_set=RasterSet.from_single(raster),
+        is_text=is_text,
+        speed=speed,
+        energy=energy,
+        lsb_first=lsb_first,
+        protocol_family=protocol_family,
+        protocol_variant=protocol_variant,
+        can_print_label=can_print_label,
+        image_pipeline=image_pipeline,
+        paper_mode=paper_mode,
+    )
+
+
+def _build_print_payload_from_raster_set(
+    raster_set: RasterSet,
+    is_text: bool,
+    speed: int | None,
+    energy: int,
+    lsb_first: bool,
+    protocol_family: ProtocolFamily | str,
+    protocol_variant: str | None = None,
+    can_print_label: bool = False,
+    image_pipeline: ImagePipelineConfig | None = None,
+    paper_mode: PaperMode | None = None,
+    page_index: int = 1,
+    page_count: int = 1,
+    page_flow: PageFlow = PageFlow.PAGED,
+    runtime_capabilities: RuntimePrintCapabilities | None = None,
+) -> bytes:
+    request = _build_request(
+        raster_set=raster_set,
+        is_text=is_text,
+        speed=speed,
+        energy=energy,
+        density=None,
+        blackening=3,
+        lsb_first=lsb_first,
+        protocol_family=protocol_family,
+        protocol_variant=protocol_variant,
+        feed_padding=0,
+        dev_dpi=203,
+        can_print_label=can_print_label,
+        post_print_feed_count=2,
+        left_padding_pixels=0,
+        one_length=0,
+        a4xii=False,
+        a4_sheet_max_height=None,
+        image_pipeline=image_pipeline,
+        paper_mode=paper_mode,
+        page_index=page_index,
+        page_count=page_count,
+        page_flow=page_flow,
+        runtime_capabilities=runtime_capabilities,
+    )
+    family_plan = _build_family_job(request)
+    if family_plan is not None:
+        return family_plan.payload
+
+    raster = request.require_raster(PixelFormat.BW1)
+    payload = bytearray()
+    payload += energy_cmd(energy, request.protocol_family)
+    payload += print_mode_cmd(is_text, request.protocol_family)
+    payload += feed_paper_cmd(_require_speed(request), request.protocol_family)
+    payload += build_line_packets(
+        list(raster.pixels),
+        raster.width,
+        _require_speed(request),
+        request.image_pipeline.encoding,
+        lsb_first,
+        request.protocol_family,
+        line_feed_every=200,
+    )
+    return bytes(payload)
+
+
+def _build_job(
+    pixels: list[int],
+    width: int,
+    is_text: bool,
+    speed: int | None,
+    energy: int,
+    density: int | None,
+    blackening: int,
+    lsb_first: bool,
+    protocol_family: ProtocolFamily | str,
+    feed_padding: int,
+    dev_dpi: int,
+    can_print_label: bool = False,
+    post_print_feed_count: int = 2,
+    left_padding_pixels: int = 0,
+    one_length: int = 0,
+    a4xii: bool = False,
+    a4_sheet_max_height: int | None = None,
+    image_pipeline: ImagePipelineConfig | None = None,
+    paper_mode: PaperMode | None = None,
+    protocol_variant: str | None = None,
+    page_index: int = 1,
+    page_count: int = 1,
+    page_flow: PageFlow = PageFlow.PAGED,
+    runtime_capabilities: RuntimePrintCapabilities | None = None,
+) -> bytes:
+    raster = RasterBuffer(pixels=pixels, width=width, pixel_format=PixelFormat.BW1)
+    return _build_job_from_raster(
+        raster=raster,
+        is_text=is_text,
+        speed=speed,
+        energy=energy,
+        density=density,
+        blackening=blackening,
+        lsb_first=lsb_first,
+        protocol_family=protocol_family,
+        protocol_variant=protocol_variant,
+        feed_padding=feed_padding,
+        dev_dpi=dev_dpi,
+        can_print_label=can_print_label,
+        post_print_feed_count=post_print_feed_count,
+        left_padding_pixels=left_padding_pixels,
+        one_length=one_length,
+        a4xii=a4xii,
+        a4_sheet_max_height=a4_sheet_max_height,
+        image_pipeline=image_pipeline,
+        paper_mode=paper_mode,
+        page_index=page_index,
+        page_count=page_count,
+        page_flow=page_flow,
+        runtime_capabilities=runtime_capabilities,
+    )
+
+
+def _build_job_from_raster(
+    raster: RasterBuffer,
+    is_text: bool,
+    speed: int | None,
+    energy: int,
+    density: int | None,
+    blackening: int,
+    lsb_first: bool,
+    protocol_family: ProtocolFamily | str,
+    feed_padding: int,
+    dev_dpi: int,
+    can_print_label: bool = False,
+    post_print_feed_count: int = 2,
+    left_padding_pixels: int = 0,
+    one_length: int = 0,
+    a4xii: bool = False,
+    a4_sheet_max_height: int | None = None,
+    image_pipeline: ImagePipelineConfig | None = None,
+    paper_mode: PaperMode | None = None,
+    protocol_variant: str | None = None,
+    page_index: int = 1,
+    page_count: int = 1,
+    page_flow: PageFlow = PageFlow.PAGED,
+    runtime_capabilities: RuntimePrintCapabilities | None = None,
+) -> bytes:
+    return _build_job_from_raster_set(
+        raster_set=RasterSet.from_single(raster),
+        is_text=is_text,
+        speed=speed,
+        energy=energy,
+        density=density,
+        blackening=blackening,
+        lsb_first=lsb_first,
+        protocol_family=protocol_family,
+        protocol_variant=protocol_variant,
+        feed_padding=feed_padding,
+        dev_dpi=dev_dpi,
+        can_print_label=can_print_label,
+        post_print_feed_count=post_print_feed_count,
+        left_padding_pixels=left_padding_pixels,
+        one_length=one_length,
+        a4xii=a4xii,
+        a4_sheet_max_height=a4_sheet_max_height,
+        image_pipeline=image_pipeline,
+        paper_mode=paper_mode,
+        page_index=page_index,
+        page_count=page_count,
+        page_flow=page_flow,
+        runtime_capabilities=runtime_capabilities,
+    )
+
+
+def _build_job_from_raster_set(
+    raster_set: RasterSet,
+    is_text: bool,
+    speed: int | None,
+    energy: int,
+    density: int | None,
+    blackening: int,
+    lsb_first: bool,
+    protocol_family: ProtocolFamily | str,
+    feed_padding: int,
+    dev_dpi: int,
+    can_print_label: bool = False,
+    post_print_feed_count: int = 2,
+    left_padding_pixels: int = 0,
+    one_length: int = 0,
+    a4xii: bool = False,
+    a4_sheet_max_height: int | None = None,
+    image_pipeline: ImagePipelineConfig | None = None,
+    paper_mode: PaperMode | None = None,
+    protocol_variant: str | None = None,
+    page_index: int = 1,
+    page_count: int = 1,
+    page_flow: PageFlow = PageFlow.PAGED,
+    runtime_capabilities: RuntimePrintCapabilities | None = None,
+) -> bytes:
+    payload, _steps = _build_job_model_from_raster_set(
+        raster_set=raster_set,
+        is_text=is_text,
+        speed=speed,
+        energy=energy,
+        density=density,
+        blackening=blackening,
+        lsb_first=lsb_first,
+        protocol_family=protocol_family,
+        feed_padding=feed_padding,
+        dev_dpi=dev_dpi,
+        can_print_label=can_print_label,
+        post_print_feed_count=post_print_feed_count,
+        left_padding_pixels=left_padding_pixels,
+        one_length=one_length,
+        a4xii=a4xii,
+        a4_sheet_max_height=a4_sheet_max_height,
+        image_pipeline=image_pipeline,
+        paper_mode=paper_mode,
+        protocol_variant=protocol_variant,
+        page_index=page_index,
+        page_count=page_count,
+        page_flow=page_flow,
+        runtime_capabilities=runtime_capabilities,
+    )
+    return payload
+
+
+def _build_job_model_from_raster_set(
+    raster_set: RasterSet,
+    is_text: bool,
+    speed: int | None,
+    energy: int,
+    density: int | None,
+    blackening: int,
+    lsb_first: bool,
+    protocol_family: ProtocolFamily | str,
+    feed_padding: int,
+    dev_dpi: int,
+    can_print_label: bool = False,
+    post_print_feed_count: int = 2,
+    left_padding_pixels: int = 0,
+    one_length: int = 0,
+    a4xii: bool = False,
+    a4_sheet_max_height: int | None = None,
+    image_pipeline: ImagePipelineConfig | None = None,
+    paper_mode: PaperMode | None = None,
+    protocol_variant: str | None = None,
+    page_index: int = 1,
+    page_count: int = 1,
+    page_flow: PageFlow = PageFlow.PAGED,
+    runtime_capabilities: RuntimePrintCapabilities | None = None,
+    image_energy: int | None = None,
+    back_paper_num: int | None = None,
+) -> tuple[bytes, tuple[ProtocolStep, ...]]:
+    request = _build_request(
+        image_energy=image_energy,
+        back_paper_num=back_paper_num,
+        raster_set=raster_set,
+        is_text=is_text,
+        speed=speed,
+        energy=energy,
+        density=density,
+        blackening=blackening,
+        lsb_first=lsb_first,
+        protocol_family=protocol_family,
+        protocol_variant=protocol_variant,
+        feed_padding=feed_padding,
+        dev_dpi=dev_dpi,
+        can_print_label=can_print_label,
+        post_print_feed_count=post_print_feed_count,
+        left_padding_pixels=left_padding_pixels,
+        one_length=one_length,
+        a4xii=a4xii,
+        a4_sheet_max_height=a4_sheet_max_height,
+        image_pipeline=image_pipeline,
+        paper_mode=paper_mode,
+        page_index=page_index,
+        page_count=page_count,
+        page_flow=page_flow,
+        runtime_capabilities=runtime_capabilities,
+    )
+    family_plan = _build_family_job(request)
+    if family_plan is not None:
+        return family_plan.payload, family_plan.steps
+
+    job = bytearray()
+    job += blackening_cmd(blackening, request.protocol_family)
+    job += _build_print_payload_from_raster_set(
+        raster_set=raster_set,
+        is_text=is_text,
+        speed=speed,
+        energy=energy,
+        lsb_first=lsb_first,
+        protocol_family=request.protocol_family,
+        protocol_variant=request.protocol_variant,
+        can_print_label=can_print_label,
+        image_pipeline=request.image_pipeline,
+        runtime_capabilities=runtime_capabilities,
+    )
+    if request.ends_media_page:
+        job += feed_paper_cmd(feed_padding, request.protocol_family)
+        for _ in range(max(0, request.post_print_feed_count)):
+            job += paper_cmd(dev_dpi, request.protocol_family)
+        job += feed_paper_cmd(feed_padding, request.protocol_family)
+        job += dev_state_cmd(request.protocol_family)
+    return bytes(job), ()

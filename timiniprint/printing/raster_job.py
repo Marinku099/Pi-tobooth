@@ -1,0 +1,88 @@
+from __future__ import annotations
+
+from collections.abc import Iterable
+from typing import TYPE_CHECKING
+
+from ..protocol.job import PrinterProtocol, ProtocolJob
+from ..protocol.runtime import RuntimePrintCapabilities
+from ..protocol.types import ImagePipelineConfig, PageFlow
+from ..raster import RasterSet
+from .paper import apply_paper_layout_to_raster_set, resolve_paper
+from .settings import PrintSettings
+
+if TYPE_CHECKING:
+    from ..devices import PrinterDevice
+
+
+def build_raster_page_job(
+    device: PrinterDevice,
+    raster_set: RasterSet,
+    *,
+    is_text: bool,
+    settings: PrintSettings | None = None,
+    runtime_capabilities: RuntimePrintCapabilities | None = None,
+    page_index: int = 1,
+    page_count: int = 1,
+    page_flow: PageFlow = PageFlow.PAGED,
+    image_pipeline: ImagePipelineConfig | None = None,
+    _paper_layout_applied: bool = False,
+) -> ProtocolJob:
+    """Build one protocol page from an already prepared raster.
+
+    An explicit image_pipeline is authoritative: user image choices must not
+    be applied again to already rendered pixels. Otherwise select a pipeline
+    from settings, restricted to the formats actually supplied. No dithering
+    or grayscale conversion is performed here.
+    """
+    effective_settings = settings or PrintSettings()
+    pipeline = image_pipeline or effective_settings.resolve_image_pipeline(
+        device, runtime_capabilities=runtime_capabilities,
+        raster_formats=tuple(raster_set.rasters),
+    )
+    paper = resolve_paper(device, effective_settings)
+    if not _paper_layout_applied:
+        raster_set = apply_paper_layout_to_raster_set(raster_set, paper)
+    return PrinterProtocol(device).build_job(
+        raster_set,
+        is_text=is_text,
+        blackening=effective_settings.blackening,
+        feed_padding=effective_settings.feed_padding,
+        paper_preset_key=paper.key,
+        paper_mode=paper.paper_mode,
+        lsb_first=effective_settings.lsb_first,
+        image_pipeline=pipeline,
+        page_index=page_index,
+        page_count=page_count,
+        page_flow=page_flow,
+        runtime_capabilities=runtime_capabilities,
+    )
+
+
+def combine_raster_page_jobs(
+    page_jobs: Iterable[ProtocolJob],
+) -> ProtocolJob:
+    jobs = tuple(page_jobs)
+    return ProtocolJob(
+        payload_segments=tuple(job.payload for job in jobs),
+        steps=tuple(step for job in jobs for step in job.steps),
+        wait_for_completion=any(job.wait_for_completion for job in jobs),
+    )
+
+
+def build_raster_job(
+    device: PrinterDevice,
+    raster_set: RasterSet,
+    *,
+    is_text: bool,
+    settings: PrintSettings | None = None,
+    runtime_capabilities: RuntimePrintCapabilities | None = None,
+) -> ProtocolJob:
+    """Build a complete one-page protocol job from an already prepared raster."""
+    page_job = build_raster_page_job(
+        device,
+        raster_set,
+        is_text=is_text,
+        settings=settings,
+        runtime_capabilities=runtime_capabilities,
+    )
+    return combine_raster_page_jobs((page_job,))

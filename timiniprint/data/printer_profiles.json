@@ -1,0 +1,6750 @@
+[
+  {
+    "profile_key": "15p3",
+    "size": 1,
+    "one_length": 8,
+    "dev_dpi": 200,
+    "has_id": true,
+    "use_spp": true,
+    "can_print_label": true,
+    "label_value": "1",
+    "back_paper_num": 40,
+    "protocol_default": {
+      "type": "tiny"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1"
+      ],
+      "encoding": "tiny_rle"
+    },
+    "stream": {
+      "chunk_size": 180,
+      "delay_ms": 4
+    },
+    "post_print_feed_count": 2,
+    "print_defaults": {
+      "speed": {
+        "image": 10,
+        "text": 10
+      },
+      "energy": {
+        "image": {
+          "low": 5000,
+          "middle": 5000,
+          "high": 5000
+        },
+        "text": {
+          "low": 8000,
+          "middle": 8000,
+          "high": 8000
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "default_90r_96p"
+    ]
+  },
+  {
+    "profile_key": "wq02",
+    "size": 1,
+    "one_length": 8,
+    "dev_dpi": 200,
+    "has_id": true,
+    "use_spp": true,
+    "can_print_label": true,
+    "label_value": "1",
+    "back_paper_num": 40,
+    "protocol_default": {
+      "type": "tiny"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1"
+      ],
+      "encoding": "tiny_raw"
+    },
+    "stream": {
+      "chunk_size": 180,
+      "delay_ms": 4
+    },
+    "post_print_feed_count": 2,
+    "print_defaults": {
+      "speed": {
+        "image": 10,
+        "text": 10
+      },
+      "energy": {
+        "image": {
+          "low": 5000,
+          "middle": 5000,
+          "high": 5000
+        },
+        "text": {
+          "low": 8000,
+          "middle": 8000,
+          "high": 8000
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "default_90r_96p"
+    ]
+  },
+  {
+    "profile_key": "l1_u2",
+    "size": 1,
+    "one_length": 8,
+    "dev_dpi": 200,
+    "has_id": true,
+    "use_spp": true,
+    "can_print_label": true,
+    "label_value": "1",
+    "back_paper_num": 40,
+    "protocol_default": {
+      "type": "tiny"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1"
+      ],
+      "encoding": "tiny_rle"
+    },
+    "stream": {
+      "chunk_size": 180,
+      "delay_ms": 4
+    },
+    "post_print_feed_count": 2,
+    "print_defaults": {
+      "speed": {
+        "image": 8,
+        "text": 8
+      },
+      "energy": {
+        "image": {
+          "low": 1500,
+          "middle": 1500,
+          "high": 1500
+        },
+        "text": {
+          "low": 1500,
+          "middle": 1500,
+          "high": 1500
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "default_90r_96p"
+    ]
+  },
+  {
+    "profile_key": "58p5",
+    "size": 2,
+    "one_length": 8,
+    "dev_dpi": 200,
+    "has_id": true,
+    "use_spp": false,
+    "can_print_label": false,
+    "label_value": "0",
+    "back_paper_num": 0,
+    "protocol_default": {
+      "type": "tiny"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1"
+      ],
+      "encoding": "tiny_rle"
+    },
+    "stream": {
+      "chunk_size": 123,
+      "delay_ms": 6
+    },
+    "post_print_feed_count": 2,
+    "print_defaults": {
+      "speed": {
+        "image": 10,
+        "text": 10
+      },
+      "energy": {
+        "image": {
+          "low": 6500,
+          "middle": 6500,
+          "high": 6500
+        },
+        "text": {
+          "low": 0,
+          "middle": 0,
+          "high": 0
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "default_384r"
+    ]
+  },
+  {
+    "profile_key": "a200",
+    "size": 8,
+    "one_length": 8,
+    "dev_dpi": 200,
+    "has_id": true,
+    "use_spp": true,
+    "can_print_label": false,
+    "label_value": "0",
+    "back_paper_num": 0,
+    "protocol_default": {
+      "type": "tiny",
+      "packets_type": "line_eight"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1"
+      ],
+      "encoding": "tiny_raw"
+    },
+    "stream": {
+      "chunk_size": 183,
+      "delay_ms": 4
+    },
+    "post_print_feed_count": 2,
+    "print_defaults": {
+      "speed": {
+        "image": 20,
+        "text": 30
+      },
+      "energy": {
+        "image": {
+          "low": 10500,
+          "middle": 12000,
+          "high": 12500
+        },
+        "text": {
+          "low": 12000,
+          "middle": 12000,
+          "high": 12000
+        }
+      }
+    },
+    "a4xii": true,
+    "paper_presets": [
+      "plain_1648r_1664p",
+      "a4sheet_1648r_1664p"
+    ]
+  },
+  {
+    "profile_key": "luck_a2",
+    "size": 2,
+    "one_length": 8,
+    "dev_dpi": 203,
+    "has_id": true,
+    "use_spp": true,
+    "can_print_label": false,
+    "label_value": "0",
+    "back_paper_num": 0,
+    "protocol_default": {
+      "type": "luck_normal"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1"
+      ],
+      "encoding": "luck_normal_raw"
+    },
+    "stream": {
+      "chunk_size": 180,
+      "delay_ms": 4
+    },
+    "post_print_feed_count": 2,
+    "print_defaults": {
+      "energy": {
+        "image": {
+          "low": 5000,
+          "middle": 5000,
+          "high": 5000
+        },
+        "text": {
+          "low": 8000,
+          "middle": 8000,
+          "high": 8000
+        }
+      },
+      "density": {
+        "image": {
+          "low": 0,
+          "middle": 1,
+          "high": 2
+        },
+        "text": {
+          "low": 0,
+          "middle": 1,
+          "high": 2
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "plain_384r",
+      "tag_384r",
+      "blacktag_384r",
+      "tattoo_384r"
+    ]
+  },
+  {
+    "profile_key": "luck_a2h",
+    "size": 2,
+    "one_length": 8,
+    "dev_dpi": 300,
+    "has_id": true,
+    "use_spp": true,
+    "can_print_label": false,
+    "label_value": "0",
+    "back_paper_num": 0,
+    "protocol_default": {
+      "type": "luck_normal"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1"
+      ],
+      "encoding": "luck_normal_raw"
+    },
+    "stream": {
+      "chunk_size": 180,
+      "delay_ms": 4
+    },
+    "post_print_feed_count": 2,
+    "print_defaults": {
+      "energy": {
+        "image": {
+          "low": 5000,
+          "middle": 5000,
+          "high": 5000
+        },
+        "text": {
+          "low": 8000,
+          "middle": 8000,
+          "high": 8000
+        }
+      },
+      "density": {
+        "image": {
+          "low": 0,
+          "middle": 1,
+          "high": 2
+        },
+        "text": {
+          "low": 0,
+          "middle": 1,
+          "high": 2
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "plain_576r",
+      "tag_576r",
+      "blacktag_576r",
+      "tattoo_576r"
+    ]
+  },
+  {
+    "profile_key": "luck_ppa2l",
+    "size": 2,
+    "one_length": 8,
+    "dev_dpi": 203,
+    "has_id": true,
+    "use_spp": true,
+    "can_print_label": false,
+    "label_value": "0",
+    "back_paper_num": 0,
+    "protocol_default": {
+      "type": "luck_normal",
+      "packets_type": "lujiang_normal"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1",
+        "gray4",
+        "gray8"
+      ],
+      "encoding": "luck_normal_raw"
+    },
+    "stream": {
+      "chunk_size": 180,
+      "delay_ms": 4
+    },
+    "post_print_feed_count": 2,
+    "print_defaults": {
+      "energy": {
+        "image": {
+          "low": 5000,
+          "middle": 5000,
+          "high": 5000
+        },
+        "text": {
+          "low": 8000,
+          "middle": 8000,
+          "high": 8000
+        }
+      },
+      "density": {
+        "image": {
+          "low": 0,
+          "middle": 1,
+          "high": 2
+        },
+        "text": {
+          "low": 0,
+          "middle": 1,
+          "high": 2
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "tag_384r",
+      "plain_384r",
+      "blacktag_384r",
+      "tattoo_384r"
+    ]
+  },
+  {
+    "profile_key": "luck_ppa2lh",
+    "size": 2,
+    "one_length": 8,
+    "dev_dpi": 300,
+    "has_id": true,
+    "use_spp": true,
+    "can_print_label": false,
+    "label_value": "0",
+    "back_paper_num": 0,
+    "protocol_default": {
+      "type": "luck_normal",
+      "packets_type": "lujiang_normal_h"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1",
+        "gray4",
+        "gray8"
+      ],
+      "encoding": "luck_normal_raw"
+    },
+    "stream": {
+      "chunk_size": 180,
+      "delay_ms": 4
+    },
+    "post_print_feed_count": 2,
+    "print_defaults": {
+      "energy": {
+        "image": {
+          "low": 5000,
+          "middle": 5000,
+          "high": 5000
+        },
+        "text": {
+          "low": 8000,
+          "middle": 8000,
+          "high": 8000
+        }
+      },
+      "density": {
+        "image": {
+          "low": 0,
+          "middle": 1,
+          "high": 2
+        },
+        "text": {
+          "low": 0,
+          "middle": 1,
+          "high": 2
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "tag_576r",
+      "plain_576r",
+      "blacktag_576r",
+      "tattoo_576r"
+    ]
+  },
+  {
+    "profile_key": "a33",
+    "size": 2,
+    "one_length": 8,
+    "dev_dpi": 200,
+    "has_id": true,
+    "use_spp": true,
+    "can_print_label": true,
+    "label_value": "1",
+    "back_paper_num": 40,
+    "protocol_default": {
+      "type": "tiny"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1"
+      ],
+      "encoding": "tiny_rle"
+    },
+    "stream": {
+      "chunk_size": 183,
+      "delay_ms": 4
+    },
+    "post_print_feed_count": 2,
+    "print_defaults": {
+      "speed": {
+        "image": 25,
+        "text": 25
+      },
+      "energy": {
+        "image": {
+          "low": 9500,
+          "middle": 9500,
+          "high": 9500
+        },
+        "text": {
+          "low": 9500,
+          "middle": 9500,
+          "high": 9500
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "default_384r"
+    ]
+  },
+  {
+    "profile_key": "luck_a40",
+    "size": 8,
+    "one_length": 8,
+    "dev_dpi": 203,
+    "has_id": true,
+    "use_spp": true,
+    "can_print_label": false,
+    "label_value": "0",
+    "back_paper_num": 0,
+    "protocol_default": {
+      "type": "luck_normal_a4"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1"
+      ],
+      "encoding": "luck_normal_raw"
+    },
+    "stream": {
+      "chunk_size": 300,
+      "delay_ms": 4
+    },
+    "post_print_feed_count": 2,
+    "print_defaults": {
+      "energy": {
+        "image": {
+          "low": 10000,
+          "middle": 10000,
+          "high": 10000
+        },
+        "text": {
+          "low": 10000,
+          "middle": 10000,
+          "high": 10000
+        }
+      },
+      "density": {
+        "image": {
+          "low": 0,
+          "middle": 1,
+          "high": 2
+        },
+        "text": {
+          "low": 0,
+          "middle": 1,
+          "high": 2
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "luck_a4_roll_216mm",
+      "luck_a4_roll_56mm",
+      "luck_a4_roll_77mm",
+      "luck_a4_roll_107mm",
+      "luck_a4_roll_148mm",
+      "luck_a4_roll_210mm",
+      "tag_1648r",
+      "blacktag_1648r",
+      "luck_a4_folder_a4",
+      "luck_a4_folder_a5",
+      "luck_a4_folder_letter",
+      "luck_a4_folder_legal",
+      "tattoo_1648r"
+    ]
+  },
+  {
+    "profile_key": "luck_lujiang_a4",
+    "size": 8,
+    "one_length": 8,
+    "dev_dpi": 203,
+    "has_id": true,
+    "use_spp": true,
+    "can_print_label": false,
+    "label_value": "0",
+    "back_paper_num": 0,
+    "protocol_default": {
+      "type": "luck_normal_a4",
+      "packets_type": "lujiang_a4"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1"
+      ],
+      "encoding": "luck_normal_compressed"
+    },
+    "stream": {
+      "chunk_size": 300,
+      "delay_ms": 4
+    },
+    "post_print_feed_count": 2,
+    "print_defaults": {
+      "energy": {
+        "image": {
+          "low": 10000,
+          "middle": 10000,
+          "high": 10000
+        },
+        "text": {
+          "low": 10000,
+          "middle": 10000,
+          "high": 10000
+        }
+      },
+      "density": {
+        "image": {
+          "low": 0,
+          "middle": 1,
+          "high": 2
+        },
+        "text": {
+          "low": 0,
+          "middle": 1,
+          "high": 2
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "luck_a4_roll_216mm",
+      "luck_a4_roll_56mm",
+      "luck_a4_roll_77mm",
+      "luck_a4_roll_107mm",
+      "luck_a4_roll_148mm",
+      "luck_a4_roll_210mm",
+      "tag_1648r",
+      "blacktag_1648r",
+      "luck_a4_folder_a4",
+      "luck_a4_folder_a5",
+      "luck_a4_folder_letter",
+      "luck_a4_folder_legal",
+      "tattoo_1648r"
+    ]
+  },
+  {
+    "profile_key": "luck_lujiang_a4_dense",
+    "size": 8,
+    "one_length": 8,
+    "dev_dpi": 203,
+    "has_id": true,
+    "use_spp": true,
+    "can_print_label": false,
+    "label_value": "0",
+    "back_paper_num": 0,
+    "protocol_default": {
+      "type": "luck_normal_a4",
+      "packets_type": "lujiang_a4"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1"
+      ],
+      "encoding": "luck_normal_compressed"
+    },
+    "stream": {
+      "chunk_size": 300,
+      "delay_ms": 4
+    },
+    "post_print_feed_count": 2,
+    "print_defaults": {
+      "energy": {
+        "image": {
+          "low": 10000,
+          "middle": 10000,
+          "high": 10000
+        },
+        "text": {
+          "low": 10000,
+          "middle": 10000,
+          "high": 10000
+        }
+      },
+      "density": {
+        "image": {
+          "low": 0,
+          "middle": 3,
+          "high": 5
+        },
+        "text": {
+          "low": 0,
+          "middle": 3,
+          "high": 5
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "luck_a4_roll_216mm",
+      "luck_a4_roll_56mm",
+      "luck_a4_roll_77mm",
+      "luck_a4_roll_107mm",
+      "luck_a4_roll_148mm",
+      "luck_a4_roll_210mm",
+      "tag_1648r",
+      "blacktag_1648r",
+      "luck_a4_folder_a4",
+      "luck_a4_folder_a5",
+      "luck_a4_folder_letter",
+      "luck_a4_folder_legal",
+      "tattoo_1648r"
+    ]
+  },
+  {
+    "profile_key": "luck_a49h",
+    "size": 8,
+    "one_length": 8,
+    "dev_dpi": 300,
+    "has_id": true,
+    "use_spp": true,
+    "can_print_label": false,
+    "label_value": "0",
+    "back_paper_num": 0,
+    "protocol_default": {
+      "type": "luck_normal_a4",
+      "packets_type": "a49h"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1"
+      ],
+      "encoding": "luck_normal_compressed"
+    },
+    "stream": {
+      "chunk_size": 300,
+      "delay_ms": 4
+    },
+    "post_print_feed_count": 2,
+    "print_defaults": {
+      "energy": {
+        "image": {
+          "low": 10000,
+          "middle": 10000,
+          "high": 10000
+        },
+        "text": {
+          "low": 10000,
+          "middle": 10000,
+          "high": 10000
+        }
+      },
+      "density": {
+        "image": {
+          "low": 0,
+          "middle": 3,
+          "high": 5
+        },
+        "text": {
+          "low": 0,
+          "middle": 3,
+          "high": 5
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "luck_a4_roll_216mm_300dpi",
+      "luck_a4_roll_56mm_300dpi",
+      "luck_a4_roll_77mm_300dpi",
+      "luck_a4_roll_107mm_300dpi",
+      "luck_a4_roll_148mm_300dpi",
+      "luck_a4_roll_210mm_300dpi",
+      "tag_2496r",
+      "blacktag_2496r",
+      "luck_a4_folder_a4_300dpi",
+      "luck_a4_folder_a5_300dpi",
+      "luck_a4_folder_letter_300dpi",
+      "luck_a4_folder_legal_300dpi",
+      "tattoo_2496r"
+    ]
+  },
+  {
+    "profile_key": "luck_a4_compressed_tattoo",
+    "size": 8,
+    "one_length": 8,
+    "dev_dpi": 203,
+    "has_id": true,
+    "use_spp": true,
+    "can_print_label": false,
+    "label_value": "0",
+    "back_paper_num": 0,
+    "protocol_default": {
+      "type": "luck_normal_a4",
+      "packets_type": "a4_tattoo_64"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1"
+      ],
+      "encoding": "luck_normal_compressed"
+    },
+    "stream": {
+      "chunk_size": 300,
+      "delay_ms": 4
+    },
+    "post_print_feed_count": 2,
+    "print_defaults": {
+      "energy": {
+        "image": {
+          "low": 10000,
+          "middle": 10000,
+          "high": 10000
+        },
+        "text": {
+          "low": 10000,
+          "middle": 10000,
+          "high": 10000
+        }
+      },
+      "density": {
+        "image": {
+          "low": 0,
+          "middle": 1,
+          "high": 2
+        },
+        "text": {
+          "low": 0,
+          "middle": 1,
+          "high": 2
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "luck_a4_roll_216mm",
+      "luck_a4_roll_56mm",
+      "luck_a4_roll_77mm",
+      "luck_a4_roll_107mm",
+      "luck_a4_roll_148mm",
+      "luck_a4_roll_210mm",
+      "tag_1648r",
+      "blacktag_1648r",
+      "luck_a4_folder_a4",
+      "luck_a4_folder_a5",
+      "luck_a4_folder_letter",
+      "luck_a4_folder_legal",
+      "tattoo_1648r"
+    ]
+  },
+  {
+    "profile_key": "luck_a4_compressed_tattoo_96",
+    "size": 8,
+    "one_length": 8,
+    "dev_dpi": 203,
+    "has_id": true,
+    "use_spp": true,
+    "can_print_label": false,
+    "label_value": "0",
+    "back_paper_num": 0,
+    "protocol_default": {
+      "type": "luck_normal_a4",
+      "packets_type": "a4_tattoo_64_endline96"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1"
+      ],
+      "encoding": "luck_normal_compressed"
+    },
+    "stream": {
+      "chunk_size": 300,
+      "delay_ms": 4
+    },
+    "post_print_feed_count": 2,
+    "print_defaults": {
+      "energy": {
+        "image": {
+          "low": 10000,
+          "middle": 10000,
+          "high": 10000
+        },
+        "text": {
+          "low": 10000,
+          "middle": 10000,
+          "high": 10000
+        }
+      },
+      "density": {
+        "image": {
+          "low": 0,
+          "middle": 1,
+          "high": 2
+        },
+        "text": {
+          "low": 0,
+          "middle": 1,
+          "high": 2
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "luck_a4_roll_216mm",
+      "luck_a4_roll_56mm",
+      "luck_a4_roll_77mm",
+      "luck_a4_roll_107mm",
+      "luck_a4_roll_148mm",
+      "luck_a4_roll_210mm",
+      "tag_1648r",
+      "blacktag_1648r",
+      "luck_a4_folder_a4",
+      "luck_a4_folder_a5",
+      "luck_a4_folder_letter",
+      "luck_a4_folder_legal",
+      "tattoo_1648r"
+    ]
+  },
+  {
+    "profile_key": "luck_a4_compressed_tattoo_96_dense",
+    "size": 8,
+    "one_length": 8,
+    "dev_dpi": 203,
+    "has_id": true,
+    "use_spp": true,
+    "can_print_label": false,
+    "label_value": "0",
+    "back_paper_num": 0,
+    "protocol_default": {
+      "type": "luck_normal_a4",
+      "packets_type": "a4_tattoo_64_endline96"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1"
+      ],
+      "encoding": "luck_normal_compressed"
+    },
+    "stream": {
+      "chunk_size": 300,
+      "delay_ms": 4
+    },
+    "post_print_feed_count": 2,
+    "print_defaults": {
+      "energy": {
+        "image": {
+          "low": 10000,
+          "middle": 10000,
+          "high": 10000
+        },
+        "text": {
+          "low": 10000,
+          "middle": 10000,
+          "high": 10000
+        }
+      },
+      "density": {
+        "image": {
+          "low": 0,
+          "middle": 2,
+          "high": 5
+        },
+        "text": {
+          "low": 0,
+          "middle": 2,
+          "high": 5
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "luck_a4_roll_216mm",
+      "luck_a4_roll_56mm",
+      "luck_a4_roll_77mm",
+      "luck_a4_roll_107mm",
+      "luck_a4_roll_148mm",
+      "luck_a4_roll_210mm",
+      "tag_1648r",
+      "blacktag_1648r",
+      "luck_a4_folder_a4",
+      "luck_a4_folder_a5",
+      "luck_a4_folder_letter",
+      "luck_a4_folder_legal",
+      "tattoo_1648r"
+    ]
+  },
+  {
+    "profile_key": "luck_u8",
+    "size": 8,
+    "one_length": 8,
+    "dev_dpi": 203,
+    "has_id": true,
+    "use_spp": true,
+    "can_print_label": false,
+    "label_value": "0",
+    "back_paper_num": 0,
+    "protocol_default": {
+      "type": "luck_normal_a4",
+      "packets_type": "u8"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1"
+      ],
+      "encoding": "luck_normal_compressed"
+    },
+    "stream": {
+      "chunk_size": 300,
+      "delay_ms": 4
+    },
+    "post_print_feed_count": 2,
+    "print_defaults": {
+      "energy": {
+        "image": {
+          "low": 10000,
+          "middle": 10000,
+          "high": 10000
+        },
+        "text": {
+          "low": 10000,
+          "middle": 10000,
+          "high": 10000
+        }
+      },
+      "density": {
+        "image": {
+          "low": 0,
+          "middle": 1,
+          "high": 2
+        },
+        "text": {
+          "low": 0,
+          "middle": 1,
+          "high": 2
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "luck_a4_roll_216mm",
+      "luck_a4_roll_56mm",
+      "luck_a4_roll_77mm",
+      "luck_a4_roll_107mm",
+      "luck_a4_roll_148mm",
+      "luck_a4_roll_210mm",
+      "tag_1648r",
+      "blacktag_1648r",
+      "luck_a4_folder_a4",
+      "luck_a4_folder_a5",
+      "luck_a4_folder_letter",
+      "luck_a4_folder_legal",
+      "tattoo_1648r"
+    ]
+  },
+  {
+    "profile_key": "luck_apl86",
+    "size": 8,
+    "one_length": 8,
+    "dev_dpi": 203,
+    "has_id": true,
+    "use_spp": true,
+    "can_print_label": false,
+    "label_value": "0",
+    "back_paper_num": 0,
+    "protocol_default": {
+      "type": "luck_normal_a4",
+      "packets_type": "apl86"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1"
+      ],
+      "encoding": "luck_normal_compressed"
+    },
+    "stream": {
+      "chunk_size": 300,
+      "delay_ms": 4
+    },
+    "post_print_feed_count": 2,
+    "print_defaults": {
+      "energy": {
+        "image": {
+          "low": 10000,
+          "middle": 10000,
+          "high": 10000
+        },
+        "text": {
+          "low": 10000,
+          "middle": 10000,
+          "high": 10000
+        }
+      },
+      "density": {
+        "image": {
+          "low": 0,
+          "middle": 1,
+          "high": 2
+        },
+        "text": {
+          "low": 0,
+          "middle": 1,
+          "high": 2
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "luck_a4_roll_216mm",
+      "luck_a4_roll_56mm",
+      "luck_a4_roll_77mm",
+      "luck_a4_roll_107mm",
+      "luck_a4_roll_148mm",
+      "luck_a4_roll_210mm",
+      "tag_1648r",
+      "blacktag_1648r",
+      "luck_a4_folder_a4",
+      "luck_a4_folder_a5",
+      "luck_a4_folder_letter",
+      "luck_a4_folder_legal",
+      "tattoo_1648r"
+    ]
+  },
+  {
+    "profile_key": "luck_apl86h",
+    "size": 8,
+    "one_length": 8,
+    "dev_dpi": 300,
+    "has_id": true,
+    "use_spp": true,
+    "can_print_label": false,
+    "label_value": "0",
+    "back_paper_num": 0,
+    "protocol_default": {
+      "type": "luck_normal_a4",
+      "packets_type": "apl86"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1"
+      ],
+      "encoding": "luck_normal_compressed"
+    },
+    "stream": {
+      "chunk_size": 300,
+      "delay_ms": 4
+    },
+    "post_print_feed_count": 2,
+    "print_defaults": {
+      "energy": {
+        "image": {
+          "low": 10000,
+          "middle": 10000,
+          "high": 10000
+        },
+        "text": {
+          "low": 10000,
+          "middle": 10000,
+          "high": 10000
+        }
+      },
+      "density": {
+        "image": {
+          "low": 0,
+          "middle": 1,
+          "high": 2
+        },
+        "text": {
+          "low": 0,
+          "middle": 1,
+          "high": 2
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "luck_a4_roll_216mm_300dpi",
+      "luck_a4_roll_56mm_300dpi",
+      "luck_a4_roll_77mm_300dpi",
+      "luck_a4_roll_107mm_300dpi",
+      "luck_a4_roll_148mm_300dpi",
+      "luck_a4_roll_210mm_300dpi",
+      "tag_2496r",
+      "blacktag_2496r",
+      "luck_a4_folder_a4_300dpi",
+      "luck_a4_folder_a5_300dpi",
+      "luck_a4_folder_letter_300dpi",
+      "luck_a4_folder_legal_300dpi",
+      "tattoo_2496r"
+    ]
+  },
+  {
+    "profile_key": "luck_d80",
+    "size": 8,
+    "one_length": 8,
+    "dev_dpi": 203,
+    "has_id": true,
+    "use_spp": true,
+    "can_print_label": false,
+    "label_value": "0",
+    "back_paper_num": 0,
+    "protocol_default": {
+      "type": "luck_normal_a4",
+      "packets_type": "d80"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1"
+      ],
+      "encoding": "luck_normal_compressed"
+    },
+    "stream": {
+      "chunk_size": 300,
+      "delay_ms": 4
+    },
+    "post_print_feed_count": 2,
+    "print_defaults": {
+      "energy": {
+        "image": {
+          "low": 10000,
+          "middle": 10000,
+          "high": 10000
+        },
+        "text": {
+          "low": 10000,
+          "middle": 10000,
+          "high": 10000
+        }
+      },
+      "density": {
+        "image": {
+          "low": 0,
+          "middle": 1,
+          "high": 2
+        },
+        "text": {
+          "low": 0,
+          "middle": 1,
+          "high": 2
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "luck_a4_roll_216mm",
+      "luck_a4_roll_56mm",
+      "luck_a4_roll_77mm",
+      "luck_a4_roll_107mm",
+      "luck_a4_roll_148mm",
+      "luck_a4_roll_210mm",
+      "tag_1648r",
+      "blacktag_1648r",
+      "luck_a4_folder_a4",
+      "luck_a4_folder_a5",
+      "luck_a4_folder_letter",
+      "luck_a4_folder_legal",
+      "tattoo_1648r"
+    ]
+  },
+  {
+    "profile_key": "luck_d80h",
+    "size": 8,
+    "one_length": 8,
+    "dev_dpi": 300,
+    "has_id": true,
+    "use_spp": true,
+    "can_print_label": false,
+    "label_value": "0",
+    "back_paper_num": 0,
+    "protocol_default": {
+      "type": "luck_normal_a4",
+      "packets_type": "d80h"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1"
+      ],
+      "encoding": "luck_normal_compressed"
+    },
+    "stream": {
+      "chunk_size": 300,
+      "delay_ms": 4
+    },
+    "post_print_feed_count": 2,
+    "print_defaults": {
+      "energy": {
+        "image": {
+          "low": 10000,
+          "middle": 10000,
+          "high": 10000
+        },
+        "text": {
+          "low": 10000,
+          "middle": 10000,
+          "high": 10000
+        }
+      },
+      "density": {
+        "image": {
+          "low": 0,
+          "middle": 1,
+          "high": 2
+        },
+        "text": {
+          "low": 0,
+          "middle": 1,
+          "high": 2
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "luck_a4_roll_216mm_300dpi",
+      "luck_a4_roll_56mm_300dpi",
+      "luck_a4_roll_77mm_300dpi",
+      "luck_a4_roll_107mm_300dpi",
+      "luck_a4_roll_148mm_300dpi",
+      "luck_a4_roll_210mm_300dpi",
+      "tag_2496r",
+      "blacktag_2496r",
+      "luck_a4_folder_a4_300dpi",
+      "luck_a4_folder_a5_300dpi",
+      "luck_a4_folder_letter_300dpi",
+      "luck_a4_folder_legal_300dpi",
+      "tattoo_2496r"
+    ]
+  },
+  {
+    "profile_key": "luck_a80h_way1",
+    "size": 8,
+    "one_length": 8,
+    "dev_dpi": 300,
+    "has_id": true,
+    "use_spp": true,
+    "can_print_label": false,
+    "label_value": "0",
+    "back_paper_num": 0,
+    "protocol_default": {
+      "type": "luck_normal_a4",
+      "packets_type": "a80h_way1"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1"
+      ],
+      "encoding": "luck_normal_compressed"
+    },
+    "stream": {
+      "chunk_size": 300,
+      "delay_ms": 4
+    },
+    "post_print_feed_count": 2,
+    "print_defaults": {
+      "energy": {
+        "image": {
+          "low": 10000,
+          "middle": 10000,
+          "high": 10000
+        },
+        "text": {
+          "low": 10000,
+          "middle": 10000,
+          "high": 10000
+        }
+      },
+      "density": {
+        "image": {
+          "low": 0,
+          "middle": 1,
+          "high": 2
+        },
+        "text": {
+          "low": 0,
+          "middle": 1,
+          "high": 2
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "luck_a4_roll_216mm_300dpi",
+      "luck_a4_roll_56mm_300dpi",
+      "luck_a4_roll_77mm_300dpi",
+      "luck_a4_roll_107mm_300dpi",
+      "luck_a4_roll_148mm_300dpi",
+      "luck_a4_roll_210mm_300dpi",
+      "tag_2496r",
+      "blacktag_2496r",
+      "luck_a4_folder_a4_300dpi",
+      "luck_a4_folder_a5_300dpi",
+      "luck_a4_folder_letter_300dpi",
+      "luck_a4_folder_legal_300dpi",
+      "tattoo_2496r"
+    ]
+  },
+  {
+    "profile_key": "luck_qirui_q1",
+    "size": 2,
+    "one_length": 8,
+    "dev_dpi": 203,
+    "has_id": true,
+    "use_spp": true,
+    "can_print_label": false,
+    "label_value": "0",
+    "back_paper_num": 0,
+    "protocol_default": {
+      "type": "luck_normal",
+      "packets_type": "qirui_q1"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1"
+      ],
+      "encoding": "luck_normal_raw"
+    },
+    "stream": {
+      "chunk_size": 180,
+      "delay_ms": 4
+    },
+    "post_print_feed_count": 2,
+    "print_defaults": {
+      "energy": {
+        "image": {
+          "low": 5000,
+          "middle": 5000,
+          "high": 5000
+        },
+        "text": {
+          "low": 8000,
+          "middle": 8000,
+          "high": 8000
+        }
+      },
+      "density": {
+        "image": {
+          "low": 0,
+          "middle": 1,
+          "high": 2
+        },
+        "text": {
+          "low": 0,
+          "middle": 1,
+          "high": 2
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "plain_384r",
+      "tag_384r",
+      "blacktag_384r",
+      "tattoo_384r"
+    ]
+  },
+  {
+    "profile_key": "luck_qirui_q2",
+    "size": 2,
+    "one_length": 8,
+    "dev_dpi": 300,
+    "has_id": true,
+    "use_spp": true,
+    "can_print_label": false,
+    "label_value": "0",
+    "back_paper_num": 0,
+    "protocol_default": {
+      "type": "luck_normal",
+      "packets_type": "qirui_q2"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1"
+      ],
+      "encoding": "luck_normal_raw"
+    },
+    "stream": {
+      "chunk_size": 180,
+      "delay_ms": 4
+    },
+    "post_print_feed_count": 2,
+    "print_defaults": {
+      "energy": {
+        "image": {
+          "low": 5000,
+          "middle": 5000,
+          "high": 5000
+        },
+        "text": {
+          "low": 8000,
+          "middle": 8000,
+          "high": 8000
+        }
+      },
+      "density": {
+        "image": {
+          "low": 0,
+          "middle": 1,
+          "high": 2
+        },
+        "text": {
+          "low": 0,
+          "middle": 1,
+          "high": 2
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "plain_576r",
+      "tag_576r",
+      "blacktag_576r",
+      "tattoo_576r"
+    ]
+  },
+  {
+    "profile_key": "luck_a41_luckp",
+    "size": 8,
+    "one_length": 8,
+    "dev_dpi": 203,
+    "has_id": true,
+    "use_spp": true,
+    "can_print_label": false,
+    "label_value": "0",
+    "back_paper_num": 0,
+    "protocol_default": {
+      "type": "luck_normal_a4",
+      "packets_type": "luckp_a41"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1"
+      ],
+      "encoding": "luck_normal_raw"
+    },
+    "stream": {
+      "chunk_size": 300,
+      "delay_ms": 4
+    },
+    "post_print_feed_count": 2,
+    "print_defaults": {
+      "energy": {
+        "image": {
+          "low": 10000,
+          "middle": 10000,
+          "high": 10000
+        },
+        "text": {
+          "low": 10000,
+          "middle": 10000,
+          "high": 10000
+        }
+      },
+      "density": {
+        "image": {
+          "low": 0,
+          "middle": 7,
+          "high": 15
+        },
+        "text": {
+          "low": 0,
+          "middle": 7,
+          "high": 15
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "luck_a4_roll_210mm",
+      "luck_a4_roll_56mm",
+      "luck_a4_roll_77mm",
+      "luck_a4_roll_107mm",
+      "luck_a4_roll_148mm",
+      "tag_1616r",
+      "blacktag_1616r",
+      "luck_a4_folder_a4",
+      "tattoo_1616r"
+    ]
+  },
+  {
+    "profile_key": "luck_a42_luckp",
+    "size": 8,
+    "one_length": 8,
+    "dev_dpi": 203,
+    "has_id": true,
+    "use_spp": true,
+    "can_print_label": false,
+    "label_value": "0",
+    "back_paper_num": 0,
+    "protocol_default": {
+      "type": "luck_normal_a4",
+      "packets_type": "luckp_a42"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1"
+      ],
+      "encoding": "luck_normal_compressed"
+    },
+    "stream": {
+      "chunk_size": 300,
+      "delay_ms": 4
+    },
+    "post_print_feed_count": 2,
+    "print_defaults": {
+      "energy": {
+        "image": {
+          "low": 10000,
+          "middle": 10000,
+          "high": 10000
+        },
+        "text": {
+          "low": 10000,
+          "middle": 10000,
+          "high": 10000
+        }
+      },
+      "density": {
+        "image": {
+          "low": 0,
+          "middle": 1,
+          "high": 2
+        },
+        "text": {
+          "low": 0,
+          "middle": 1,
+          "high": 2
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "luck_a4_roll_210mm",
+      "luck_a4_roll_56mm",
+      "luck_a4_roll_77mm",
+      "luck_a4_roll_107mm",
+      "luck_a4_roll_148mm",
+      "tag_1616r",
+      "blacktag_1616r",
+      "luck_a4_folder_a4",
+      "tattoo_1616r"
+    ]
+  },
+  {
+    "profile_key": "a41iii",
+    "size": 8,
+    "one_length": 8,
+    "dev_dpi": 300,
+    "has_id": true,
+    "use_spp": true,
+    "can_print_label": false,
+    "label_value": "0",
+    "back_paper_num": 0,
+    "protocol_default": {
+      "type": "tiny",
+      "packets_type": "line_eight"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1"
+      ],
+      "encoding": "tiny_raw"
+    },
+    "stream": {
+      "chunk_size": 183,
+      "delay_ms": 4
+    },
+    "post_print_feed_count": 2,
+    "print_defaults": {
+      "speed": {
+        "image": 20,
+        "text": 30
+      },
+      "energy": {
+        "image": {
+          "low": 10500,
+          "middle": 12000,
+          "high": 12500
+        },
+        "text": {
+          "low": 12000,
+          "middle": 12000,
+          "high": 12000
+        }
+      }
+    },
+    "a4xii": true,
+    "paper_presets": [
+      "plain_1648r_1664p",
+      "a4sheet_1648r_1664p"
+    ]
+  },
+  {
+    "profile_key": "a43",
+    "size": 8,
+    "one_length": 8,
+    "dev_dpi": 200,
+    "has_id": true,
+    "use_spp": true,
+    "can_print_label": false,
+    "label_value": "0",
+    "back_paper_num": 0,
+    "protocol_default": {
+      "type": "tiny",
+      "packets_type": "line_eight"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1"
+      ],
+      "encoding": "tiny_rle"
+    },
+    "stream": {
+      "chunk_size": 300,
+      "delay_ms": 4
+    },
+    "post_print_feed_count": 2,
+    "print_defaults": {
+      "speed": {
+        "image": 40,
+        "text": 30
+      },
+      "energy": {
+        "image": {
+          "low": 17000,
+          "middle": 30000,
+          "high": 30000
+        },
+        "text": {
+          "low": 30000,
+          "middle": 30000,
+          "high": 30000
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "plain_1600r_1632p_32pl",
+      "a4sheet_1600r_1632p_32pl"
+    ]
+  },
+  {
+    "profile_key": "a4300",
+    "size": 8,
+    "one_length": 8,
+    "dev_dpi": 300,
+    "has_id": true,
+    "use_spp": true,
+    "can_print_label": false,
+    "label_value": "0",
+    "back_paper_num": 0,
+    "protocol_default": {
+      "type": "tiny",
+      "packets_type": "line_eight"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1"
+      ],
+      "encoding": "tiny_rle"
+    },
+    "stream": {
+      "chunk_size": 512,
+      "delay_ms": 2
+    },
+    "post_print_feed_count": 2,
+    "print_defaults": {
+      "speed": {
+        "image": 40,
+        "text": 30
+      },
+      "energy": {
+        "image": {
+          "low": 10000,
+          "middle": 10000,
+          "high": 10000
+        },
+        "text": {
+          "low": 30000,
+          "middle": 30000,
+          "high": 30000
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "plain_2400r_2496p",
+      "a4sheet_2400r_2496p"
+    ]
+  },
+  {
+    "profile_key": "ai01",
+    "size": 2,
+    "one_length": 8,
+    "dev_dpi": 200,
+    "ble_mtu_request": 23,
+    "has_id": true,
+    "use_spp": false,
+    "can_print_label": false,
+    "label_value": "0",
+    "back_paper_num": 0,
+    "protocol_default": {
+      "type": "v5x"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1",
+        "gray4",
+        "gray8"
+      ],
+      "encoding": "v5x_dot"
+    },
+    "stream": {
+      "chunk_size": 180,
+      "delay_ms": 5
+    },
+    "post_print_feed_count": 2,
+    "print_defaults": {
+      "energy": {
+        "image": {
+          "low": 0,
+          "middle": 0,
+          "high": 0
+        },
+        "text": {
+          "low": 0,
+          "middle": 0,
+          "high": 0
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "plain_384r"
+    ]
+  },
+  {
+    "profile_key": "an01",
+    "size": 2,
+    "one_length": 8,
+    "dev_dpi": 200,
+    "has_id": false,
+    "use_spp": false,
+    "can_print_label": false,
+    "label_value": "1",
+    "back_paper_num": 45,
+    "protocol_default": {
+      "type": "tiny"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1"
+      ],
+      "encoding": "tiny_rle"
+    },
+    "stream": {
+      "chunk_size": 103,
+      "delay_ms": 4
+    },
+    "post_print_feed_count": 2,
+    "print_defaults": {
+      "speed": {
+        "image": 10,
+        "text": 10
+      },
+      "energy": {
+        "image": {
+          "low": 4000,
+          "middle": 5000,
+          "high": 6000
+        },
+        "text": {
+          "low": 5000,
+          "middle": 5000,
+          "high": 5000
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "default_384r"
+    ]
+  },
+  {
+    "profile_key": "bq02",
+    "size": 2,
+    "one_length": 8,
+    "dev_dpi": 200,
+    "has_id": false,
+    "use_spp": false,
+    "can_print_label": false,
+    "label_value": "0",
+    "back_paper_num": 0,
+    "protocol_default": {
+      "type": "v5g"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1",
+        "gray4",
+        "gray8"
+      ],
+      "encoding": "v5g_dot"
+    },
+    "stream": {
+      "chunk_size": 63,
+      "delay_ms": 6
+    },
+    "post_print_feed_count": 1,
+    "print_defaults": {
+      "energy": {
+        "image": {
+          "low": 10000,
+          "middle": 10000,
+          "high": 15000
+        },
+        "text": {
+          "low": 15000,
+          "middle": 15000,
+          "high": 20000
+        }
+      },
+      "density": {
+        "text": {
+          "low": 70,
+          "middle": 100,
+          "high": 180
+        },
+        "image": {
+          "low": 100,
+          "middle": 150,
+          "high": 200
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "default_384r"
+    ]
+  },
+  {
+    "profile_key": "cp01",
+    "size": 2,
+    "one_length": 8,
+    "dev_dpi": 200,
+    "has_id": true,
+    "use_spp": false,
+    "can_print_label": false,
+    "label_value": "1",
+    "back_paper_num": 40,
+    "protocol_default": {
+      "type": "tiny"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1"
+      ],
+      "encoding": "tiny_raw"
+    },
+    "stream": {
+      "chunk_size": 183,
+      "delay_ms": 4
+    },
+    "post_print_feed_count": 2,
+    "print_defaults": {
+      "speed": {
+        "image": 20,
+        "text": 10
+      },
+      "energy": {
+        "image": {
+          "low": 12000,
+          "middle": 12000,
+          "high": 12000
+        },
+        "text": {
+          "low": 13000,
+          "middle": 13000,
+          "high": 13000
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "default_384r"
+    ]
+  },
+  {
+    "profile_key": "d1",
+    "size": 2,
+    "one_length": 8,
+    "dev_dpi": 200,
+    "has_id": true,
+    "use_spp": true,
+    "can_print_label": true,
+    "label_value": "1",
+    "back_paper_num": 40,
+    "protocol_default": {
+      "type": "tiny"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1"
+      ],
+      "encoding": "tiny_rle"
+    },
+    "stream": {
+      "chunk_size": 180,
+      "delay_ms": 4
+    },
+    "post_print_feed_count": 2,
+    "print_defaults": {
+      "speed": {
+        "image": 10,
+        "text": 10
+      },
+      "energy": {
+        "image": {
+          "low": 5000,
+          "middle": 5000,
+          "high": 5000
+        },
+        "text": {
+          "low": 8000,
+          "middle": 8000,
+          "high": 8000
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "default_384r"
+    ]
+  },
+  {
+    "profile_key": "d100",
+    "size": 4,
+    "one_length": 8,
+    "dev_dpi": 200,
+    "has_id": true,
+    "use_spp": true,
+    "can_print_label": true,
+    "label_value": "1",
+    "back_paper_num": 40,
+    "protocol_default": {
+      "type": "tiny"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1"
+      ],
+      "encoding": "tiny_rle"
+    },
+    "stream": {
+      "chunk_size": 180,
+      "delay_ms": 4
+    },
+    "post_print_feed_count": 2,
+    "print_defaults": {
+      "speed": {
+        "image": 10,
+        "text": 10
+      },
+      "energy": {
+        "image": {
+          "low": 5000,
+          "middle": 5000,
+          "high": 5000
+        },
+        "text": {
+          "low": 8000,
+          "middle": 8000,
+          "high": 8000
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "default_864r"
+    ]
+  },
+  {
+    "profile_key": "dl_x2",
+    "size": 2,
+    "one_length": 8,
+    "dev_dpi": 200,
+    "has_id": true,
+    "use_spp": true,
+    "can_print_label": true,
+    "label_value": "1",
+    "back_paper_num": 40,
+    "protocol_default": {
+      "type": "tiny"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1"
+      ],
+      "encoding": "tiny_rle"
+    },
+    "stream": {
+      "chunk_size": 180,
+      "delay_ms": 4
+    },
+    "post_print_feed_count": 2,
+    "print_defaults": {
+      "speed": {
+        "image": 10,
+        "text": 10
+      },
+      "energy": {
+        "image": {
+          "low": 8000,
+          "middle": 8000,
+          "high": 8000
+        },
+        "text": {
+          "low": 8000,
+          "middle": 8000,
+          "high": 8000
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "default_384r"
+    ]
+  },
+  {
+    "profile_key": "dl_x7",
+    "size": 4,
+    "one_length": 8,
+    "dev_dpi": 200,
+    "has_id": true,
+    "use_spp": true,
+    "can_print_label": true,
+    "label_value": "1",
+    "back_paper_num": 40,
+    "protocol_default": {
+      "type": "tiny"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1"
+      ],
+      "encoding": "tiny_rle"
+    },
+    "stream": {
+      "chunk_size": 512,
+      "delay_ms": 4
+    },
+    "post_print_feed_count": 2,
+    "print_defaults": {
+      "speed": {
+        "image": 10,
+        "text": 10
+      },
+      "energy": {
+        "image": {
+          "low": 7000,
+          "middle": 7000,
+          "high": 7000
+        },
+        "text": {
+          "low": 8000,
+          "middle": 8000,
+          "high": 8000
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "default_864r"
+    ]
+  },
+  {
+    "profile_key": "dl_x7pro",
+    "size": 4,
+    "one_length": 8,
+    "dev_dpi": 300,
+    "has_id": true,
+    "use_spp": true,
+    "can_print_label": true,
+    "label_value": "1",
+    "back_paper_num": 40,
+    "protocol_default": {
+      "type": "tiny"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1"
+      ],
+      "encoding": "tiny_rle"
+    },
+    "stream": {
+      "chunk_size": 512,
+      "delay_ms": 4
+    },
+    "post_print_feed_count": 2,
+    "print_defaults": {
+      "speed": {
+        "image": 10,
+        "text": 10
+      },
+      "energy": {
+        "image": {
+          "low": 7000,
+          "middle": 7000,
+          "high": 7000
+        },
+        "text": {
+          "low": 8000,
+          "middle": 8000,
+          "high": 8000
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "default_1280r"
+    ]
+  },
+  {
+    "profile_key": "fc02",
+    "size": 2,
+    "one_length": 8,
+    "dev_dpi": 200,
+    "has_id": true,
+    "use_spp": true,
+    "can_print_label": true,
+    "label_value": "1",
+    "back_paper_num": 40,
+    "protocol_default": {
+      "type": "tiny"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1"
+      ],
+      "encoding": "tiny_rle"
+    },
+    "stream": {
+      "chunk_size": 180,
+      "delay_ms": 4
+    },
+    "post_print_feed_count": 2,
+    "print_defaults": {
+      "speed": {
+        "image": 25,
+        "text": 25
+      },
+      "energy": {
+        "image": {
+          "low": 20000,
+          "middle": 20000,
+          "high": 20000
+        },
+        "text": {
+          "low": 20000,
+          "middle": 20000,
+          "high": 20000
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "default_384r"
+    ]
+  },
+  {
+    "profile_key": "fl01",
+    "size": 2,
+    "one_length": 8,
+    "dev_dpi": 200,
+    "has_id": false,
+    "use_spp": true,
+    "can_print_label": true,
+    "label_value": "1",
+    "back_paper_num": 40,
+    "protocol_default": {
+      "type": "tiny"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1"
+      ],
+      "encoding": "tiny_raw"
+    },
+    "stream": {
+      "chunk_size": 183,
+      "delay_ms": 4
+    },
+    "post_print_feed_count": 2,
+    "print_defaults": {
+      "speed": {
+        "image": 20,
+        "text": 10
+      },
+      "energy": {
+        "image": {
+          "low": 7500,
+          "middle": 7500,
+          "high": 7500
+        },
+        "text": {
+          "low": 7500,
+          "middle": 7500,
+          "high": 7500
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "default_384r"
+    ]
+  },
+  {
+    "profile_key": "gb01",
+    "size": 2,
+    "one_length": 8,
+    "dev_dpi": 200,
+    "has_id": false,
+    "use_spp": false,
+    "can_print_label": false,
+    "label_value": "0",
+    "back_paper_num": 0,
+    "protocol_default": {
+      "type": "tiny"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1"
+      ],
+      "encoding": "tiny_raw"
+    },
+    "stream": {
+      "chunk_size": 63,
+      "delay_ms": 6
+    },
+    "post_print_feed_count": 2,
+    "print_defaults": {
+      "speed": {
+        "image": 35,
+        "text": 25
+      },
+      "energy": {
+        "image": {
+          "low": 8000,
+          "middle": 12000,
+          "high": 17500
+        },
+        "text": {
+          "low": 0,
+          "middle": 0,
+          "high": 0
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "default_384r"
+    ]
+  },
+  {
+    "profile_key": "gb02",
+    "size": 2,
+    "one_length": 8,
+    "dev_dpi": 200,
+    "has_id": false,
+    "use_spp": false,
+    "can_print_label": false,
+    "label_value": "0",
+    "back_paper_num": 0,
+    "protocol_default": {
+      "type": "tiny"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1"
+      ],
+      "encoding": "tiny_raw"
+    },
+    "stream": {
+      "chunk_size": 83,
+      "delay_ms": 6
+    },
+    "post_print_feed_count": 2,
+    "print_defaults": {
+      "speed": {
+        "image": 26,
+        "text": 25
+      },
+      "energy": {
+        "image": {
+          "low": 8600,
+          "middle": 12000,
+          "high": 16000
+        },
+        "text": {
+          "low": 0,
+          "middle": 0,
+          "high": 0
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "default_384r"
+    ]
+  },
+  {
+    "profile_key": "gb02sh",
+    "size": 2,
+    "one_length": 8,
+    "dev_dpi": 200,
+    "has_id": true,
+    "use_spp": true,
+    "can_print_label": true,
+    "label_value": "1",
+    "back_paper_num": 40,
+    "protocol_default": {
+      "type": "tiny"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1"
+      ],
+      "encoding": "tiny_rle"
+    },
+    "stream": {
+      "chunk_size": 180,
+      "delay_ms": 4
+    },
+    "post_print_feed_count": 2,
+    "print_defaults": {
+      "speed": {
+        "image": 25,
+        "text": 25
+      },
+      "energy": {
+        "image": {
+          "low": 7000,
+          "middle": 7000,
+          "high": 7000
+        },
+        "text": {
+          "low": 9500,
+          "middle": 9500,
+          "high": 9500
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "default_384r"
+    ]
+  },
+  {
+    "profile_key": "gb03",
+    "size": 2,
+    "one_length": 8,
+    "dev_dpi": 200,
+    "has_id": true,
+    "use_spp": false,
+    "can_print_label": true,
+    "label_value": "1",
+    "back_paper_num": 45,
+    "protocol_default": {
+      "type": "tiny"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1"
+      ],
+      "encoding": "tiny_rle"
+    },
+    "stream": {
+      "chunk_size": 83,
+      "delay_ms": 6
+    },
+    "post_print_feed_count": 2,
+    "print_defaults": {
+      "speed": {
+        "image": 30,
+        "text": 10
+      },
+      "energy": {
+        "image": {
+          "low": 7500,
+          "middle": 7500,
+          "high": 7500
+        },
+        "text": {
+          "low": 8000,
+          "middle": 8000,
+          "high": 8000
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "default_384r"
+    ]
+  },
+  {
+    "profile_key": "gb03_2",
+    "size": 2,
+    "one_length": 8,
+    "dev_dpi": 200,
+    "has_id": true,
+    "use_spp": false,
+    "can_print_label": true,
+    "label_value": "1",
+    "back_paper_num": 45,
+    "protocol_default": {
+      "type": "tiny"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1"
+      ],
+      "encoding": "tiny_rle"
+    },
+    "stream": {
+      "chunk_size": 83,
+      "delay_ms": 6
+    },
+    "post_print_feed_count": 2,
+    "print_defaults": {
+      "speed": {
+        "image": 10,
+        "text": 10
+      },
+      "energy": {
+        "image": {
+          "low": 9000,
+          "middle": 9000,
+          "high": 9000
+        },
+        "text": {
+          "low": 8000,
+          "middle": 8000,
+          "high": 8000
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "default_384r"
+    ]
+  },
+  {
+    "profile_key": "gb03ph",
+    "size": 2,
+    "one_length": 8,
+    "dev_dpi": 200,
+    "has_id": true,
+    "use_spp": true,
+    "can_print_label": true,
+    "label_value": "1",
+    "back_paper_num": 40,
+    "protocol_default": {
+      "type": "tiny"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1"
+      ],
+      "encoding": "tiny_rle"
+    },
+    "stream": {
+      "chunk_size": 180,
+      "delay_ms": 4
+    },
+    "post_print_feed_count": 2,
+    "print_defaults": {
+      "speed": {
+        "image": 25,
+        "text": 25
+      },
+      "energy": {
+        "image": {
+          "low": 9500,
+          "middle": 9500,
+          "high": 9500
+        },
+        "text": {
+          "low": 9500,
+          "middle": 9500,
+          "high": 9500
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "default_384r"
+    ]
+  },
+  {
+    "profile_key": "gb03sl",
+    "size": 2,
+    "one_length": 8,
+    "dev_dpi": 200,
+    "has_id": true,
+    "use_spp": true,
+    "can_print_label": true,
+    "label_value": "1",
+    "back_paper_num": 40,
+    "protocol_default": {
+      "type": "tiny"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1"
+      ],
+      "encoding": "tiny_rle"
+    },
+    "stream": {
+      "chunk_size": 180,
+      "delay_ms": 10
+    },
+    "post_print_feed_count": 2,
+    "print_defaults": {
+      "speed": {
+        "image": 10,
+        "text": 10
+      },
+      "energy": {
+        "image": {
+          "low": 5000,
+          "middle": 5000,
+          "high": 5000
+        },
+        "text": {
+          "low": 8000,
+          "middle": 8000,
+          "high": 8000
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "default_384r"
+    ]
+  },
+  {
+    "profile_key": "gb04",
+    "size": 2,
+    "one_length": 8,
+    "dev_dpi": 200,
+    "has_id": true,
+    "use_spp": false,
+    "can_print_label": false,
+    "label_value": "0",
+    "back_paper_num": 0,
+    "protocol_default": {
+      "type": "tiny"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1"
+      ],
+      "encoding": "tiny_raw"
+    },
+    "stream": {
+      "chunk_size": 83,
+      "delay_ms": 6
+    },
+    "post_print_feed_count": 2,
+    "print_defaults": {
+      "speed": {
+        "image": 26,
+        "text": 25
+      },
+      "energy": {
+        "image": {
+          "low": 8600,
+          "middle": 12000,
+          "high": 16000
+        },
+        "text": {
+          "low": 0,
+          "middle": 0,
+          "high": 0
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "default_384r"
+    ]
+  },
+  {
+    "profile_key": "gb05",
+    "size": 2,
+    "one_length": 8,
+    "dev_dpi": 200,
+    "has_id": true,
+    "use_spp": false,
+    "can_print_label": false,
+    "label_value": "0",
+    "back_paper_num": 0,
+    "protocol_default": {
+      "type": "tiny"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1"
+      ],
+      "encoding": "tiny_rle"
+    },
+    "stream": {
+      "chunk_size": 123,
+      "delay_ms": 6
+    },
+    "post_print_feed_count": 2,
+    "print_defaults": {
+      "speed": {
+        "image": 26,
+        "text": 25
+      },
+      "energy": {
+        "image": {
+          "low": 10000,
+          "middle": 10000,
+          "high": 10000
+        },
+        "text": {
+          "low": 12000,
+          "middle": 12000,
+          "high": 12000
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "default_384r"
+    ]
+  },
+  {
+    "profile_key": "gt01",
+    "size": 2,
+    "one_length": 8,
+    "dev_dpi": 200,
+    "has_id": true,
+    "use_spp": false,
+    "can_print_label": false,
+    "label_value": "0",
+    "back_paper_num": 0,
+    "protocol_default": {
+      "type": "tiny"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1"
+      ],
+      "encoding": "tiny_rle"
+    },
+    "stream": {
+      "chunk_size": 123,
+      "delay_ms": 4
+    },
+    "post_print_feed_count": 2,
+    "print_defaults": {
+      "speed": {
+        "image": 30,
+        "text": 25
+      },
+      "energy": {
+        "image": {
+          "low": 12000,
+          "middle": 12000,
+          "high": 12000
+        },
+        "text": {
+          "low": 0,
+          "middle": 0,
+          "high": 0
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "default_384r"
+    ]
+  },
+  {
+    "profile_key": "gt02",
+    "size": 2,
+    "one_length": 8,
+    "dev_dpi": 200,
+    "has_id": true,
+    "use_spp": false,
+    "can_print_label": true,
+    "label_value": "1",
+    "back_paper_num": 45,
+    "protocol_default": {
+      "type": "tiny"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1"
+      ],
+      "encoding": "tiny_rle"
+    },
+    "stream": {
+      "chunk_size": 123,
+      "delay_ms": 4
+    },
+    "post_print_feed_count": 2,
+    "print_defaults": {
+      "speed": {
+        "image": 30,
+        "text": 25
+      },
+      "energy": {
+        "image": {
+          "low": 9000,
+          "middle": 9000,
+          "high": 9000
+        },
+        "text": {
+          "low": 8000,
+          "middle": 8000,
+          "high": 8000
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "default_384r"
+    ]
+  },
+  {
+    "profile_key": "gt04",
+    "size": 2,
+    "one_length": 8,
+    "dev_dpi": 200,
+    "has_id": true,
+    "use_spp": false,
+    "can_print_label": false,
+    "label_value": "0",
+    "back_paper_num": 0,
+    "protocol_default": {
+      "type": "tiny"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1"
+      ],
+      "encoding": "tiny_rle"
+    },
+    "stream": {
+      "chunk_size": 123,
+      "delay_ms": 4
+    },
+    "post_print_feed_count": 2,
+    "print_defaults": {
+      "speed": {
+        "image": 30,
+        "text": 25
+      },
+      "energy": {
+        "image": {
+          "low": 8000,
+          "middle": 8000,
+          "high": 8000
+        },
+        "text": {
+          "low": 0,
+          "middle": 0,
+          "high": 0
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "default_384r"
+    ]
+  },
+  {
+    "profile_key": "gt08",
+    "size": 8,
+    "one_length": 8,
+    "dev_dpi": 200,
+    "has_id": true,
+    "use_spp": true,
+    "can_print_label": false,
+    "label_value": "0",
+    "back_paper_num": 0,
+    "protocol_default": {
+      "type": "tiny",
+      "packets_type": "line_eight"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1"
+      ],
+      "encoding": "tiny_rle"
+    },
+    "stream": {
+      "chunk_size": 512,
+      "delay_ms": 4
+    },
+    "post_print_feed_count": 2,
+    "print_defaults": {
+      "speed": {
+        "image": 30,
+        "text": 22
+      },
+      "energy": {
+        "image": {
+          "low": 5000,
+          "middle": 3500,
+          "high": 4000
+        },
+        "text": {
+          "low": 4500,
+          "middle": 4500,
+          "high": 4500
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "plain_1600r_1728p",
+      "a4sheet_1600r_1728p"
+    ]
+  },
+  {
+    "profile_key": "pr88",
+    "size": 8,
+    "one_length": 8,
+    "dev_dpi": 200,
+    "has_id": true,
+    "use_spp": true,
+    "can_print_label": false,
+    "label_value": "0",
+    "back_paper_num": 0,
+    "protocol_default": {
+      "type": "tiny",
+      "packets_type": "line_eight"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1"
+      ],
+      "encoding": "tiny_rle"
+    },
+    "stream": {
+      "chunk_size": 512,
+      "delay_ms": 4
+    },
+    "post_print_feed_count": 2,
+    "print_defaults": {
+      "speed": {
+        "image": 30,
+        "text": 22
+      },
+      "energy": {
+        "image": {
+          "low": 5000,
+          "middle": 3500,
+          "high": 4000
+        },
+        "text": {
+          "low": 4500,
+          "middle": 4500,
+          "high": 4500
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "plain_1600r_1664p_64pl",
+      "a4sheet_1600r_1664p_64pl"
+    ]
+  },
+  {
+    "profile_key": "gt09",
+    "size": 8,
+    "one_length": 8,
+    "dev_dpi": 200,
+    "has_id": true,
+    "use_spp": true,
+    "can_print_label": false,
+    "label_value": "0",
+    "back_paper_num": 40,
+    "protocol_default": {
+      "type": "tiny",
+      "packets_type": "line_eight"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1"
+      ],
+      "encoding": "tiny_raw"
+    },
+    "stream": {
+      "chunk_size": 383,
+      "delay_ms": 4
+    },
+    "post_print_feed_count": 2,
+    "print_defaults": {
+      "speed": {
+        "image": 30,
+        "text": 22
+      },
+      "energy": {
+        "image": {
+          "low": 5000,
+          "middle": 3500,
+          "high": 4000
+        },
+        "text": {
+          "low": 4500,
+          "middle": 4500,
+          "high": 4500
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "plain_1600r_1664p_64pl",
+      "a4sheet_1600r_1664p_64pl"
+    ]
+  },
+  {
+    "profile_key": "gw09",
+    "size": 8,
+    "one_length": 8,
+    "dev_dpi": 200,
+    "has_id": true,
+    "use_spp": true,
+    "can_print_label": false,
+    "label_value": "0",
+    "back_paper_num": 0,
+    "protocol_default": {
+      "type": "tiny",
+      "packets_type": "line_eight"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1"
+      ],
+      "encoding": "tiny_rle"
+    },
+    "stream": {
+      "chunk_size": 512,
+      "delay_ms": 4
+    },
+    "post_print_feed_count": 2,
+    "print_defaults": {
+      "speed": {
+        "image": 30,
+        "text": 22
+      },
+      "energy": {
+        "image": {
+          "low": 12000,
+          "middle": 12000,
+          "high": 12000
+        },
+        "text": {
+          "low": 12000,
+          "middle": 12000,
+          "high": 12000
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "plain_1600r_1728p",
+      "a4sheet_1600r_1728p"
+    ]
+  },
+  {
+    "profile_key": "hd1",
+    "size": 3,
+    "one_length": 8,
+    "dev_dpi": 200,
+    "has_id": true,
+    "use_spp": false,
+    "can_print_label": false,
+    "label_value": "0",
+    "back_paper_num": 0,
+    "protocol_default": {
+      "type": "tiny"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1"
+      ],
+      "encoding": "tiny_rle"
+    },
+    "stream": {
+      "chunk_size": 183,
+      "delay_ms": 6
+    },
+    "post_print_feed_count": 2,
+    "print_defaults": {
+      "speed": {
+        "image": 40,
+        "text": 35
+      },
+      "energy": {
+        "image": {
+          "low": 8500,
+          "middle": 8500,
+          "high": 8500
+        },
+        "text": {
+          "low": 0,
+          "middle": 0,
+          "high": 0
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "default_576r"
+    ]
+  },
+  {
+    "profile_key": "jx001",
+    "size": 2,
+    "one_length": 8,
+    "dev_dpi": 200,
+    "ble_mtu_request": 23,
+    "has_id": false,
+    "use_spp": false,
+    "can_print_label": false,
+    "label_value": "0",
+    "back_paper_num": 0,
+    "protocol_default": {
+      "type": "tiny"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1"
+      ],
+      "encoding": "tiny_rle"
+    },
+    "stream": {
+      "chunk_size": 180,
+      "delay_ms": 3
+    },
+    "post_print_feed_count": 2,
+    "print_defaults": {
+      "speed": {
+        "image": 90,
+        "text": 45
+      },
+      "energy": {
+        "image": {
+          "low": 0,
+          "middle": 0,
+          "high": 0
+        },
+        "text": {
+          "low": 0,
+          "middle": 0,
+          "high": 0
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "default_384r"
+    ]
+  },
+  {
+    "profile_key": "jxm800",
+    "size": 8,
+    "one_length": 8,
+    "dev_dpi": 200,
+    "has_id": true,
+    "use_spp": true,
+    "can_print_label": false,
+    "label_value": "0",
+    "back_paper_num": 0,
+    "protocol_default": {
+      "type": "tiny_prefixed",
+      "packets_type": "esc_star_eight"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1"
+      ],
+      "encoding": "tiny_rle"
+    },
+    "stream": {
+      "chunk_size": 183,
+      "delay_ms": 4
+    },
+    "post_print_feed_count": 2,
+    "print_defaults": {
+      "speed": {
+        "image": 26,
+        "text": 25
+      },
+      "energy": {
+        "image": {
+          "low": 5,
+          "middle": 10,
+          "high": 12
+        },
+        "text": {
+          "low": 9,
+          "middle": 9,
+          "high": 9
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "plain_1600r_1664p_64pl",
+      "a4sheet_1600r_1664p_64pl"
+    ]
+  },
+  {
+    "profile_key": "label_printer",
+    "size": 1,
+    "one_length": 8,
+    "dev_dpi": 200,
+    "has_id": true,
+    "use_spp": true,
+    "can_print_label": true,
+    "label_value": "1",
+    "back_paper_num": 40,
+    "protocol_default": {
+      "type": "tiny"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1"
+      ],
+      "encoding": "tiny_raw"
+    },
+    "stream": {
+      "chunk_size": 180,
+      "delay_ms": 4
+    },
+    "post_print_feed_count": 2,
+    "print_defaults": {
+      "speed": {
+        "image": 10,
+        "text": 10
+      },
+      "energy": {
+        "image": {
+          "low": 1400,
+          "middle": 1400,
+          "high": 1400
+        },
+        "text": {
+          "low": 1400,
+          "middle": 1400,
+          "high": 1400
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "default_90r_96p"
+    ]
+  },
+  {
+    "profile_key": "lt01",
+    "size": 2,
+    "one_length": 8,
+    "dev_dpi": 200,
+    "has_id": true,
+    "use_spp": false,
+    "can_print_label": true,
+    "label_value": "1",
+    "back_paper_num": 45,
+    "protocol_default": {
+      "type": "tiny"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1"
+      ],
+      "encoding": "tiny_rle"
+    },
+    "stream": {
+      "chunk_size": 83,
+      "delay_ms": 6
+    },
+    "post_print_feed_count": 2,
+    "print_defaults": {
+      "speed": {
+        "image": 10,
+        "text": 10
+      },
+      "energy": {
+        "image": {
+          "low": 4500,
+          "middle": 4500,
+          "high": 4500
+        },
+        "text": {
+          "low": 8000,
+          "middle": 8000,
+          "high": 8000
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "default_384r"
+    ]
+  },
+  {
+    "profile_key": "ly01",
+    "size": 2,
+    "one_length": 8,
+    "dev_dpi": 200,
+    "ble_mtu_request": 23,
+    "has_id": false,
+    "use_spp": false,
+    "can_print_label": false,
+    "label_value": "0",
+    "back_paper_num": 0,
+    "protocol_default": {
+      "type": "tiny"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1"
+      ],
+      "encoding": "tiny_rle"
+    },
+    "stream": {
+      "chunk_size": 180,
+      "delay_ms": 4
+    },
+    "post_print_feed_count": 2,
+    "print_defaults": {
+      "speed": {
+        "image": 40,
+        "text": 25
+      },
+      "energy": {
+        "image": {
+          "low": 0,
+          "middle": 9500,
+          "high": 20000
+        },
+        "text": {
+          "low": 0,
+          "middle": 0,
+          "high": 0
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "default_384r"
+    ]
+  },
+  {
+    "profile_key": "ly02",
+    "size": 2,
+    "one_length": 8,
+    "dev_dpi": 200,
+    "ble_mtu_request": 23,
+    "has_id": false,
+    "use_spp": false,
+    "can_print_label": false,
+    "label_value": "0",
+    "back_paper_num": 0,
+    "protocol_default": {
+      "type": "tiny"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1"
+      ],
+      "encoding": "tiny_rle"
+    },
+    "stream": {
+      "chunk_size": 180,
+      "delay_ms": 2
+    },
+    "post_print_feed_count": 2,
+    "print_defaults": {
+      "speed": {
+        "image": 45,
+        "text": 35
+      },
+      "energy": {
+        "image": {
+          "low": 0,
+          "middle": 0,
+          "high": 0
+        },
+        "text": {
+          "low": 0,
+          "middle": 0,
+          "high": 0
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "default_384r"
+    ]
+  },
+  {
+    "profile_key": "ly03",
+    "size": 2,
+    "one_length": 8,
+    "dev_dpi": 200,
+    "has_id": true,
+    "use_spp": false,
+    "can_print_label": false,
+    "label_value": "16",
+    "back_paper_num": 40,
+    "protocol_default": {
+      "type": "tiny"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1"
+      ],
+      "encoding": "tiny_rle"
+    },
+    "stream": {
+      "chunk_size": 83,
+      "delay_ms": 6
+    },
+    "post_print_feed_count": 2,
+    "print_defaults": {
+      "speed": {
+        "image": 10,
+        "text": 10
+      },
+      "energy": {
+        "image": {
+          "low": 7500,
+          "middle": 7500,
+          "high": 7500
+        },
+        "text": {
+          "low": 0,
+          "middle": 0,
+          "high": 0
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "default_384r"
+    ]
+  },
+  {
+    "profile_key": "ly05",
+    "size": 3,
+    "one_length": 8,
+    "dev_dpi": 200,
+    "has_id": true,
+    "use_spp": false,
+    "can_print_label": false,
+    "label_value": "0",
+    "back_paper_num": 0,
+    "protocol_default": {
+      "type": "tiny"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1"
+      ],
+      "encoding": "tiny_rle"
+    },
+    "stream": {
+      "chunk_size": 153,
+      "delay_ms": 6
+    },
+    "post_print_feed_count": 2,
+    "print_defaults": {
+      "speed": {
+        "image": 40,
+        "text": 35
+      },
+      "energy": {
+        "image": {
+          "low": 12000,
+          "middle": 12000,
+          "high": 12000
+        },
+        "text": {
+          "low": 0,
+          "middle": 0,
+          "high": 0
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "default_576r"
+    ]
+  },
+  {
+    "profile_key": "ly10",
+    "size": 2,
+    "one_length": 8,
+    "dev_dpi": 200,
+    "has_id": true,
+    "use_spp": true,
+    "can_print_label": false,
+    "label_value": "0",
+    "back_paper_num": 0,
+    "protocol_default": {
+      "type": "tiny_prefixed",
+      "packets_type": "esc_star"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1"
+      ],
+      "encoding": "tiny_rle"
+    },
+    "stream": {
+      "chunk_size": 183,
+      "delay_ms": 4
+    },
+    "post_print_feed_count": 2,
+    "print_defaults": {
+      "speed": {
+        "image": 26,
+        "text": 25
+      },
+      "energy": {
+        "image": {
+          "low": 8,
+          "middle": 12,
+          "high": 15
+        },
+        "text": {
+          "low": 0,
+          "middle": 0,
+          "high": 0
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "default_384r"
+    ]
+  },
+  {
+    "profile_key": "lp100",
+    "size": 2,
+    "one_length": 8,
+    "dev_dpi": 200,
+    "has_id": true,
+    "use_spp": true,
+    "can_print_label": false,
+    "label_value": "0",
+    "back_paper_num": 0,
+    "protocol_default": {
+      "type": "tiny_prefixed",
+      "packets_type": "esc_star"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1"
+      ],
+      "encoding": "tiny_rle"
+    },
+    "stream": {
+      "chunk_size": 183,
+      "delay_ms": 4
+    },
+    "post_print_feed_count": 2,
+    "print_defaults": {
+      "speed": {
+        "image": 26,
+        "text": 25
+      },
+      "energy": {
+        "image": {
+          "low": 100,
+          "middle": 100,
+          "high": 100
+        },
+        "text": {
+          "low": 0,
+          "middle": 0,
+          "high": 0
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "default_384r"
+    ]
+  },
+  {
+    "profile_key": "ly11",
+    "size": 2,
+    "one_length": 12,
+    "dev_dpi": 300,
+    "has_id": true,
+    "use_spp": true,
+    "can_print_label": false,
+    "label_value": "0",
+    "back_paper_num": 0,
+    "protocol_default": {
+      "type": "tiny_prefixed",
+      "packets_type": "esc_star"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1"
+      ],
+      "encoding": "tiny_rle"
+    },
+    "stream": {
+      "chunk_size": 183,
+      "delay_ms": 4
+    },
+    "post_print_feed_count": 2,
+    "print_defaults": {
+      "speed": {
+        "image": 26,
+        "text": 25
+      },
+      "energy": {
+        "image": {
+          "low": 0,
+          "middle": 3,
+          "high": 15
+        },
+        "text": {
+          "low": 0,
+          "middle": 0,
+          "high": 0
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "default_576r"
+    ]
+  },
+  {
+    "profile_key": "m01",
+    "size": 2,
+    "one_length": 8,
+    "dev_dpi": 200,
+    "ble_mtu_request": 23,
+    "has_id": false,
+    "use_spp": false,
+    "can_print_label": false,
+    "label_value": "0",
+    "back_paper_num": 0,
+    "protocol_default": {
+      "type": "tiny"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1"
+      ],
+      "encoding": "tiny_rle"
+    },
+    "stream": {
+      "chunk_size": 180,
+      "delay_ms": 5
+    },
+    "post_print_feed_count": 2,
+    "print_defaults": {
+      "speed": {
+        "image": 45,
+        "text": 25
+      },
+      "energy": {
+        "image": {
+          "low": 0,
+          "middle": 0,
+          "high": 0
+        },
+        "text": {
+          "low": 0,
+          "middle": 0,
+          "high": 0
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "default_384r"
+    ]
+  },
+  {
+    "profile_key": "m2",
+    "size": 2,
+    "one_length": 8,
+    "dev_dpi": 200,
+    "has_id": true,
+    "use_spp": false,
+    "can_print_label": true,
+    "label_value": "1",
+    "back_paper_num": 45,
+    "protocol_default": {
+      "type": "tiny"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1"
+      ],
+      "encoding": "tiny_rle"
+    },
+    "stream": {
+      "chunk_size": 83,
+      "delay_ms": 4
+    },
+    "post_print_feed_count": 2,
+    "print_defaults": {
+      "speed": {
+        "image": 10,
+        "text": 10
+      },
+      "energy": {
+        "image": {
+          "low": 4500,
+          "middle": 4500,
+          "high": 4500
+        },
+        "text": {
+          "low": 8000,
+          "middle": 8000,
+          "high": 8000
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "default_384r"
+    ]
+  },
+  {
+    "profile_key": "mini_printer",
+    "size": 2,
+    "one_length": 8,
+    "dev_dpi": 200,
+    "has_id": true,
+    "use_spp": true,
+    "can_print_label": true,
+    "label_value": "1",
+    "back_paper_num": 40,
+    "protocol_default": {
+      "type": "tiny"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1"
+      ],
+      "encoding": "tiny_rle"
+    },
+    "stream": {
+      "chunk_size": 180,
+      "delay_ms": 4
+    },
+    "post_print_feed_count": 2,
+    "print_defaults": {
+      "speed": {
+        "image": 20,
+        "text": 20
+      },
+      "energy": {
+        "image": {
+          "low": 14000,
+          "middle": 14000,
+          "high": 14000
+        },
+        "text": {
+          "low": 14000,
+          "middle": 14000,
+          "high": 14000
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "default_384r"
+    ]
+  },
+  {
+    "profile_key": "mpa81",
+    "size": 8,
+    "one_length": 8,
+    "dev_dpi": 200,
+    "has_id": true,
+    "use_spp": true,
+    "can_print_label": false,
+    "label_value": "0",
+    "back_paper_num": 0,
+    "protocol_default": {
+      "type": "tiny",
+      "packets_type": "line_eight"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1"
+      ],
+      "encoding": "tiny_rle"
+    },
+    "stream": {
+      "chunk_size": 512,
+      "delay_ms": 2
+    },
+    "post_print_feed_count": 2,
+    "print_defaults": {
+      "speed": {
+        "image": 40,
+        "text": 30
+      },
+      "energy": {
+        "image": {
+          "low": 17000,
+          "middle": 30000,
+          "high": 30000
+        },
+        "text": {
+          "low": 30000,
+          "middle": 30000,
+          "high": 30000
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "plain_1600r_1632p_32pl",
+      "a4sheet_1600r_1632p_32pl"
+    ]
+  },
+  {
+    "profile_key": "mx02",
+    "size": 2,
+    "one_length": 8,
+    "dev_dpi": 200,
+    "has_id": true,
+    "use_spp": false,
+    "can_print_label": false,
+    "label_value": "0",
+    "back_paper_num": 0,
+    "protocol_default": {
+      "type": "v5g"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1",
+        "gray4",
+        "gray8"
+      ],
+      "encoding": "v5g_dot"
+    },
+    "stream": {
+      "chunk_size": 123,
+      "delay_ms": 4
+    },
+    "post_print_feed_count": 1,
+    "print_defaults": {
+      "energy": {
+        "image": {
+          "low": 20000,
+          "middle": 20000,
+          "high": 20000
+        },
+        "text": {
+          "low": 0,
+          "middle": 0,
+          "high": 0
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "default_384r"
+    ]
+  },
+  {
+    "profile_key": "mx03",
+    "size": 2,
+    "one_length": 8,
+    "dev_dpi": 200,
+    "has_id": true,
+    "use_spp": false,
+    "can_print_label": false,
+    "label_value": "0",
+    "back_paper_num": 0,
+    "protocol_default": {
+      "type": "v5g"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1",
+        "gray4",
+        "gray8"
+      ],
+      "encoding": "v5g_dot"
+    },
+    "stream": {
+      "chunk_size": 123,
+      "delay_ms": 4
+    },
+    "post_print_feed_count": 1,
+    "print_defaults": {
+      "energy": {
+        "image": {
+          "low": 20000,
+          "middle": 20000,
+          "high": 20000
+        },
+        "text": {
+          "low": 0,
+          "middle": 0,
+          "high": 0
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "default_576r"
+    ]
+  },
+  {
+    "profile_key": "mx07",
+    "size": 2,
+    "one_length": 8,
+    "dev_dpi": 200,
+    "has_id": false,
+    "use_spp": false,
+    "can_print_label": false,
+    "label_value": "0",
+    "back_paper_num": 0,
+    "protocol_default": {
+      "type": "v5g"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1",
+        "gray4",
+        "gray8"
+      ],
+      "encoding": "v5g_dot"
+    },
+    "stream": {
+      "chunk_size": 63,
+      "delay_ms": 6
+    },
+    "post_print_feed_count": 1,
+    "print_defaults": {
+      "energy": {
+        "image": {
+          "low": 10000,
+          "middle": 10000,
+          "high": 15000
+        },
+        "text": {
+          "low": 15000,
+          "middle": 15000,
+          "high": 20000
+        }
+      },
+      "density": {
+        "text": {
+          "low": 70,
+          "middle": 90,
+          "high": 110
+        },
+        "image": {
+          "low": 60,
+          "middle": 80,
+          "high": 100
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "default_384r"
+    ]
+  },
+  {
+    "profile_key": "p10",
+    "size": 2,
+    "one_length": 8,
+    "dev_dpi": 200,
+    "has_id": true,
+    "use_spp": false,
+    "can_print_label": false,
+    "label_value": "0",
+    "back_paper_num": 0,
+    "protocol_default": {
+      "type": "tiny"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1"
+      ],
+      "encoding": "tiny_rle"
+    },
+    "stream": {
+      "chunk_size": 123,
+      "delay_ms": 6
+    },
+    "post_print_feed_count": 2,
+    "print_defaults": {
+      "speed": {
+        "image": 10,
+        "text": 10
+      },
+      "energy": {
+        "image": {
+          "low": 5500,
+          "middle": 5500,
+          "high": 5500
+        },
+        "text": {
+          "low": 9500,
+          "middle": 9500,
+          "high": 9500
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "default_384r"
+    ]
+  },
+  {
+    "profile_key": "p4",
+    "size": 8,
+    "one_length": 8,
+    "dev_dpi": 200,
+    "has_id": true,
+    "use_spp": true,
+    "can_print_label": false,
+    "label_value": "0",
+    "back_paper_num": 0,
+    "protocol_default": {
+      "type": "tiny",
+      "packets_type": "line_eight"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1"
+      ],
+      "encoding": "tiny_rle"
+    },
+    "stream": {
+      "chunk_size": 512,
+      "delay_ms": 4
+    },
+    "post_print_feed_count": 2,
+    "print_defaults": {
+      "speed": {
+        "image": 40,
+        "text": 30
+      },
+      "energy": {
+        "image": {
+          "low": 17000,
+          "middle": 17000,
+          "high": 17000
+        },
+        "text": {
+          "low": 30000,
+          "middle": 30000,
+          "high": 30000
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "plain_1600r_1624p_24pl",
+      "a4sheet_1600r_1624p_24pl"
+    ]
+  },
+  {
+    "profile_key": "p5",
+    "size": 2,
+    "one_length": 12,
+    "dev_dpi": 300,
+    "has_id": true,
+    "use_spp": true,
+    "can_print_label": true,
+    "label_value": "1",
+    "back_paper_num": 40,
+    "protocol_default": {
+      "type": "tiny"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1"
+      ],
+      "encoding": "tiny_rle"
+    },
+    "stream": {
+      "chunk_size": 280,
+      "delay_ms": 4
+    },
+    "post_print_feed_count": 2,
+    "print_defaults": {
+      "speed": {
+        "image": 10,
+        "text": 10
+      },
+      "energy": {
+        "image": {
+          "low": 5000,
+          "middle": 5000,
+          "high": 5000
+        },
+        "text": {
+          "low": 8000,
+          "middle": 8000,
+          "high": 8000
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "default_576r"
+    ]
+  },
+  {
+    "profile_key": "p6",
+    "size": 2,
+    "one_length": 8,
+    "dev_dpi": 200,
+    "has_id": true,
+    "use_spp": true,
+    "can_print_label": true,
+    "label_value": "1",
+    "back_paper_num": 40,
+    "protocol_default": {
+      "type": "tiny"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1"
+      ],
+      "encoding": "tiny_rle"
+    },
+    "stream": {
+      "chunk_size": 180,
+      "delay_ms": 4
+    },
+    "post_print_feed_count": 2,
+    "print_defaults": {
+      "speed": {
+        "image": 10,
+        "text": 10
+      },
+      "energy": {
+        "image": {
+          "low": 9500,
+          "middle": 9500,
+          "high": 9500
+        },
+        "text": {
+          "low": 8000,
+          "middle": 8000,
+          "high": 8000
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "default_384r"
+    ]
+  },
+  {
+    "profile_key": "p7",
+    "size": 2,
+    "one_length": 8,
+    "dev_dpi": 200,
+    "has_id": true,
+    "use_spp": true,
+    "can_print_label": true,
+    "label_value": "1",
+    "back_paper_num": 40,
+    "protocol_default": {
+      "type": "tiny"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1"
+      ],
+      "encoding": "tiny_rle"
+    },
+    "stream": {
+      "chunk_size": 183,
+      "delay_ms": 4
+    },
+    "post_print_feed_count": 2,
+    "print_defaults": {
+      "speed": {
+        "image": 30,
+        "text": 10
+      },
+      "energy": {
+        "image": {
+          "low": 7500,
+          "middle": 7500,
+          "high": 7500
+        },
+        "text": {
+          "low": 0,
+          "middle": 0,
+          "high": 0
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "default_384r"
+    ]
+  },
+  {
+    "profile_key": "pr02",
+    "size": 2,
+    "one_length": 8,
+    "dev_dpi": 200,
+    "has_id": true,
+    "use_spp": false,
+    "can_print_label": true,
+    "label_value": "0",
+    "back_paper_num": 80,
+    "protocol_default": {
+      "type": "tiny"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1"
+      ],
+      "encoding": "tiny_rle"
+    },
+    "stream": {
+      "chunk_size": 123,
+      "delay_ms": 6
+    },
+    "post_print_feed_count": 2,
+    "print_defaults": {
+      "speed": {
+        "image": 10,
+        "text": 10
+      },
+      "energy": {
+        "image": {
+          "low": 5500,
+          "middle": 5500,
+          "high": 5500
+        },
+        "text": {
+          "low": 11000,
+          "middle": 11000,
+          "high": 11000
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "default_384r"
+    ]
+  },
+  {
+    "profile_key": "pr30",
+    "size": 3,
+    "one_length": 8,
+    "dev_dpi": 200,
+    "has_id": true,
+    "use_spp": false,
+    "can_print_label": false,
+    "label_value": "0",
+    "back_paper_num": 0,
+    "protocol_default": {
+      "type": "tiny"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1"
+      ],
+      "encoding": "tiny_rle"
+    },
+    "stream": {
+      "chunk_size": 183,
+      "delay_ms": 4
+    },
+    "post_print_feed_count": 2,
+    "print_defaults": {
+      "speed": {
+        "image": 18,
+        "text": 18
+      },
+      "energy": {
+        "image": {
+          "low": 5,
+          "middle": 10,
+          "high": 12
+        },
+        "text": {
+          "low": 9,
+          "middle": 9,
+          "high": 9
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "default_576r"
+    ]
+  },
+  {
+    "profile_key": "pr35",
+    "size": 3,
+    "one_length": 12,
+    "dev_dpi": 200,
+    "has_id": true,
+    "use_spp": false,
+    "can_print_label": false,
+    "label_value": "0",
+    "back_paper_num": 0,
+    "protocol_default": {
+      "type": "tiny"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1"
+      ],
+      "encoding": "tiny_rle"
+    },
+    "stream": {
+      "chunk_size": 183,
+      "delay_ms": 6
+    },
+    "post_print_feed_count": 2,
+    "print_defaults": {
+      "speed": {
+        "image": 18,
+        "text": 18
+      },
+      "energy": {
+        "image": {
+          "low": 12000,
+          "middle": 12000,
+          "high": 12000
+        },
+        "text": {
+          "low": 0,
+          "middle": 0,
+          "high": 0
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "default_576r"
+    ]
+  },
+  {
+    "profile_key": "zpa4z1",
+    "size": 8,
+    "one_length": 8,
+    "dev_dpi": 200,
+    "has_id": true,
+    "use_spp": true,
+    "can_print_label": false,
+    "label_value": "0",
+    "back_paper_num": 0,
+    "protocol_default": {
+      "type": "tiny",
+      "packets_type": "line_eight"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1"
+      ],
+      "encoding": "tiny_rle"
+    },
+    "stream": {
+      "chunk_size": 512,
+      "delay_ms": 4
+    },
+    "post_print_feed_count": 2,
+    "print_defaults": {
+      "speed": {
+        "image": 40,
+        "text": 30
+      },
+      "energy": {
+        "image": {
+          "low": 27000,
+          "middle": 27000,
+          "high": 27000
+        },
+        "text": {
+          "low": 30000,
+          "middle": 30000,
+          "high": 30000
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "plain_1600r_1664p_64pl",
+      "a4sheet_1600r_1664p_64pl"
+    ]
+  },
+  {
+    "profile_key": "pr89",
+    "size": 8,
+    "one_length": 8,
+    "dev_dpi": 200,
+    "has_id": true,
+    "use_spp": true,
+    "can_print_label": false,
+    "label_value": "0",
+    "back_paper_num": 0,
+    "protocol_default": {
+      "type": "tiny",
+      "packets_type": "line_eight"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1"
+      ],
+      "encoding": "tiny_rle"
+    },
+    "stream": {
+      "chunk_size": 512,
+      "delay_ms": 4
+    },
+    "post_print_feed_count": 2,
+    "print_defaults": {
+      "speed": {
+        "image": 40,
+        "text": 30
+      },
+      "energy": {
+        "image": {
+          "low": 27000,
+          "middle": 27000,
+          "high": 27000
+        },
+        "text": {
+          "low": 30000,
+          "middle": 30000,
+          "high": 30000
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "plain_1600r_1632p_32pl",
+      "a4sheet_1600r_1632p_32pl"
+    ]
+  },
+  {
+    "profile_key": "pr893",
+    "size": 8,
+    "one_length": 12,
+    "dev_dpi": 300,
+    "has_id": true,
+    "use_spp": true,
+    "can_print_label": false,
+    "label_value": "0",
+    "back_paper_num": 0,
+    "protocol_default": {
+      "type": "tiny",
+      "packets_type": "line_eight"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1"
+      ],
+      "encoding": "tiny_rle"
+    },
+    "stream": {
+      "chunk_size": 512,
+      "delay_ms": 4
+    },
+    "post_print_feed_count": 2,
+    "print_defaults": {
+      "speed": {
+        "image": 65,
+        "text": 30
+      },
+      "energy": {
+        "image": {
+          "low": 8000,
+          "middle": 8000,
+          "high": 8000
+        },
+        "text": {
+          "low": 30000,
+          "middle": 30000,
+          "high": 30000
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "plain_2400r_2448p_48pl",
+      "a4sheet_2400r_2448p_48pl"
+    ]
+  },
+  {
+    "profile_key": "professional_printer",
+    "size": 8,
+    "one_length": 8,
+    "dev_dpi": 200,
+    "has_id": true,
+    "use_spp": true,
+    "can_print_label": false,
+    "label_value": "0",
+    "back_paper_num": 0,
+    "protocol_default": {
+      "type": "tiny",
+      "packets_type": "professional"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1"
+      ],
+      "encoding": "tiny_rle"
+    },
+    "stream": {
+      "chunk_size": 512,
+      "delay_ms": 4
+    },
+    "post_print_feed_count": 2,
+    "print_defaults": {
+      "speed": {
+        "image": 20,
+        "text": 15
+      },
+      "energy": {
+        "image": {
+          "low": 12000,
+          "middle": 12000,
+          "high": 12000
+        },
+        "text": {
+          "low": 33000,
+          "middle": 33000,
+          "high": 33000
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "plain_1600r_1632p_32pl",
+      "a4sheet_1600r_1632p_32pl"
+    ]
+  },
+  {
+    "profile_key": "pt001",
+    "size": 2,
+    "one_length": 8,
+    "dev_dpi": 200,
+    "has_id": true,
+    "use_spp": true,
+    "can_print_label": true,
+    "label_value": "1",
+    "back_paper_num": 32,
+    "protocol_default": {
+      "type": "tiny"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1"
+      ],
+      "encoding": "tiny_rle"
+    },
+    "stream": {
+      "chunk_size": 180,
+      "delay_ms": 4
+    },
+    "post_print_feed_count": 2,
+    "print_defaults": {
+      "speed": {
+        "image": 10,
+        "text": 10
+      },
+      "energy": {
+        "image": {
+          "low": 20000,
+          "middle": 20000,
+          "high": 20000
+        },
+        "text": {
+          "low": 8000,
+          "middle": 8000,
+          "high": 8000
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "default_384r"
+    ]
+  },
+  {
+    "profile_key": "s01",
+    "size": 2,
+    "one_length": 8,
+    "dev_dpi": 200,
+    "ble_mtu_request": 23,
+    "has_id": false,
+    "use_spp": false,
+    "can_print_label": false,
+    "label_value": "0",
+    "back_paper_num": 0,
+    "protocol_default": {
+      "type": "tiny"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1"
+      ],
+      "encoding": "tiny_rle"
+    },
+    "stream": {
+      "chunk_size": 123,
+      "delay_ms": 6
+    },
+    "post_print_feed_count": 2,
+    "print_defaults": {
+      "speed": {
+        "image": 10,
+        "text": 10
+      },
+      "energy": {
+        "image": {
+          "low": 6500,
+          "middle": 6500,
+          "high": 6500
+        },
+        "text": {
+          "low": 0,
+          "middle": 0,
+          "high": 0
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "default_384r"
+    ]
+  },
+  {
+    "profile_key": "s101",
+    "size": 2,
+    "one_length": 8,
+    "dev_dpi": 200,
+    "has_id": true,
+    "use_spp": false,
+    "can_print_label": false,
+    "label_value": "0",
+    "back_paper_num": 0,
+    "protocol_default": {
+      "type": "tiny"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1"
+      ],
+      "encoding": "tiny_rle"
+    },
+    "stream": {
+      "chunk_size": 123,
+      "delay_ms": 6
+    },
+    "post_print_feed_count": 2,
+    "print_defaults": {
+      "speed": {
+        "image": 30,
+        "text": 10
+      },
+      "energy": {
+        "image": {
+          "low": 7500,
+          "middle": 7500,
+          "high": 7500
+        },
+        "text": {
+          "low": 0,
+          "middle": 0,
+          "high": 0
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "default_384r"
+    ]
+  },
+  {
+    "profile_key": "s102_2",
+    "size": 2,
+    "one_length": 8,
+    "dev_dpi": 200,
+    "has_id": true,
+    "use_spp": false,
+    "can_print_label": false,
+    "label_value": "1",
+    "back_paper_num": 40,
+    "protocol_default": {
+      "type": "tiny"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1"
+      ],
+      "encoding": "tiny_rle"
+    },
+    "stream": {
+      "chunk_size": 123,
+      "delay_ms": 6
+    },
+    "post_print_feed_count": 2,
+    "print_defaults": {
+      "speed": {
+        "image": 30,
+        "text": 10
+      },
+      "energy": {
+        "image": {
+          "low": 7500,
+          "middle": 7500,
+          "high": 7500
+        },
+        "text": {
+          "low": 0,
+          "middle": 0,
+          "high": 0
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "default_384r"
+    ]
+  },
+  {
+    "profile_key": "shipping_printer",
+    "size": 4,
+    "one_length": 8,
+    "dev_dpi": 200,
+    "has_id": false,
+    "use_spp": true,
+    "can_print_label": true,
+    "label_value": "1",
+    "back_paper_num": 40,
+    "protocol_default": {
+      "type": "tiny"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1"
+      ],
+      "encoding": "tiny_rle"
+    },
+    "stream": {
+      "chunk_size": 180,
+      "delay_ms": 4
+    },
+    "post_print_feed_count": 2,
+    "print_defaults": {
+      "speed": {
+        "image": 10,
+        "text": 10
+      },
+      "energy": {
+        "image": {
+          "low": 8000,
+          "middle": 8000,
+          "high": 8000
+        },
+        "text": {
+          "low": 8000,
+          "middle": 8000,
+          "high": 8000
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "default_864r"
+    ]
+  },
+  {
+    "profile_key": "u1",
+    "size": 2,
+    "one_length": 8,
+    "dev_dpi": 200,
+    "has_id": true,
+    "use_spp": true,
+    "can_print_label": true,
+    "label_value": "1",
+    "back_paper_num": 40,
+    "protocol_default": {
+      "type": "tiny"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1"
+      ],
+      "encoding": "tiny_rle"
+    },
+    "stream": {
+      "chunk_size": 180,
+      "delay_ms": 4
+    },
+    "post_print_feed_count": 2,
+    "print_defaults": {
+      "speed": {
+        "image": 10,
+        "text": 10
+      },
+      "energy": {
+        "image": {
+          "low": 20000,
+          "middle": 20000,
+          "high": 20000
+        },
+        "text": {
+          "low": 8000,
+          "middle": 8000,
+          "high": 8000
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "default_384r"
+    ]
+  },
+  {
+    "profile_key": "gt02_v5g",
+    "size": 2,
+    "one_length": 8,
+    "dev_dpi": 200,
+    "has_id": false,
+    "use_spp": false,
+    "can_print_label": false,
+    "label_value": "0",
+    "back_paper_num": 0,
+    "protocol_default": {
+      "type": "v5g"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1",
+        "gray4",
+        "gray8"
+      ],
+      "encoding": "v5g_dot"
+    },
+    "stream": {
+      "chunk_size": 63,
+      "delay_ms": 6
+    },
+    "post_print_feed_count": 1,
+    "print_defaults": {
+      "energy": {
+        "image": {
+          "low": 10000,
+          "middle": 10000,
+          "high": 15000
+        },
+        "text": {
+          "low": 15000,
+          "middle": 15000,
+          "high": 20000
+        }
+      },
+      "density": {
+        "image": {
+          "low": 90,
+          "middle": 110,
+          "high": 130
+        },
+        "text": {
+          "low": 100,
+          "middle": 130,
+          "high": 150
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "default_384r"
+    ]
+  },
+  {
+    "profile_key": "v5g_small_203",
+    "size": 2,
+    "one_length": 8,
+    "dev_dpi": 200,
+    "has_id": false,
+    "use_spp": false,
+    "can_print_label": false,
+    "label_value": "0",
+    "back_paper_num": 0,
+    "protocol_default": {
+      "type": "v5g"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1",
+        "gray4",
+        "gray8"
+      ],
+      "encoding": "v5g_dot"
+    },
+    "stream": {
+      "chunk_size": 63,
+      "delay_ms": 6
+    },
+    "post_print_feed_count": 1,
+    "print_defaults": {
+      "energy": {
+        "image": {
+          "low": 10000,
+          "middle": 10000,
+          "high": 15000
+        },
+        "text": {
+          "low": 15000,
+          "middle": 15000,
+          "high": 20000
+        }
+      }
+    },
+    "a4xii": false,
+    "runtime_presets": [
+      {
+        "key": "mx06",
+        "density": {
+          "image": {
+            "low": 150,
+            "middle": 180,
+            "high": 200
+          },
+          "text": {
+            "low": 100,
+            "middle": 130,
+            "high": 150
+          }
+        },
+        "capabilities": {
+          "d2_status": true,
+          "didian_status": false
+        },
+        "control_algorithm": "mx06"
+      },
+      {
+        "key": "mx08",
+        "density": {
+          "image": {
+            "low": 60,
+            "middle": 90,
+            "high": 110
+          },
+          "text": {
+            "low": 50,
+            "middle": 70,
+            "high": 100
+          }
+        },
+        "capabilities": {
+          "d2_status": true,
+          "didian_status": false
+        },
+        "control_algorithm": "d2"
+      },
+      {
+        "key": "mx09",
+        "density": {
+          "image": {
+            "low": 100,
+            "middle": 120,
+            "high": 140
+          },
+          "text": {
+            "low": 80,
+            "middle": 100,
+            "high": 120
+          }
+        },
+        "capabilities": {
+          "d2_status": true,
+          "didian_status": true
+        },
+        "control_algorithm": "d2"
+      },
+      {
+        "key": "mx11",
+        "density": {
+          "image": {
+            "low": 100,
+            "middle": 130,
+            "high": 150
+          },
+          "text": {
+            "low": 100,
+            "middle": 130,
+            "high": 150
+          }
+        },
+        "capabilities": {
+          "d2_status": false,
+          "didian_status": false
+        },
+        "control_algorithm": "mx10"
+      },
+      {
+        "key": "xopoppy",
+        "density": {
+          "image": {
+            "low": 60,
+            "middle": 80,
+            "high": 100
+          },
+          "text": {
+            "low": 60,
+            "middle": 80,
+            "high": 100
+          }
+        },
+        "capabilities": {
+          "d2_status": false,
+          "didian_status": false
+        },
+        "control_algorithm": "mx10"
+      },
+      {
+        "key": "mx10_mx06",
+        "density": {
+          "image": {
+            "low": 150,
+            "middle": 180,
+            "high": 200
+          },
+          "text": {
+            "low": 100,
+            "middle": 130,
+            "high": 150
+          }
+        },
+        "capabilities": {
+          "d2_status": true,
+          "didian_status": false
+        },
+        "control_algorithm": "mx10"
+      },
+      {
+        "key": "pd01_mx11",
+        "density": {
+          "image": {
+            "low": 100,
+            "middle": 130,
+            "high": 150
+          },
+          "text": {
+            "low": 100,
+            "middle": 130,
+            "high": 150
+          }
+        },
+        "capabilities": {
+          "d2_status": false,
+          "didian_status": false
+        },
+        "control_algorithm": "pd01"
+      },
+      {
+        "key": "mx10_control",
+        "control_algorithm": "mx10"
+      }
+    ],
+    "paper_presets": [
+      "default_384r"
+    ]
+  },
+  {
+    "profile_key": "v5x",
+    "size": 2,
+    "one_length": 8,
+    "dev_dpi": 203,
+    "has_id": true,
+    "use_spp": false,
+    "can_print_label": true,
+    "label_value": "1",
+    "back_paper_num": 45,
+    "protocol_default": {
+      "type": "v5x"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1",
+        "gray4",
+        "gray8"
+      ],
+      "encoding": "v5x_dot"
+    },
+    "stream": {
+      "chunk_size": 123,
+      "delay_ms": 4
+    },
+    "post_print_feed_count": 2,
+    "print_defaults": {
+      "energy": {
+        "image": {
+          "low": 9000,
+          "middle": 9000,
+          "high": 9000
+        },
+        "text": {
+          "low": 8000,
+          "middle": 8000,
+          "high": 8000
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "plain_384r",
+      "tag_384r"
+    ]
+  },
+  {
+    "profile_key": "x1",
+    "size": 3,
+    "one_length": 8,
+    "dev_dpi": 200,
+    "has_id": true,
+    "use_spp": false,
+    "can_print_label": false,
+    "label_value": "0",
+    "back_paper_num": 0,
+    "protocol_default": {
+      "type": "tiny"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1"
+      ],
+      "encoding": "tiny_rle"
+    },
+    "stream": {
+      "chunk_size": 183,
+      "delay_ms": 6
+    },
+    "post_print_feed_count": 2,
+    "print_defaults": {
+      "speed": {
+        "image": 40,
+        "text": 35
+      },
+      "energy": {
+        "image": {
+          "low": 8500,
+          "middle": 8500,
+          "high": 8500
+        },
+        "text": {
+          "low": 8500,
+          "middle": 8500,
+          "high": 8500
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "default_576r"
+    ]
+  },
+  {
+    "profile_key": "x101h",
+    "size": 2,
+    "one_length": 8,
+    "dev_dpi": 200,
+    "has_id": true,
+    "use_spp": true,
+    "can_print_label": true,
+    "label_value": "1",
+    "back_paper_num": 40,
+    "protocol_default": {
+      "type": "tiny"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1"
+      ],
+      "encoding": "tiny_rle"
+    },
+    "stream": {
+      "chunk_size": 180,
+      "delay_ms": 10
+    },
+    "post_print_feed_count": 2,
+    "print_defaults": {
+      "speed": {
+        "image": 10,
+        "text": 10
+      },
+      "energy": {
+        "image": {
+          "low": 9500,
+          "middle": 9500,
+          "high": 9500
+        },
+        "text": {
+          "low": 9500,
+          "middle": 9500,
+          "high": 9500
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "default_384r"
+    ]
+  },
+  {
+    "profile_key": "x16",
+    "size": 2,
+    "one_length": 8,
+    "dev_dpi": 200,
+    "has_id": true,
+    "use_spp": true,
+    "can_print_label": false,
+    "label_value": "1",
+    "back_paper_num": 40,
+    "protocol_default": {
+      "type": "tiny"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1"
+      ],
+      "encoding": "tiny_rle"
+    },
+    "stream": {
+      "chunk_size": 180,
+      "delay_ms": 4
+    },
+    "post_print_feed_count": 2,
+    "print_defaults": {
+      "speed": {
+        "image": 10,
+        "text": 10
+      },
+      "energy": {
+        "image": {
+          "low": 5000,
+          "middle": 5000,
+          "high": 5000
+        },
+        "text": {
+          "low": 8000,
+          "middle": 8000,
+          "high": 8000
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "default_384r"
+    ]
+  },
+  {
+    "profile_key": "x5",
+    "size": 2,
+    "one_length": 8,
+    "dev_dpi": 200,
+    "has_id": true,
+    "use_spp": false,
+    "can_print_label": true,
+    "label_value": "1",
+    "back_paper_num": 40,
+    "protocol_default": {
+      "type": "tiny"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1"
+      ],
+      "encoding": "tiny_rle"
+    },
+    "stream": {
+      "chunk_size": 123,
+      "delay_ms": 6
+    },
+    "post_print_feed_count": 2,
+    "print_defaults": {
+      "speed": {
+        "image": 30,
+        "text": 10
+      },
+      "energy": {
+        "image": {
+          "low": 7500,
+          "middle": 7500,
+          "high": 7500
+        },
+        "text": {
+          "low": 0,
+          "middle": 0,
+          "high": 0
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "default_384r"
+    ]
+  },
+  {
+    "profile_key": "x5_2",
+    "size": 2,
+    "one_length": 8,
+    "dev_dpi": 200,
+    "has_id": true,
+    "use_spp": false,
+    "can_print_label": true,
+    "label_value": "1",
+    "back_paper_num": 40,
+    "protocol_default": {
+      "type": "tiny"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1"
+      ],
+      "encoding": "tiny_rle"
+    },
+    "stream": {
+      "chunk_size": 123,
+      "delay_ms": 6
+    },
+    "post_print_feed_count": 2,
+    "print_defaults": {
+      "speed": {
+        "image": 10,
+        "text": 10
+      },
+      "energy": {
+        "image": {
+          "low": 7500,
+          "middle": 7500,
+          "high": 7500
+        },
+        "text": {
+          "low": 13000,
+          "middle": 13000,
+          "high": 13000
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "default_384r"
+    ]
+  },
+  {
+    "profile_key": "x6",
+    "size": 2,
+    "one_length": 8,
+    "dev_dpi": 200,
+    "has_id": true,
+    "use_spp": false,
+    "can_print_label": true,
+    "label_value": "1",
+    "back_paper_num": 40,
+    "protocol_default": {
+      "type": "tiny"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1"
+      ],
+      "encoding": "tiny_rle"
+    },
+    "stream": {
+      "chunk_size": 123,
+      "delay_ms": 4
+    },
+    "post_print_feed_count": 2,
+    "print_defaults": {
+      "speed": {
+        "image": 10,
+        "text": 10
+      },
+      "energy": {
+        "image": {
+          "low": 9000,
+          "middle": 9000,
+          "high": 9000
+        },
+        "text": {
+          "low": 0,
+          "middle": 0,
+          "high": 0
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "default_384r"
+    ]
+  },
+  {
+    "profile_key": "x6h",
+    "size": 2,
+    "one_length": 8,
+    "dev_dpi": 200,
+    "has_id": true,
+    "use_spp": true,
+    "can_print_label": true,
+    "label_value": "1",
+    "back_paper_num": 40,
+    "protocol_default": {
+      "type": "tiny"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1"
+      ],
+      "encoding": "tiny_rle"
+    },
+    "stream": {
+      "chunk_size": 180,
+      "delay_ms": 4
+    },
+    "post_print_feed_count": 2,
+    "print_defaults": {
+      "speed": {
+        "image": 10,
+        "text": 10
+      },
+      "energy": {
+        "image": {
+          "low": 9500,
+          "middle": 9500,
+          "high": 9500
+        },
+        "text": {
+          "low": 9500,
+          "middle": 9500,
+          "high": 9500
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "default_384r"
+    ]
+  },
+  {
+    "profile_key": "x7",
+    "size": 2,
+    "one_length": 8,
+    "dev_dpi": 200,
+    "has_id": true,
+    "use_spp": false,
+    "can_print_label": true,
+    "label_value": "1",
+    "back_paper_num": 40,
+    "protocol_default": {
+      "type": "tiny"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1"
+      ],
+      "encoding": "tiny_rle"
+    },
+    "stream": {
+      "chunk_size": 123,
+      "delay_ms": 6
+    },
+    "post_print_feed_count": 2,
+    "print_defaults": {
+      "speed": {
+        "image": 10,
+        "text": 10
+      },
+      "energy": {
+        "image": {
+          "low": 7500,
+          "middle": 7500,
+          "high": 7500
+        },
+        "text": {
+          "low": 0,
+          "middle": 0,
+          "high": 0
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "default_384r"
+    ]
+  },
+  {
+    "profile_key": "x7hp",
+    "size": 2,
+    "one_length": 8,
+    "dev_dpi": 200,
+    "has_id": true,
+    "use_spp": true,
+    "can_print_label": true,
+    "label_value": "1",
+    "back_paper_num": 40,
+    "protocol_default": {
+      "type": "tiny"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1"
+      ],
+      "encoding": "tiny_rle"
+    },
+    "stream": {
+      "chunk_size": 180,
+      "delay_ms": 4
+    },
+    "post_print_feed_count": 2,
+    "print_defaults": {
+      "speed": {
+        "image": 10,
+        "text": 10
+      },
+      "energy": {
+        "image": {
+          "low": 20000,
+          "middle": 20000,
+          "high": 20000
+        },
+        "text": {
+          "low": 20000,
+          "middle": 20000,
+          "high": 20000
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "default_384r"
+    ]
+  },
+  {
+    "profile_key": "x8",
+    "size": 8,
+    "one_length": 8,
+    "dev_dpi": 200,
+    "has_id": true,
+    "use_spp": true,
+    "can_print_label": false,
+    "label_value": "0",
+    "back_paper_num": 0,
+    "protocol_default": {
+      "type": "tiny",
+      "packets_type": "line_eight"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1"
+      ],
+      "encoding": "tiny_rle"
+    },
+    "stream": {
+      "chunk_size": 183,
+      "delay_ms": 4
+    },
+    "post_print_feed_count": 2,
+    "print_defaults": {
+      "speed": {
+        "image": 30,
+        "text": 22
+      },
+      "energy": {
+        "image": {
+          "low": 5000,
+          "middle": 3500,
+          "high": 4000
+        },
+        "text": {
+          "low": 4000,
+          "middle": 4000,
+          "high": 4000
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "plain_1600r_1664p_64pl",
+      "a4sheet_1600r_1664p_64pl"
+    ]
+  },
+  {
+    "profile_key": "x9",
+    "size": 8,
+    "one_length": 8,
+    "dev_dpi": 200,
+    "has_id": true,
+    "use_spp": true,
+    "can_print_label": false,
+    "label_value": "0",
+    "back_paper_num": 0,
+    "protocol_default": {
+      "type": "tiny",
+      "packets_type": "line_eight"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1"
+      ],
+      "encoding": "tiny_rle"
+    },
+    "stream": {
+      "chunk_size": 512,
+      "delay_ms": 4
+    },
+    "post_print_feed_count": 2,
+    "print_defaults": {
+      "speed": {
+        "image": 40,
+        "text": 30
+      },
+      "energy": {
+        "image": {
+          "low": 15000,
+          "middle": 15000,
+          "high": 15000
+        },
+        "text": {
+          "low": 33000,
+          "middle": 33000,
+          "high": 33000
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "plain_1600r_1632p_32pl",
+      "a4sheet_1600r_1632p_32pl_2460mh"
+    ]
+  },
+  {
+    "profile_key": "xw001",
+    "size": 2,
+    "one_length": 8,
+    "dev_dpi": 200,
+    "ble_mtu_request": 23,
+    "has_id": false,
+    "use_spp": false,
+    "can_print_label": false,
+    "label_value": "0",
+    "back_paper_num": 0,
+    "protocol_default": {
+      "type": "tiny"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1"
+      ],
+      "encoding": "tiny_raw"
+    },
+    "stream": {
+      "chunk_size": 180,
+      "delay_ms": 2
+    },
+    "post_print_feed_count": 2,
+    "print_defaults": {
+      "speed": {
+        "image": 45,
+        "text": 35
+      },
+      "energy": {
+        "image": {
+          "low": 0,
+          "middle": 0,
+          "high": 0
+        },
+        "text": {
+          "low": 0,
+          "middle": 0,
+          "high": 0
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "default_384r"
+    ]
+  },
+  {
+    "profile_key": "xw002",
+    "size": 2,
+    "one_length": 12,
+    "dev_dpi": 300,
+    "ble_mtu_request": 23,
+    "has_id": false,
+    "use_spp": false,
+    "can_print_label": false,
+    "label_value": "0",
+    "back_paper_num": 0,
+    "protocol_default": {
+      "type": "tiny"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1"
+      ],
+      "encoding": "tiny_rle"
+    },
+    "stream": {
+      "chunk_size": 180,
+      "delay_ms": 2
+    },
+    "post_print_feed_count": 2,
+    "print_defaults": {
+      "speed": {
+        "image": 45,
+        "text": 35
+      },
+      "energy": {
+        "image": {
+          "low": 0,
+          "middle": 0,
+          "high": 0
+        },
+        "text": {
+          "low": 0,
+          "middle": 0,
+          "high": 0
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "default_576r"
+    ]
+  },
+  {
+    "profile_key": "ytb01",
+    "size": 2,
+    "one_length": 8,
+    "dev_dpi": 200,
+    "has_id": true,
+    "use_spp": false,
+    "can_print_label": false,
+    "label_value": "0",
+    "back_paper_num": 0,
+    "protocol_default": {
+      "type": "v5c"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1"
+      ],
+      "encoding": "v5c_a4"
+    },
+    "stream": {
+      "chunk_size": 123,
+      "delay_ms": 4
+    },
+    "post_print_feed_count": 2,
+    "print_defaults": {
+      "energy": {
+        "image": {
+          "low": 12000,
+          "middle": 12000,
+          "high": 12000
+        },
+        "text": {
+          "low": 0,
+          "middle": 0,
+          "high": 0
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "default_384r"
+    ]
+  },
+  {
+    "profile_key": "zhhc",
+    "size": 2,
+    "one_length": 12,
+    "dev_dpi": 200,
+    "ble_mtu_request": 23,
+    "has_id": true,
+    "use_spp": false,
+    "can_print_label": false,
+    "label_value": "1",
+    "back_paper_num": 40,
+    "protocol_default": {
+      "type": "tiny"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1"
+      ],
+      "encoding": "tiny_rle"
+    },
+    "stream": {
+      "chunk_size": 123,
+      "delay_ms": 4
+    },
+    "post_print_feed_count": 2,
+    "print_defaults": {
+      "speed": {
+        "image": 10,
+        "text": 10
+      },
+      "energy": {
+        "image": {
+          "low": 9000,
+          "middle": 9000,
+          "high": 9000
+        },
+        "text": {
+          "low": 0,
+          "middle": 0,
+          "high": 0
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "default_384r"
+    ]
+  },
+  {
+    "profile_key": "zp802",
+    "size": 8,
+    "one_length": 12,
+    "dev_dpi": 300,
+    "has_id": true,
+    "use_spp": true,
+    "can_print_label": false,
+    "label_value": "0",
+    "back_paper_num": 0,
+    "protocol_default": {
+      "type": "tiny",
+      "packets_type": "line_eight"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1"
+      ],
+      "encoding": "tiny_rle"
+    },
+    "stream": {
+      "chunk_size": 512,
+      "delay_ms": 4
+    },
+    "post_print_feed_count": 2,
+    "print_defaults": {
+      "speed": {
+        "image": 20,
+        "text": 1
+      },
+      "energy": {
+        "image": {
+          "low": 8000,
+          "middle": 8000,
+          "high": 8000
+        },
+        "text": {
+          "low": 7000,
+          "middle": 7000,
+          "high": 7000
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "plain_2400r_2496p",
+      "a4sheet_2400r_2496p"
+    ]
+  },
+  {
+    "profile_key": "eleph_tspl_p1",
+    "size": 2,
+    "one_length": 8,
+    "dev_dpi": 203,
+    "has_id": false,
+    "use_spp": true,
+    "can_print_label": true,
+    "label_value": "1",
+    "back_paper_num": 0,
+    "protocol_default": {
+      "type": "eleph_tspl",
+      "packets_type": "p1"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1"
+      ],
+      "encoding": "eleph_tspl_bitmap"
+    },
+    "stream": {
+      "chunk_size": 1024,
+      "delay_ms": 0
+    },
+    "post_print_feed_count": 0,
+    "print_defaults": {
+      "energy": {
+        "image": {
+          "low": 0,
+          "middle": 0,
+          "high": 0
+        },
+        "text": {
+          "low": 0,
+          "middle": 0,
+          "high": 0
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "tag_384r"
+    ]
+  },
+  {
+    "profile_key": "toprint_tspl_p1",
+    "size": 2,
+    "one_length": 8,
+    "dev_dpi": 203,
+    "has_id": false,
+    "use_spp": true,
+    "can_print_label": true,
+    "label_value": "1",
+    "back_paper_num": 0,
+    "protocol_default": {
+      "type": "toprint_tspl",
+      "packets_type": "p1"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1"
+      ],
+      "encoding": "toprint_tspl_bitmap"
+    },
+    "stream": {
+      "chunk_size": 180,
+      "delay_ms": 10
+    },
+    "post_print_feed_count": 0,
+    "print_defaults": {
+      "speed": {
+        "image": 6,
+        "text": 6
+      },
+      "energy": {
+        "image": {
+          "low": 0,
+          "middle": 0,
+          "high": 0
+        },
+        "text": {
+          "low": 0,
+          "middle": 0,
+          "high": 0
+        }
+      },
+      "density": {
+        "image": {
+          "low": 6,
+          "middle": 9,
+          "high": 13
+        },
+        "text": {
+          "low": 6,
+          "middle": 9,
+          "high": 13
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "tag_384r",
+      "plain_384r",
+      "blacktag_384r"
+    ]
+  },
+  {
+    "profile_key": "toprint_hprt_esc_zl1",
+    "size": 2,
+    "one_length": 8,
+    "dev_dpi": 203,
+    "has_id": false,
+    "use_spp": true,
+    "can_print_label": true,
+    "label_value": "1",
+    "back_paper_num": 0,
+    "protocol_default": {
+      "type": "toprint_hprt_esc",
+      "packets_type": "zl1"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1"
+      ],
+      "encoding": "toprint_hprt_esc_raster"
+    },
+    "stream": {
+      "chunk_size": 180,
+      "delay_ms": 10
+    },
+    "post_print_feed_count": 0,
+    "print_defaults": {
+      "energy": {
+        "image": {
+          "low": 0,
+          "middle": 0,
+          "high": 0
+        },
+        "text": {
+          "low": 0,
+          "middle": 0,
+          "high": 0
+        }
+      },
+      "density": {
+        "image": {
+          "low": 0,
+          "middle": 1,
+          "high": 2
+        },
+        "text": {
+          "low": 0,
+          "middle": 1,
+          "high": 2
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "tag_384r",
+      "plain_384r",
+      "blacktag_384r"
+    ]
+  },
+  {
+    "profile_key": "niimbot_d11",
+    "size": 1,
+    "one_length": 8,
+    "dev_dpi": 203,
+    "has_id": true,
+    "use_spp": false,
+    "can_print_label": true,
+    "label_value": "1",
+    "back_paper_num": 0,
+    "protocol_default": {
+      "type": "niimbot",
+      "packets_type": "d11_v1"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1"
+      ],
+      "encoding": "niimbot_d110"
+    },
+    "stream": {
+      "chunk_size": 180,
+      "delay_ms": 10
+    },
+    "post_print_feed_count": 0,
+    "print_defaults": {
+      "energy": {
+        "image": {
+          "low": 0,
+          "middle": 0,
+          "high": 0
+        },
+        "text": {
+          "low": 0,
+          "middle": 0,
+          "high": 0
+        }
+      },
+      "density": {
+        "image": {
+          "low": 1,
+          "middle": 2,
+          "high": 3
+        },
+        "text": {
+          "low": 1,
+          "middle": 2,
+          "high": 3
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "default_96r"
+    ]
+  },
+  {
+    "profile_key": "niimbot_d110",
+    "size": 1,
+    "one_length": 8,
+    "dev_dpi": 203,
+    "has_id": true,
+    "use_spp": false,
+    "can_print_label": true,
+    "label_value": "1",
+    "back_paper_num": 0,
+    "protocol_default": {
+      "type": "niimbot",
+      "packets_type": "d110"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1"
+      ],
+      "encoding": "niimbot_d110"
+    },
+    "stream": {
+      "chunk_size": 180,
+      "delay_ms": 10
+    },
+    "post_print_feed_count": 0,
+    "print_defaults": {
+      "energy": {
+        "image": {
+          "low": 0,
+          "middle": 0,
+          "high": 0
+        },
+        "text": {
+          "low": 0,
+          "middle": 0,
+          "high": 0
+        }
+      },
+      "density": {
+        "image": {
+          "low": 1,
+          "middle": 2,
+          "high": 3
+        },
+        "text": {
+          "low": 1,
+          "middle": 2,
+          "high": 3
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "default_96r"
+    ]
+  },
+  {
+    "profile_key": "instaprint_ctp500",
+    "size": 2,
+    "one_length": 8,
+    "dev_dpi": 203,
+    "has_id": false,
+    "use_spp": true,
+    "can_print_label": false,
+    "label_value": "0",
+    "back_paper_num": 0,
+    "protocol_default": {
+      "type": "instaprint_core",
+      "packets_type": "ctp500"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1"
+      ],
+      "encoding": "instaprint_core_raster"
+    },
+    "stream": {
+      "chunk_size": 180,
+      "delay_ms": 10
+    },
+    "post_print_feed_count": 0,
+    "print_defaults": {
+      "energy": {
+        "image": {
+          "low": 0,
+          "middle": 0,
+          "high": 0
+        },
+        "text": {
+          "low": 0,
+          "middle": 0,
+          "high": 0
+        }
+      },
+      "density": {
+        "image": {
+          "low": 12,
+          "middle": 15,
+          "high": 18
+        },
+        "text": {
+          "low": 12,
+          "middle": 15,
+          "high": 18
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "plain_384r"
+    ]
+  },
+  {
+    "profile_key": "phomemo_m02",
+    "size": 2,
+    "one_length": 8,
+    "dev_dpi": 203,
+    "has_id": false,
+    "use_spp": true,
+    "can_print_label": true,
+    "label_value": "0",
+    "back_paper_num": 0,
+    "protocol_default": {
+      "type": "phomemo_esc",
+      "packets_type": "m02"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1"
+      ],
+      "encoding": "phomemo_esc_raster"
+    },
+    "stream": {
+      "chunk_size": 128,
+      "delay_ms": 20
+    },
+    "post_print_feed_count": 2,
+    "print_defaults": {
+      "energy": {
+        "image": {
+          "low": 0,
+          "middle": 0,
+          "high": 0
+        },
+        "text": {
+          "low": 0,
+          "middle": 0,
+          "high": 0
+        }
+      },
+      "density": {
+        "image": {
+          "low": 1,
+          "middle": 2,
+          "high": 4
+        },
+        "text": {
+          "low": 1,
+          "middle": 2,
+          "high": 4
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "plain_384r",
+      "tag_384r"
+    ]
+  },
+  {
+    "profile_key": "phomemo_m02s",
+    "size": 2,
+    "one_length": 8,
+    "dev_dpi": 300,
+    "has_id": false,
+    "use_spp": true,
+    "can_print_label": true,
+    "label_value": "0",
+    "back_paper_num": 0,
+    "protocol_default": {
+      "type": "phomemo_esc",
+      "packets_type": "m02s"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1"
+      ],
+      "encoding": "phomemo_esc_raster"
+    },
+    "stream": {
+      "chunk_size": 128,
+      "delay_ms": 20
+    },
+    "post_print_feed_count": 2,
+    "print_defaults": {
+      "energy": {
+        "image": {
+          "low": 0,
+          "middle": 0,
+          "high": 0
+        },
+        "text": {
+          "low": 0,
+          "middle": 0,
+          "high": 0
+        }
+      },
+      "density": {
+        "image": {
+          "low": 1,
+          "middle": 2,
+          "high": 4
+        },
+        "text": {
+          "low": 1,
+          "middle": 2,
+          "high": 4
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "plain_576r",
+      "tag_576r"
+    ]
+  },
+  {
+    "profile_key": "phomemo_m02x",
+    "size": 2,
+    "one_length": 8,
+    "dev_dpi": 203,
+    "has_id": false,
+    "use_spp": true,
+    "can_print_label": false,
+    "label_value": "0",
+    "back_paper_num": 0,
+    "protocol_default": {
+      "type": "phomemo_esc",
+      "packets_type": "m02x"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1"
+      ],
+      "encoding": "phomemo_esc_raster"
+    },
+    "stream": {
+      "chunk_size": 128,
+      "delay_ms": 20
+    },
+    "post_print_feed_count": 2,
+    "print_defaults": {
+      "energy": {
+        "image": {
+          "low": 0,
+          "middle": 0,
+          "high": 0
+        },
+        "text": {
+          "low": 0,
+          "middle": 0,
+          "high": 0
+        }
+      },
+      "density": {
+        "image": {
+          "low": 1,
+          "middle": 2,
+          "high": 4
+        },
+        "text": {
+          "low": 1,
+          "middle": 2,
+          "high": 4
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "plain_384r"
+    ]
+  },
+  {
+    "profile_key": "phomemo_t02",
+    "size": 2,
+    "one_length": 8,
+    "dev_dpi": 203,
+    "has_id": false,
+    "use_spp": true,
+    "can_print_label": true,
+    "label_value": "0",
+    "back_paper_num": 0,
+    "protocol_default": {
+      "type": "phomemo_esc",
+      "packets_type": "t02"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1"
+      ],
+      "encoding": "phomemo_esc_raster"
+    },
+    "stream": {
+      "chunk_size": 128,
+      "delay_ms": 20
+    },
+    "post_print_feed_count": 2,
+    "print_defaults": {
+      "energy": {
+        "image": {
+          "low": 0,
+          "middle": 0,
+          "high": 0
+        },
+        "text": {
+          "low": 0,
+          "middle": 0,
+          "high": 0
+        }
+      },
+      "density": {
+        "image": {
+          "low": 1,
+          "middle": 2,
+          "high": 4
+        },
+        "text": {
+          "low": 1,
+          "middle": 2,
+          "high": 4
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "plain_384r",
+      "tag_384r"
+    ]
+  },
+  {
+    "profile_key": "phomemo_m02_pro",
+    "size": 2,
+    "one_length": 8,
+    "dev_dpi": 300,
+    "has_id": false,
+    "use_spp": true,
+    "can_print_label": true,
+    "label_value": "0",
+    "back_paper_num": 0,
+    "protocol_default": {
+      "type": "phomemo_esc",
+      "packets_type": "m02_pro"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1"
+      ],
+      "encoding": "phomemo_esc_raster"
+    },
+    "stream": {
+      "chunk_size": 128,
+      "delay_ms": 20
+    },
+    "post_print_feed_count": 2,
+    "print_defaults": {
+      "energy": {
+        "image": {
+          "low": 0,
+          "middle": 0,
+          "high": 0
+        },
+        "text": {
+          "low": 0,
+          "middle": 0,
+          "high": 0
+        }
+      },
+      "density": {
+        "image": {
+          "low": 1,
+          "middle": 2,
+          "high": 4
+        },
+        "text": {
+          "low": 1,
+          "middle": 2,
+          "high": 4
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "plain_576r",
+      "tag_576r"
+    ]
+  },
+  {
+    "profile_key": "printmaster_m_384",
+    "size": 2,
+    "one_length": 8,
+    "dev_dpi": 203,
+    "has_id": false,
+    "use_spp": true,
+    "can_print_label": false,
+    "label_value": "0",
+    "back_paper_num": 0,
+    "protocol_default": {
+      "type": "phomemo_esc",
+      "packets_type": "printmaster_m110"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1"
+      ],
+      "encoding": "phomemo_esc_raster"
+    },
+    "stream": {
+      "chunk_size": 128,
+      "delay_ms": 20
+    },
+    "post_print_feed_count": 0,
+    "print_defaults": {
+      "energy": {
+        "image": {
+          "low": 0,
+          "middle": 0,
+          "high": 0
+        },
+        "text": {
+          "low": 0,
+          "middle": 0,
+          "high": 0
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "tag_384r"
+    ]
+  },
+  {
+    "profile_key": "funny_lx_384",
+    "size": 2,
+    "one_length": 8,
+    "dev_dpi": 203,
+    "has_id": false,
+    "use_spp": false,
+    "can_print_label": false,
+    "label_value": "0",
+    "back_paper_num": 0,
+    "protocol_default": {
+      "type": "funny_lx",
+      "packets_type": "lx_d_direct"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1"
+      ],
+      "encoding": "funny_lx_raster"
+    },
+    "stream": {
+      "chunk_size": 100,
+      "delay_ms": 10
+    },
+    "post_print_feed_count": 0,
+    "ble_mtu_request": 511,
+    "print_defaults": {
+      "energy": {
+        "image": {
+          "low": 0,
+          "middle": 0,
+          "high": 0
+        },
+        "text": {
+          "low": 0,
+          "middle": 0,
+          "high": 0
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "plain_384r"
+    ]
+  },
+  {
+    "profile_key": "yk_astra_p1_s001",
+    "size": 1,
+    "one_length": 320,
+    "dev_dpi": 203,
+    "has_id": true,
+    "use_spp": true,
+    "can_print_label": true,
+    "label_value": "1",
+    "back_paper_num": 40,
+    "protocol_default": {
+      "type": "yk_astra_p1",
+      "packets_type": "s001"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1"
+      ],
+      "encoding": "yk_astra_p1_raw"
+    },
+    "stream": {
+      "chunk_size": 128,
+      "delay_ms": 20
+    },
+    "post_print_feed_count": 2,
+    "print_defaults": {
+      "speed": {
+        "image": 25,
+        "text": 25
+      },
+      "energy": {
+        "image": {
+          "low": 0,
+          "middle": 0,
+          "high": 0
+        },
+        "text": {
+          "low": 0,
+          "middle": 0,
+          "high": 0
+        }
+      },
+      "density": {
+        "image": {
+          "low": 5,
+          "middle": 9,
+          "high": 13
+        },
+        "text": {
+          "low": 5,
+          "middle": 9,
+          "high": 13
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "yk_snap_catalog_tag_14x40",
+      "yk_snap_catalog_plain_15",
+      "yk_snap_catalog_tag_14x22",
+      "yk_snap_catalog_tag_14x30",
+      "yk_snap_catalog_tag_12x40",
+      "yk_snap_catalog_tag_14x40_blue",
+      "yk_snap_catalog_tag_14x40_bubbles",
+      "yk_snap_catalog_tag_14x40_planet",
+      "yk_snap_catalog_tag_14x50",
+      "yk_snap_catalog_tag_12_5x74",
+      "yk_snap_catalog_s001_transparent_14x40",
+      "yk_s001_custom_plain_90r",
+      "yk_s001_custom_tag_90r",
+      "yk_s001_custom_blacktag_90r"
+    ]
+  },
+  {
+    "profile_key": "luck_apa41",
+    "size": 8,
+    "one_length": 8,
+    "dev_dpi": 203,
+    "has_id": true,
+    "use_spp": true,
+    "can_print_label": false,
+    "label_value": "0",
+    "back_paper_num": 0,
+    "protocol_default": {
+      "type": "luck_normal_a4",
+      "packets_type": "lujiang_a4"
+    },
+    "default_image_pipeline": {
+      "formats": [
+        "bw1"
+      ],
+      "encoding": "luck_normal_compressed"
+    },
+    "stream": {
+      "chunk_size": 300,
+      "delay_ms": 4
+    },
+    "post_print_feed_count": 2,
+    "print_defaults": {
+      "energy": {
+        "image": {
+          "low": 10000,
+          "middle": 10000,
+          "high": 10000
+        },
+        "text": {
+          "low": 10000,
+          "middle": 10000,
+          "high": 10000
+        }
+      },
+      "density": {
+        "image": {
+          "low": 0,
+          "middle": 2,
+          "high": 5
+        },
+        "text": {
+          "low": 0,
+          "middle": 2,
+          "high": 5
+        }
+      }
+    },
+    "a4xii": false,
+    "paper_presets": [
+      "luck_a4_roll_216mm",
+      "luck_a4_roll_56mm",
+      "luck_a4_roll_77mm",
+      "luck_a4_roll_107mm",
+      "luck_a4_roll_148mm",
+      "luck_a4_roll_210mm",
+      "tag_1648r",
+      "blacktag_1648r",
+      "luck_a4_folder_a4",
+      "luck_a4_folder_a5",
+      "luck_a4_folder_letter",
+      "luck_a4_folder_legal",
+      "tattoo_1648r"
+    ]
+  }
+]
