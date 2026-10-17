@@ -1,0 +1,10 @@
+[Unit]
+Description=Photobooth module %i
+PartOf=startup.target
+
+[Service]
+EnvironmentFile=/etc/photobooth/config.env
+ExecStart=/usr/local/bin/startup.sh %i
+Restart=on-failure
+# wait before restarting
+RestartSec=5s
