@@ -571,7 +571,11 @@ static int delete_oldest_safe_pair(const image_metadata_t *raw_list,
     return 0;
 }
 
+<<<<<<< HEAD
 /* int fs_cleanup_old_files(const char *base_directory,
+=======
+int fs_cleanup_old_files(const char *base_directory,
+>>>>>>> a38ae089dd183a05a15beff8b8397699905dcd19
                          double threshold_percent,
                          long long max_media_bytes)
 {
@@ -632,6 +636,7 @@ static int delete_oldest_safe_pair(const image_metadata_t *raw_list,
 
     free(raw_list);
     return total_deleted;
+<<<<<<< HEAD
 } */
 
 int fs_cleanup_old_files(const char *base_directory,
@@ -688,6 +693,8 @@ int fs_cleanup_old_files(const char *base_directory,
 
     free(raw_list);
     return total_deleted;
+=======
+>>>>>>> a38ae089dd183a05a15beff8b8397699905dcd19
 }
 
 static void remove_cache_entry(image_cache_t *cache, int index)
@@ -814,5 +821,8 @@ void cache_destroy(image_cache_t *cache)
     cache->count = 0;
     cache->current_size_bytes = 0;
 }
+<<<<<<< HEAD
 
 /////
+=======
+>>>>>>> a38ae089dd183a05a15beff8b8397699905dcd19
