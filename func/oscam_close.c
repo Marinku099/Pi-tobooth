@@ -10,4 +10,6 @@ int oscam_close(int fd, struct buffer *buffers, struct v4l2_requestbuffers *reqb
     // Free memory and close file decription
 	free(buffers);
 	close(fd);
+
+	return 0;
 }

@@ -78,10 +78,6 @@ int main(void) {
 
 	while (ioctl(fd, VIDIOC_ENUM_FRAMESIZES, &frmsize) == 0 && n_sizes < MAX_SIZES) {
 		if (frmsize.type == V4L2_FRMSIZE_TYPE_DISCRETE) {
-		/*	printf("size #%d: %ux%u\n",
-					frmsize.index,
-					frmsize.discrete.width,
-					frmsize.discrete.height); */
 			sizes[n_sizes].width = frmsize.discrete.width;
 			sizes[n_sizes].height = frmsize.discrete.height;
 			n_sizes++;

@@ -8,6 +8,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <time.h>
+#include <poll.h>
 #include <sys/ioctl.h>
 #include <sys/mman.h>
 #include <linux/videodev2.h>
@@ -25,8 +26,9 @@ int oscam_reqbufs(int fd, int nbuffers, struct v4l2_requestbuffers *reqbuf);
 int oscam_querybufs(int fd, struct buffer *buffers, struct v4l2_requestbuffers *reqbuf);
 int oscam_qbufs(int fd, struct v4l2_requestbuffers *reqbuf);
 int oscam_streamon(int fd, enum v4l2_buf_type *type);
-int oscam_capture(int fd, int n_frames, struct buffer *buffers);
+int oscam_capture(int fd, struct buffer *buffers, struct v4l2_buffer *buf);
 int oscam_streamoff(int fd, enum v4l2_buf_type *type);
 int oscam_close(int fd, struct buffer *buffers, struct v4l2_requestbuffers *reqbuf);
+int oscam_saveimg_timestramp(int fd, struct buffer *buffers, struct v4l2_buffer *buf);
 
 #endif
