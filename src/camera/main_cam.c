@@ -1,5 +1,4 @@
 #include "oscam.h"
-#include "paths.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <fcntl.h>
