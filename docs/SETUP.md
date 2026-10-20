@@ -28,6 +28,20 @@ sudo sed -i 's/\r$//' /etc/photobooth/config.env
 
 Format: `KEY=value`, no spaces around `=`, no `export`. New keys go in `config.env.example`
 
+| Key | Value | Used by |
+|---|---|---|
+| `PHOTOBOOTH_DIR` | `/var/lib/photobooth` | storage (disk space check) |
+| `RAW` | `/var/lib/photobooth/raw` | webcam (writes), filter (reads), storage |
+| `FILTERED` | `/var/lib/photobooth/filtered` | filter (writes), storage, printer |
+| `TMP` | `/var/lib/photobooth/tmp` | storage |
+
+Rules for paths:
+- `config.env` is the only place paths are defined. No hardcoded paths, no `#define` paths in C headers.
+- Every value is a **full path**. Use it as is. Don't join it with `PHOTOBOOTH_DIR`.
+- Read the variables once at the start of the program (C: top of `main()`, Python: top of the script), then pass them on.
+  - C: `getenv("RAW")`. Exit with an error if it returns `NULL`.
+  - Python: `os.environ["RAW"]`. Raises `KeyError` if missing.
+
 ## 3. Build and install
 
 From the repo root:
@@ -59,7 +73,7 @@ sudo systemctl enable --now startup.target
 systemctl status 'startup@*'
 ```
 
-The storage module creates `/var/lib/photobooth/{raw,filtered,tmp}` on first start (via `fs_init`). Other modules that start before it may restart once (5 s) until the folders exist.
+The storage module creates the `PHOTOBOOTH_DIR`, `RAW`, `FILTERED` and `TMP` folders on first start (via `fs_init`). If any variable is missing, it logs `fs_init: <name> is NULL` and exits. Other modules that start before it may restart once (5 s) until the folders exist.
 
 Until the real programs replace the `echo` lines in `startup.sh`, each module prints one line and exits. `inactive (dead)` is expected.
 
@@ -104,34 +118,18 @@ python3 -m venv ~/Pi-tobooth/.venv
 3. Repeat step 3.
 4. `sudo systemctl restart startup.target`
 
-## 8. Test on a PC or VM
+## 8. Run a module by hand
 
-For quick tests without `sudo`, `/var/lib`, or systemd, use the repo's `test/` folder:
-
-```
-test/raw_images/        input
-test/filtered_images/   output
-```
-
-Point the config variables at it and run the program directly:
+To debug a module outside systemd, stop its service, load `config.env` into the shell, and run the program directly:
 
 ```
-cd ~/Pi-tobooth
-export PHOTOBOOTH_RAW_DIR=$PWD/test/raw_images
-export PHOTOBOOTH_FILTERED_DIR=$PWD/test/filtered_images
-.venv/bin/python3 -u src/filters/ImageProcessing.py
+sudo systemctl stop startup@filter
+set -a; . /etc/photobooth/config.env; set +a
+~/Pi-tobooth/.venv/bin/python3 -u ~/Pi-tobooth/src/filters/ImageProcessing.py
 ```
 
-In a second terminal, drop in an image under a new name and check the output:
-
-```
-cp test/raw_images/Test_Image.jpg test/raw_images/new.jpg
-ls test/filtered_images
-```
-
-- The watcher only reacts to new files. Existing images in `test/raw_images/` are ignored.
-- The exports last for that terminal session only.
-- `test/` is for development. The Pi uses `/var/lib/photobooth/`.
+- The loaded variables last for that terminal session only.
+- Run `sudo systemctl start startup@filter` when done.
 
 ## 9. Test the installed pipeline
 
@@ -156,6 +154,10 @@ Reboot and run `systemctl status 'startup@*'` to check autostart.
 | Exit code 127 | Use `python3`, not `python` |
 | `ModuleNotFoundError` | Service isn't using the venv's `python3` |
 | Config change ignored | `sudo systemctl restart startup@<name>` |
+| `KeyError: 'RAW'` / `fs_init: raw_dir is NULL` | Key missing from `/etc/photobooth/config.env`. Compare with `config.env.example` |
+| Folder like `/var/lib/photobooth//var/lib/photobooth/raw` | Code joins `PHOTOBOOTH_DIR` with a full path. Use the variable as is |
+| Files land in a `raw/` folder next to the program | `config.env` has `RAW=raw`. Use full paths |
+| Works by hand, not as a service (or the reverse) | Shell env differs from `config.env`. Load it with `set -a; . /etc/photobooth/config.env; set +a` |
 
 ## 11. Uninstall
 

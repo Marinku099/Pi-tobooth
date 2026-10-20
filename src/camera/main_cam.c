@@ -1,4 +1,5 @@
 #include "oscam.h"
+#include "paths.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <fcntl.h>
@@ -60,7 +61,13 @@ int main(void) {
     */
     
     // Connect to camera
-    const char *dev_name = "/dev/v4l/by-id/usb-046d_0825_4555BF00-video-index0"; 
+    const char *dev_name = "/dev/v4l/by-id/usb-046d_0825_4555BF00-video-index0";
+    const char *raw_dir = getenv("RAW");
+
+    // Get into the working dir (to save picture correctly)
+    if(chdir(raw_dir) == -1){
+        exit(EXIT_FAILURE);
+    }
 
     int fd = oscam_open(dev_name);
  

@@ -3,7 +3,6 @@
 #endif
 
 #include "fs_manager.h"
-
 #include <dirent.h>
 #include <errno.h>
 #include <fcntl.h>
@@ -16,8 +15,11 @@
 
 #define FS_CLEANUP_LIST_MAX 2048
 
-/* เก็บ base_directory ที่ fs_init() ตั้งไว้ ให้ฟังก์ชันอื่นในไฟล์นี้ใช้ต่อ */
+/* เก็บ path เต็มที่ fs_init() ตั้งไว้ ให้ฟังก์ชันอื่นในไฟล์นี้ใช้ต่อ */
 static char g_base_directory[FS_MAX_PATH_LEN] = {0};
+static char g_raw_dir[FS_MAX_PATH_LEN] = {0};
+static char g_filtered_dir[FS_MAX_PATH_LEN] = {0};
+static char g_tmp_dir[FS_MAX_PATH_LEN] = {0};
 
 /* ตัวนับไว้ต่อท้ายชื่อไฟล์ raw กันชื่อซ้ำกันในวินาทีเดียวกัน */
 static unsigned long g_raw_filename_counter = 0;
@@ -34,12 +36,12 @@ static void log_errno(const char *context)
 }
 
 /*
- * subdir_for_type
- *   คืนชื่อโฟลเดอร์ย่อยที่ตรงกับ image_type_t ที่ระบุ
+ * dir_for_type
+ *   คืน path เต็มของโฟลเดอร์ที่ตรงกับ image_type_t ที่ระบุ
  */
-static const char *subdir_for_type(image_type_t type)
+static const char *dir_for_type(image_type_t type)
 {
-    return (type == IMAGE_TYPE_RAW) ? FS_SUBDIR_RAW : FS_SUBDIR_FILTERED;
+    return (type == IMAGE_TYPE_RAW) ? g_raw_dir : g_filtered_dir;
 }
 
 static int is_dot_entry(const char *name)
@@ -80,8 +82,7 @@ static int join_path(char *out, size_t out_len,
 static int build_image_path(char *out, size_t out_len,
                             image_type_t type, const char *filename)
 {
-    return join_path(out, out_len, g_base_directory,
-                     subdir_for_type(type), filename);
+    return join_path(out, out_len, dir_for_type(type), NULL, filename);
 }
 
 /*
@@ -188,36 +189,34 @@ static int compare_metadata_by_time(const void *a, const void *b)
     return strcmp(meta_a->filename, meta_b->filename);
 }
 
-//call this the first time system start
-int fs_init(const char *base_directory)
+/*
+ * set_dir
+ *   copy path เต็มลง dst แล้วสร้างโฟลเดอร์ถ้ายังไม่มี
+ * คืนค่า: 0 = สำเร็จ, -1 = error (NULL / ยาวเกิน / mkdir ไม่ได้)
+ */
+static int set_dir(char *dst, size_t dst_len, const char *path, const char *name)
 {
-    static const char *const subdirs[] = {
-        FS_SUBDIR_RAW, FS_SUBDIR_FILTERED, FS_SUBDIR_TMP
-    };
-    char path_buf[FS_MAX_PATH_LEN];
-    size_t i;
-
-    if (base_directory == NULL) {
-        fprintf(stderr, "fs_init: base_directory is NULL\n");
+    if (path == NULL) {
+        fprintf(stderr, "fs_init: %s is NULL\n", name);
         return -1;
     }
-
-    if (snprintf(g_base_directory, sizeof(g_base_directory), "%s", base_directory)
-        >= (int)sizeof(g_base_directory)) {
-        fprintf(stderr, "fs_init: base_directory path too long\n");
+    if (snprintf(dst, dst_len, "%s", path) >= (int)dst_len) {
+        fprintf(stderr, "fs_init: %s path too long\n", name);
         return -1;
     }
+    return ensure_directory_exists(dst);
+}
 
-    if (ensure_directory_exists(g_base_directory) != 0) {
+//call this the first time system start
+int fs_init(const char *base_dir, const char *raw_dir,
+            const char *filtered_dir, const char *tmp_dir)
+{
+    if (set_dir(g_base_directory, sizeof(g_base_directory), base_dir, "base_dir") != 0 ||
+        set_dir(g_raw_dir, sizeof(g_raw_dir), raw_dir, "raw_dir") != 0 ||
+        set_dir(g_filtered_dir, sizeof(g_filtered_dir), filtered_dir, "filtered_dir") != 0 ||
+        set_dir(g_tmp_dir, sizeof(g_tmp_dir), tmp_dir, "tmp_dir") != 0) {
+        g_base_directory[0] = '\0';
         return -1;
-    }
-
-    for (i = 0; i < sizeof(subdirs) / sizeof(subdirs[0]); i++) {
-        if (join_path(path_buf, sizeof(path_buf),
-                      g_base_directory, subdirs[i], NULL) != 0 ||
-            ensure_directory_exists(path_buf) != 0) {
-            return -1;
-        }
     }
     return 0;
 }

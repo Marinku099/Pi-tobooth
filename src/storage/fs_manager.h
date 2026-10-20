@@ -7,10 +7,6 @@
 #define FS_MAX_FILENAME_LEN             256
 #define FS_MAX_PATH_LEN                 512
 
-#define FS_SUBDIR_RAW                   "raw"
-#define FS_SUBDIR_FILTERED              "filtered"
-#define FS_SUBDIR_TMP                   "tmp"
-
 #define FS_RAW_FILE_EXTENSION           ".jpg"
 
 // #define FS_MAX_CACHE_ITEMS              16
@@ -51,7 +47,9 @@ typedef struct {
 //     size_t        current_size_bytes;
 // } image_cache_t;
 
-int fs_init(const char *base_directory);
+// all arguments are full paths (from config.env: PHOTOBOOTH_DIR, RAW, FILTERED, TMP)
+int fs_init(const char *base_dir, const char *raw_dir,
+            const char *filtered_dir, const char *tmp_dir);
 
 // int fs_save_raw_image(const unsigned char *data,
 //                       size_t size,

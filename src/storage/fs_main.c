@@ -9,22 +9,22 @@
 
 int main()
 {
+    // full paths from /etc/photobooth/config.env
     const char *dir = getenv("PHOTOBOOTH_DIR");
-    char raw_path[PATH_MAX];
-    char filtered_path[PATH_MAX];
-
-    snprintf(raw_path, sizeof raw_path, "%s/%s", dir, FS_SUBDIR_RAW);
-    snprintf(filtered_path, sizeof filtered_path, "%s/%s", dir, FS_SUBDIR_FILTERED);
+    const char *raw_path = getenv("RAW");
+    const char *filtered_path = getenv("FILTERED");
+    const char *tmp_path = getenv("TMP");
 
     setvbuf(stdout, NULL, _IOLBF, 0);
 
     printf("start fs_main\n");
 
-    int init = fs_init(getenv("PHOTOBOOTH_DIR"));
-    if (init == 0)
+    if (fs_init(dir, raw_path, filtered_path, tmp_path) != 0)
     {
-        printf("init succesfully\n");
+        fprintf(stderr, "fs_init failed, check /etc/photobooth/config.env\n");
+        return 1;
     }
+    printf("init succesfully\n");
 
     int fd;
     int wd[2];
@@ -80,15 +80,17 @@ int main()
         {
             event = (const struct inotify_event *)ptr;
 
-            if (event->mask & IN_CREATE){
+            if (event->mask & IN_CREATE)
+            {
                 printf("IN_CREATE\n");
                 remaining_space = fs_get_disk_free_percent(dir);
-                printf("remaining space: %.2f percent\n",remaining_space);
-                if(remaining_space < FS_DISK_FREE_THRESHOLD_PERCENT){
+                printf("remaining space: %.2f percent\n", remaining_space);
+                if (remaining_space < FS_DISK_FREE_THRESHOLD_PERCENT)
+                {
                     printf("insufficient space, cleaning...\n");
                     fs_cleanup_old_files(dir, FS_DEFAULT_MEDIA_QUOTA_BYTES);
                     remaining_space = fs_get_disk_free_percent(dir);
-                    printf("remaining space: %.2lf\n",remaining_space);
+                    printf("remaining space: %.2lf\n", remaining_space);
                 }
             }
             if (event->mask & IN_CLOSE_WRITE)

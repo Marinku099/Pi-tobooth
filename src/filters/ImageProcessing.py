@@ -8,8 +8,8 @@ from PIL import Image, UnidentifiedImageError
 from systemd import journal
 
 DIR = os.environ["PHOTOBOOTH_DIR"]
-RAW_DIR = os.path.join(DIR, "raw")
-FILTERED_DIR = os.path.join(DIR, "filtered")
+RAW_DIR = os.environ["RAW"]
+FILTERED_DIR = os.environ["FILTERED"]
 
 def wait_until_ready(path, timeout=10, interval=0.2):
     """Wait until the file is unlocked and a complete, readable image."""
