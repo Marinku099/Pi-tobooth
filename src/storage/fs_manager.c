@@ -14,7 +14,7 @@
 #include <sys/statvfs.h>
 #include <unistd.h>
 
-#define FS_CLEANUP_LIST_MAX 2048
+
 
 static char g_base_directory[FS_MAX_PATH_LEN] = {0};
 static unsigned long g_raw_filename_counter = 0;
@@ -176,6 +176,7 @@ int fs_init(const char *base_directory)
             return -1;
         }
     }
+    fs_cleanup_tmp(0);
     return 0;
 }
 
@@ -454,6 +455,58 @@ int fs_delete_pair(const char *filename)
     return had_error ? -1 : 0;
 }
 
+
+int fs_cleanup_tmp(long max_age_seconds)
+{
+    char dir_path[FS_MAX_PATH_LEN];
+    char entry_path[FS_MAX_PATH_LEN];
+    struct dirent *entry;
+    struct stat st;
+    time_t now;
+    int removed = 0;
+    DIR *dir;
+ 
+    if (g_base_directory[0] == '\0') {
+        fprintf(stderr, "[fs_manager] fs_cleanup_tmp: fs_init() has not been called\n");
+        return -1;
+    }
+    if (join_path(dir_path, sizeof(dir_path),
+                  g_base_directory, FS_SUBDIR_TMP, NULL) != 0) {
+        return -1;
+    }
+ 
+    dir = opendir(dir_path);
+    if (dir == NULL) {
+        log_errno("fs_cleanup_tmp: opendir failed");
+        return -1;
+    }
+ 
+    now = time(NULL);
+    while ((entry = readdir(dir)) != NULL) {
+        if (is_dot_entry(entry->d_name)) {
+            continue;
+        }
+        if (join_path(entry_path, sizeof(entry_path),
+                      dir_path, NULL, entry->d_name) != 0) {
+            continue;
+        }
+        if (lstat(entry_path, &st) != 0 || !S_ISREG(st.st_mode)) {
+            continue;
+        }
+        /* Pi has no RTC: after boot the clock can be wrong, so only apply
+         * the age rule when the caller asked for one. */
+        if (max_age_seconds > 0 &&
+            difftime(now, st.st_mtime) < (double)max_age_seconds) {
+            continue;
+        }
+        if (unlink_if_exists(entry_path, "fs_cleanup_tmp: unlink failed") == 0) {
+            removed++;
+        }
+    }
+    closedir(dir);
+    return removed;
+}
+
 double fs_get_disk_free_percent(const char *path)
 {
     struct statvfs vfs;
@@ -541,54 +594,70 @@ static long long filtered_file_size_bytes(const char *filename)
     return (long long)st.st_size;
 }
 
-static int delete_oldest_safe_pair(const image_metadata_t *raw_list,
-                                   int candidate_count,
-                                   long long *media_usage_bytes)
+static int delete_pair_if_safe(const image_metadata_t *meta,
+                               long long *media_usage_bytes)
 {
-    int i;
+    const char *name = meta->filename;
+    long long pair_bytes;
 
-    for (i = 0; i < candidate_count; i++) {
-        const char *name = raw_list[i].filename;
-        long long pair_bytes;
-
-        if (fs_filtered_is_ready(name) <= 0) {
-            continue;
-        }
-
-        pair_bytes = (long long)raw_list[i].file_size_bytes
-                     + filtered_file_size_bytes(name);
-
-        if (fs_delete_pair(name) != 0) {
-            return 0;
-        }
-
-        *media_usage_bytes -= pair_bytes;
-        if (*media_usage_bytes < 0) {
-            *media_usage_bytes = 0;
-        }
-        return 1;
+    if (fs_filtered_is_ready(name) <= 0) {
+        return 0;
     }
-    return 0;
+
+    pair_bytes = (long long)meta->file_size_bytes
+                 + filtered_file_size_bytes(name);
+
+    if (fs_delete_pair(name) != 0) {
+        return -1;
+    }
+
+    *media_usage_bytes -= pair_bytes;
+    if (*media_usage_bytes < 0) {
+        *media_usage_bytes = 0;
+    }
+    return 1;
 }
 
-<<<<<<< HEAD
-/* int fs_cleanup_old_files(const char *base_directory,
-=======
+static int is_same_directory(const char *a, const char *b)
+{
+    struct stat sa, sb;
+
+    if (stat(a, &sa) != 0 || stat(b, &sb) != 0) {
+        log_errno("is_same_directory: stat failed");
+        return 0;
+    }
+    return sa.st_dev == sb.st_dev && sa.st_ino == sb.st_ino;
+}
+
 int fs_cleanup_old_files(const char *base_directory,
->>>>>>> a38ae089dd183a05a15beff8b8397699905dcd19
                          double threshold_percent,
                          long long max_media_bytes)
 {
     image_metadata_t *raw_list;
     const int quota_enabled = (max_media_bytes > 0);
-    int safety_iterations = FS_CLEANUP_LIST_MAX;
-    int total_deleted = 0;
     long long media_usage_bytes = 0;
+    int total_deleted = 0;
+    int raw_count;
+    int candidate_count;
+    int i;
 
     if (base_directory == NULL) {
         return -1;
     }
 
+        if (g_base_directory[0] == '\0') {
+        fprintf(stderr, "fs_cleanup_old_files: fs_init() has not been called\n");
+        return -1;
+    }
+
+
+
+    if (!is_same_directory(base_directory, g_base_directory)) {
+        fprintf(stderr,
+                "fs_cleanup_old_files: base_directory does not match fs_init() directory\n");
+        return -1;
+    }
+    
     if (quota_enabled) {
         media_usage_bytes = fs_get_media_usage_bytes();
         if (media_usage_bytes < 0) {
@@ -602,100 +671,126 @@ int fs_cleanup_old_files(const char *base_directory,
         return -1;
     }
 
-    while (safety_iterations-- > 0) {
-        double free_percent = fs_get_disk_free_percent(base_directory);
-        int raw_count;
-        int candidate_count;
-
-        if (free_percent < 0.0) {
-            total_deleted = -1;
-            break;
-        }
-
-        if (free_percent >= threshold_percent &&
-            !(quota_enabled && media_usage_bytes > max_media_bytes)) {
-            break;
-        }
-
-        raw_count = fs_list_images(IMAGE_TYPE_RAW, raw_list, FS_CLEANUP_LIST_MAX);
-        if (raw_count < 0) {
-            total_deleted = -1;
-            break;
-        }
-
-        candidate_count = raw_count - FS_PROTECT_RECENT_COUNT;
-        if (candidate_count <= 0) {
-            break;
-        }
-
-        if (!delete_oldest_safe_pair(raw_list, candidate_count, &media_usage_bytes)) {
-            break;
-        }
-        total_deleted++;
-    }
-
-    free(raw_list);
-    return total_deleted;
-<<<<<<< HEAD
-} */
-
-int fs_cleanup_old_files(const char *base_directory,
-                         double threshold_percent,
-                         long long max_media_bytes)
-{
-    image_metadata_t *raw_list;
-    const int quota_enabled = (max_media_bytes > 0);
-    int total_deleted = 0;
-    long long media_usage_bytes = 0;
-    double free_percent;
-    int raw_count;
-    int candidate_count;
-
-    if (base_directory == NULL) {
-        return -1;
-    }   
-
-    if (quota_enabled) {
-        media_usage_bytes = fs_get_media_usage_bytes();[cite: 1]
-        if (media_usage_bytes < 0) {
-            return -1;
-        }
-    }
-
-    free_percent = fs_get_disk_free_percent(base_directory);[cite: 1]
-    if (free_percent < 0.0) {
-        return -1;
-    }
-
-    if (free_percent >= threshold_percent &&
-        !(quota_enabled && media_usage_bytes > max_media_bytes)) {
-        return 0;
-    }
-
-    raw_list = (image_metadata_t *)malloc(sizeof(image_metadata_t) * FS_CLEANUP_LIST_MAX);[cite: 1]
-    if (raw_list == NULL) {
-        fprintf(stderr, "fs_cleanup_old_files: malloc failed\n");[cite: 1]
-        return -1;
-    }
-
-    raw_count = fs_list_images(IMAGE_TYPE_RAW, raw_list, FS_CLEANUP_LIST_MAX);[cite: 1]
+    raw_count = fs_list_images(IMAGE_TYPE_RAW, raw_list, FS_CLEANUP_LIST_MAX);
     if (raw_count < 0) {
         free(raw_list);
         return -1;
     }
 
-    candidate_count = raw_count - FS_PROTECT_RECENT_COUNT;[cite: 1, 2]
-    if (candidate_count > 0) {
-        if (delete_oldest_safe_pair(raw_list, candidate_count, &media_usage_bytes)) {[cite: 1]
-            total_deleted = 1;
+    candidate_count = raw_count - FS_PROTECT_RECENT_COUNT;
+
+    for (i = 0; i < candidate_count; i++) {
+        double free_percent = fs_get_disk_free_percent(base_directory);
+        int rc;
+
+        if (free_percent < 0.0) {
+            total_deleted = -1;
+            break;
+        }
+        if (free_percent >= threshold_percent &&
+            !(quota_enabled && media_usage_bytes > max_media_bytes)) {
+            break;                                           
+        }
+
+        rc = delete_pair_if_safe(&raw_list[i], &media_usage_bytes);
+        if (rc < 0) {
+            break;
+        }
+        if (rc > 0) {
+            total_deleted++;
         }
     }
 
     free(raw_list);
     return total_deleted;
-=======
->>>>>>> a38ae089dd183a05a15beff8b8397699905dcd19
 }
+
+
+ 
+static int dir_is_writable(image_type_t type)
+{
+    char path_buf[FS_MAX_PATH_LEN];
+ 
+    return build_image_path(path_buf, sizeof(path_buf), type, NULL) == 0 &&
+           access(path_buf, W_OK | X_OK) == 0;
+}
+ 
+int fs_health_check(fs_health_t *out)
+{
+    char dir_path[FS_MAX_PATH_LEN];
+    char entry_path[FS_MAX_PATH_LEN];
+    struct dirent *entry;
+    struct stat st;
+    time_t now;
+    DIR *dir;
+ 
+    if (out == NULL) {
+        return -1;
+    }
+    memset(out, 0, sizeof(*out));
+    out->disk_free_percent = -1.0;
+    out->media_bytes = -1;
+ 
+    if (g_base_directory[0] == '\0') {
+        fprintf(stderr, "[fs_manager] fs_health_check: fs_init() has not been called\n");
+        return -1;
+    }
+ 
+    now = time(NULL);
+ 
+    /* Writable dirs: catches SD card remounted read-only. */
+    out->dirs_writable = dir_is_writable(IMAGE_TYPE_RAW) &&
+                         dir_is_writable(IMAGE_TYPE_FILTERED);
+    if (join_path(dir_path, sizeof(dir_path),
+                  g_base_directory, FS_SUBDIR_TMP, NULL) != 0 ||
+        access(dir_path, W_OK | X_OK) != 0) {
+        out->dirs_writable = 0;
+    }
+ 
+    out->disk_free_percent = fs_get_disk_free_percent(g_base_directory);
+    out->media_bytes = fs_get_media_usage_bytes();
+ 
+    /* raw count + orphan raw (uncapped scan, unlike fs_list_images) */
+    if (build_image_path(dir_path, sizeof(dir_path), IMAGE_TYPE_RAW, NULL) == 0 &&
+        (dir = opendir(dir_path)) != NULL) {
+        while ((entry = readdir(dir)) != NULL) {
+            if (is_dot_entry(entry->d_name) ||
+                join_path(entry_path, sizeof(entry_path),
+                          dir_path, NULL, entry->d_name) != 0 ||
+                stat(entry_path, &st) != 0 || !S_ISREG(st.st_mode)) {
+                continue;
+            }
+            out->raw_count++;
+            /* Young raw files may still be waiting for the filter. */
+            if (difftime(now, st.st_mtime) >= (double)FS_ORPHAN_MIN_AGE_SECONDS &&
+                fs_filtered_exists(entry->d_name) == 0) {
+                out->orphan_raw++;
+            }
+        }
+        closedir(dir);
+    }
+ 
+    /* stale tmp */
+    if (join_path(dir_path, sizeof(dir_path),
+                  g_base_directory, FS_SUBDIR_TMP, NULL) == 0 &&
+        (dir = opendir(dir_path)) != NULL) {
+        while ((entry = readdir(dir)) != NULL) {
+            if (is_dot_entry(entry->d_name) ||
+                join_path(entry_path, sizeof(entry_path),
+                          dir_path, NULL, entry->d_name) != 0 ||
+                lstat(entry_path, &st) != 0 || !S_ISREG(st.st_mode)) {
+                continue;
+            }
+            if (difftime(now, st.st_mtime) >= (double)FS_TMP_MAX_AGE_SECONDS) {
+                out->stale_tmp++;
+            }
+        }
+        closedir(dir);
+    }
+ 
+    return 0;
+}
+ 
 
 static void remove_cache_entry(image_cache_t *cache, int index)
 {
@@ -821,8 +916,4 @@ void cache_destroy(image_cache_t *cache)
     cache->count = 0;
     cache->current_size_bytes = 0;
 }
-<<<<<<< HEAD
 
-/////
-=======
->>>>>>> a38ae089dd183a05a15beff8b8397699905dcd19

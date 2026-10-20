@@ -23,6 +23,9 @@
 #define FS_ERR_NOT_READY                (-2)
 #define FS_FILE_SETTLE_MS               1000
 
+#define FS_TMP_MAX_AGE_SECONDS          600
+#define FS_ORPHAN_MIN_AGE_SECONDS       1800
+
 typedef enum {
     IMAGE_TYPE_RAW = 0,
     IMAGE_TYPE_FILTERED = 1
@@ -74,6 +77,19 @@ long long fs_get_media_usage_bytes(void);
 int fs_cleanup_old_files(const char *base_directory,
                          double threshold_percent,
                          long long max_media_bytes);
+
+typedef struct {
+    int       dirs_writable;       /* 1 = raw/filtered/tmp all writable */
+    double    disk_free_percent;   /* < 0 if unknown */
+    long long media_bytes;         /* raw + filtered, < 0 if unknown */
+    int       raw_count;
+    int       orphan_raw;          /* old raw files with no filtered pair */
+    int       stale_tmp;           /* tmp files older than FS_TMP_MAX_AGE_SECONDS */
+}fs_health_t;
+
+int fs_cleanup_tmp(long max_age_seconds);
+
+int fs_health_check(fs_health_t *out);
 
 int cache_init(image_cache_t *cache, size_t max_size_bytes);
 
