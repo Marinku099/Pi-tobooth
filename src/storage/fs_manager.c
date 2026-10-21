@@ -14,7 +14,7 @@
 #include <sys/statvfs.h>
 #include <unistd.h>
 
-
+#define FS_CLEANUP_LIST_MAX 2048
 
 static char g_base_directory[FS_MAX_PATH_LEN] = {0};
 static unsigned long g_raw_filename_counter = 0;
@@ -493,8 +493,7 @@ int fs_cleanup_tmp(long max_age_seconds)
         if (lstat(entry_path, &st) != 0 || !S_ISREG(st.st_mode)) {
             continue;
         }
-        /* Pi has no RTC: after boot the clock can be wrong, so only apply
-         * the age rule when the caller asked for one. */
+
         if (max_age_seconds > 0 &&
             difftime(now, st.st_mtime) < (double)max_age_seconds) {
             continue;
@@ -738,7 +737,6 @@ int fs_health_check(fs_health_t *out)
  
     now = time(NULL);
  
-    /* Writable dirs: catches SD card remounted read-only. */
     out->dirs_writable = dir_is_writable(IMAGE_TYPE_RAW) &&
                          dir_is_writable(IMAGE_TYPE_FILTERED);
     if (join_path(dir_path, sizeof(dir_path),
@@ -750,7 +748,6 @@ int fs_health_check(fs_health_t *out)
     out->disk_free_percent = fs_get_disk_free_percent(g_base_directory);
     out->media_bytes = fs_get_media_usage_bytes();
  
-    /* raw count + orphan raw (uncapped scan, unlike fs_list_images) */
     if (build_image_path(dir_path, sizeof(dir_path), IMAGE_TYPE_RAW, NULL) == 0 &&
         (dir = opendir(dir_path)) != NULL) {
         while ((entry = readdir(dir)) != NULL) {
@@ -761,7 +758,7 @@ int fs_health_check(fs_health_t *out)
                 continue;
             }
             out->raw_count++;
-            /* Young raw files may still be waiting for the filter. */
+
             if (difftime(now, st.st_mtime) >= (double)FS_ORPHAN_MIN_AGE_SECONDS &&
                 fs_filtered_exists(entry->d_name) == 0) {
                 out->orphan_raw++;
@@ -770,7 +767,6 @@ int fs_health_check(fs_health_t *out)
         closedir(dir);
     }
  
-    /* stale tmp */
     if (join_path(dir_path, sizeof(dir_path),
                   g_base_directory, FS_SUBDIR_TMP, NULL) == 0 &&
         (dir = opendir(dir_path)) != NULL) {
@@ -838,6 +834,21 @@ int cache_init(image_cache_t *cache, size_t max_size_bytes)
     return 0;
 }
 
+static int copy_out(const unsigned char *src, size_t size,
+                    unsigned char **out_data, size_t *out_size)
+{
+    unsigned char *copy = (unsigned char *)malloc(size > 0 ? size : 1);
+
+    if (copy == NULL) {
+        fprintf(stderr, "cache_get_filtered: malloc failed for %zu bytes\n", size);
+        return -1;
+    }
+    memcpy(copy, src, size);
+    *out_data = copy;
+    *out_size = size;
+    return 0;
+}
+
 int cache_get_filtered(image_cache_t *cache, const char *filename,
                        unsigned char **out_data, size_t *out_size)
 {
@@ -852,9 +863,8 @@ int cache_get_filtered(image_cache_t *cache, const char *filename,
 
     index = find_cache_entry(cache, filename);
     if (index >= 0) {
-        *out_data = cache->entries[index].image_data;
-        *out_size = cache->entries[index].data_size;
-        return 0;
+        return copy_out(cache->entries[index].image_data,
+            cache->entries[index].data_size, out_data, out_size);
     }
 
     ready = fs_filtered_is_ready(filename);
@@ -882,10 +892,7 @@ int cache_get_filtered(image_cache_t *cache, const char *filename,
     }
 
     append_cache_entry(cache, filename, loaded_data, loaded_size);
-
-    *out_data = loaded_data;
-    *out_size = loaded_size;
-    return 0;
+        return copy_out(loaded_data, loaded_size, out_data, out_size);
 }
 
 void cache_invalidate(image_cache_t *cache, const char *filename)
