@@ -108,7 +108,7 @@ Python venv:
 
 ```
 python3 -m venv ~/Pi-tobooth/.venv
-~/Pi-tobooth/.venv/bin/pip install -r ~/Pi-tobooth/src/filters/requirements.txt
+~/Pi-tobooth/.venv/bin/pip install -r ~/Pi-tobooth/src/requirements.txt
 ```
 
 ## 7. New module
