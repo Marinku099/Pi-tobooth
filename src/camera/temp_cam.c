@@ -249,16 +249,23 @@ int main(void)
                 {
                     continue;
                 }
+
+                if (oscam_saveimg_timestramp(fd, buffers, &buf) == -1)
+                {
+                    fprintf(stderr, "failed to save an image: %s\n", strerror(errno));
+                    exit(EXIT_FAILURE);
+                    // NOTE: If it cannot save the picture, how can we tell user?
+                }
+
+                if (ioctl(fd, VIDIOC_QBUF, &buf) == -1)
+                {
+                    fprintf(stderr, "QBUF (requeue) failed: %s\n", strerror(errno));
+                    return -1;
+                }
             }
 
             // Save one of those success frames
-            if (oscam_saveimg_timestramp(fd, buffers, &buf) == -1)
-            {
-                fprintf(stderr, "failed to save an image: %s\n", strerror(errno));
-                exit(EXIT_FAILURE);
-                // NOTE: If it cannot save the picture, how can we tell user?
-            }
-        }
+                }
     }
 
     // Stop camera capture
