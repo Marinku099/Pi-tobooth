@@ -255,6 +255,7 @@ int main(void)
             if (oscam_saveimg_timestramp(fd, buffers, &buf) == -1)
             {
                 fprintf(stderr, "failed to save an image: %s\n", strerror(errno));
+                exit(EXIT_FAILURE);
                 // NOTE: If it cannot save the picture, how can we tell user?
             }
         }
