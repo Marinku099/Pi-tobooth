@@ -20,6 +20,8 @@ from timiniprint.printing.connected import connect_printer
 from timiniprint.printing.settings import PrintSettings
 from timiniprint.printing.errors import PrinterNotReadyError
 
+from systemd import journal
+
 # === Config ===
 PRINTER_NAME: Optional[str] = "MXW-W5"  # e.g. "MX-W5" or None to auto-select first supported
 QUEUE_DIR = Path("print_queue")
@@ -40,25 +42,25 @@ async def connect_and_keep(catalog, discovery, stop_event: asyncio.Event):
     while not stop_event.is_set():
         try:
             if PRINTER_NAME:
-                print(f"[+] Resolving printer named {PRINTER_NAME} ...")
+                journal.send(f"[+] Resolving printer named {PRINTER_NAME} ...")
                 device = await discovery.resolve_device(PRINTER_NAME)
             else:
-                print("[+] Auto-resolving first supported printer ...")
+                journal.send("[+] Auto-resolving first supported print.sender ...")
                 device = await discovery.resolve_device(None)
 
             if device is None:
-                print(f"[!] No supported printer found; retrying in {backoff}s")
+                journal.send(f"[!] No supported printer found; retrying in {backoff}s")
                 await asyncio.wait([stop_event.wait()], timeout=backoff)
                 backoff = min(MAX_CONNECT_BACKOFF, backoff * 2)
                 continue
 
-            print(f"[+] Connecting to {device.display_name or device.profile_key} ...")
+            journal.send(f"[+] Connecting to {device.display_name or device.profile_key} ...")
             connected = await connect_printer(device, BleakBluetoothConnector())
-            print("[+] Connected.")
+            journal.send("[+] Connected.")
             return connected
 
         except Exception as exc:
-            print(f"[!] Connect failed: {exc}")
+            journal.send(f"[!] Connect failed: {exc}")
             # Wait with cancellation support
             try:
                 await asyncio.wait_for(stop_event.wait(), timeout=backoff)
@@ -85,14 +87,14 @@ async def try_print_with_retries(connected, path: Path) -> Tuple[bool, Exception
 
         except PrinterNotReadyError as pne:
             last_exc = pne
-            print(f"[!] PrinterNotReadyError on {path.name} attempt {attempt}: {pne}")
+            journal.send(f"[!] PrinterNotReadyError on {path.name} attempt {attempt}: {pne}")
 
         except Exception as exc:
             last_exc = exc
-            print(f"[!] Error printing {path.name} attempt {attempt}: {exc}")
+            journal.send(f"[!] Error printing {path.name} attempt {attempt}: {exc}")
 
         if attempt < MAX_RETRIES:
-            print(f"[i] Waiting {RETRY_DELAY_SECONDS}s before retrying {path.name} (attempt {attempt + 1})")
+            journal.send(f"[i] Waiting {RETRY_DELAY_SECONDS}s before retrying {path.name} (attempt {attempt + 1})")
             await asyncio.sleep(RETRY_DELAY_SECONDS)
 
     return False, last_exc
@@ -113,7 +115,7 @@ async def stdin_watcher(stop_event: asyncio.Event):
                 stop_event.set()
                 break
             if line.strip().lower() == "stop":
-                print("[*] Stop command received via stdin.")
+                journal.send("[*] Stop command received via stdin.")
                 stop_event.set()
                 break
         except Exception:
@@ -144,7 +146,7 @@ async def main_loop(stop_event: asyncio.Event):
             try:
                 files = sorted(p for p in QUEUE_DIR.iterdir() if p.is_file())
             except Exception as e:
-                print(f"[!] Error listing queue directory: {e}")
+                journal.send(f"[!] Error listing queue directory: {e}")
                 files = []
 
             if not files:
@@ -160,7 +162,7 @@ async def main_loop(stop_event: asyncio.Event):
                 if stop_event.is_set():
                     break
 
-                print(f"[>] Found file to print: {f.name}")
+                journal.send(f"[>] Found file to print: {f.name}")
 
                 success, err = await try_print_with_retries(connected, f)
 
@@ -168,7 +170,7 @@ async def main_loop(stop_event: asyncio.Event):
                     os.remove(os.path.join(QUEUE_DIR, f.name));
                     # target = PRINTED_DIR / f.name
                     # shutil.move(str(f), str(target))
-                    print(f"[√] Printed -> {f.name}")
+                    journal.send(f"[√] Printed -> {f.name}")
                     if PRINT_INTERVAL_SECONDS > 0:
                         # allow interruption while sleeping
                         try:
@@ -179,7 +181,7 @@ async def main_loop(stop_event: asyncio.Event):
                     continue
 
                 # failure handling
-                print(f"[!] Failed to print {f.name}: {err}")
+                journal.send(f"[!] Failed to print {f.name}: {err}")
 
                 if not isinstance(err, PrinterNotReadyError):
                     # likely connection issue; disconnect and reconnect next loop
@@ -193,8 +195,8 @@ async def main_loop(stop_event: asyncio.Event):
                     try:
                         shutil.move(str(f), str(failed_target))
                     except Exception as e:
-                        print(f"[!] Could not move failed file {f.name}: {e}")
-                    print(f"[!] Moved to failed: {failed_target} and will reconnect")
+                        journal.send(f"[!] Could not move failed file {f.name}: {e}")
+                    journal.send(f"[!] Moved to failed: {failed_target} and will reconnect")
                     break  # break file loop to attempt reconnect
 
                 # Printer reported a fault (paper out / cover open / overheated etc.)
@@ -202,8 +204,8 @@ async def main_loop(stop_event: asyncio.Event):
                 try:
                     shutil.move(str(f), str(failed_target))
                 except Exception as e:
-                    print(f"[!] Could not move failed file {f.name}: {e}")
-                print(f"[!] Printer reported fault; moved to failed: {failed_target}")
+                    journal.send(f"[!] Could not move failed file {f.name}: {e}")
+                journal.send(f"[!] Printer reported fault; moved to failed: {failed_target}")
 
             # small delay to avoid busy-loop; allow interrupt
             try:
@@ -216,7 +218,7 @@ async def main_loop(stop_event: asyncio.Event):
     finally:
         if connected is not None:
             try:
-                print("[*] Disconnecting...")
+                journal.send("[*] Disconnecting...")
                 await connected.disconnect()
             except Exception:
                 pass
@@ -259,7 +261,7 @@ def run():
         except Exception:
             pass
         loop.close()
-        print("[*] Exited.")
+        journal.send("[*] Exited.")
 
 
 if __name__ == "__main__":
