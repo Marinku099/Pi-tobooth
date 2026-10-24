@@ -1,0 +1,120 @@
+from __future__ import annotations
+
+from dataclasses import dataclass
+
+from ..protocol.family import ProtocolFamily
+
+
+@dataclass(frozen=True)
+class BleBulkWriteProfile:
+    char_uuid: str
+    chunk_cap: int = 20
+    write_delay_ms: int = 50
+    flow_controlled: bool = False
+
+
+@dataclass(frozen=True)
+class BleTransportProfile:
+    standard_chunk_cap: int = 20
+    standard_write_delay_ms: int = 50
+    preferred_service_uuid: str = ""
+    preferred_write_char_uuid: str = ""
+    notify_char_uuid: str = ""
+    # A separate runtime flow-control channel, not a printer reply stream.
+    control_notify_char_uuid: str = ""
+    # Subscribe every notify/indicate characteristic in these services.
+    notify_service_uuids: tuple[str, ...] = ()
+    prefer_generic_notify: bool = False
+    flow_controlled_standard_write: bool = False
+    flow_resume_timeout_s: float | None = None
+    bulk_write: BleBulkWriteProfile | None = None
+    # Some BLE writers need a smaller application chunk than the reported ATT
+    # payload for write-without-response transfers.
+    write_without_response_payload_reserve: int = 0
+
+
+_FALLBACK_PROFILE = BleTransportProfile()
+
+_TINY_TRANSPORT_PROFILE = BleTransportProfile(
+    standard_chunk_cap=512,
+    prefer_generic_notify=True,
+    flow_controlled_standard_write=True,
+    flow_resume_timeout_s=600.0,
+)
+
+_ELEPH_TRANSPORT_PROFILE = BleTransportProfile(
+    preferred_service_uuid="000018f0-0000-1000-8000-00805f9b34fb",
+    preferred_write_char_uuid="00002af1-0000-1000-8000-00805f9b34fb",
+    notify_char_uuid="00002af0-0000-1000-8000-00805f9b34fb",
+    standard_chunk_cap=20,
+    standard_write_delay_ms=30,
+)
+
+_PROFILES = {
+    ProtocolFamily.TINY: _TINY_TRANSPORT_PROFILE,
+    ProtocolFamily.TINY_PREFIXED: _TINY_TRANSPORT_PROFILE,
+    ProtocolFamily.V5G: BleTransportProfile(
+        prefer_generic_notify=True,
+        standard_chunk_cap=56 * 8,
+        standard_write_delay_ms=30,
+        write_without_response_payload_reserve=5,
+    ),
+    ProtocolFamily.V5C: BleTransportProfile(
+        prefer_generic_notify=True,
+        flow_controlled_standard_write=True,
+    ),
+    ProtocolFamily.V5X: BleTransportProfile(
+        preferred_service_uuid="0000ae30-0000-1000-8000-00805f9b34fb",
+        notify_char_uuid="0000ae02-0000-1000-8000-00805f9b34fb",
+        bulk_write=BleBulkWriteProfile(
+            char_uuid="0000ae03-0000-1000-8000-00805f9b34fb",
+            chunk_cap=180,
+            write_delay_ms=30,
+            flow_controlled=True,
+        ),
+        write_without_response_payload_reserve=5,
+    ),
+    ProtocolFamily.PHOMEMO_ESC: BleTransportProfile(
+        preferred_service_uuid="0000ff00-0000-1000-8000-00805f9b34fb",
+        preferred_write_char_uuid="0000ff02-0000-1000-8000-00805f9b34fb",
+        prefer_generic_notify=True,
+        standard_chunk_cap=128,
+        standard_write_delay_ms=20,
+    ),
+    ProtocolFamily.NIIMBOT: BleTransportProfile(
+        preferred_service_uuid="e7810a71-73ae-499d-8c15-faa9aef0c3f2",
+        prefer_generic_notify=True,
+        standard_chunk_cap=20,
+        standard_write_delay_ms=10,
+    ),
+    ProtocolFamily.TOPRINT_HPRT_ESC: BleTransportProfile(
+        standard_chunk_cap=180,
+        standard_write_delay_ms=10,
+    ),
+    ProtocolFamily.ELEPH_TSPL: _ELEPH_TRANSPORT_PROFILE,
+    ProtocolFamily.ELEPH_ESC: _ELEPH_TRANSPORT_PROFILE,
+    ProtocolFamily.TOPRINT_TSPL: BleTransportProfile(
+        standard_chunk_cap=180,
+        standard_write_delay_ms=10,
+    ),
+    ProtocolFamily.INSTAPRINT_CORE: BleTransportProfile(
+        standard_chunk_cap=180,
+        standard_write_delay_ms=10,
+    ),
+    ProtocolFamily.FUNNY_LX: BleTransportProfile(
+        preferred_service_uuid="0000ffe6-0000-1000-8000-00805f9b34fb",
+        preferred_write_char_uuid="0000ffe1-0000-1000-8000-00805f9b34fb",
+        notify_char_uuid="0000ffe2-0000-1000-8000-00805f9b34fb",
+        standard_chunk_cap=100,
+        standard_write_delay_ms=0,
+    ),
+}
+
+DEFAULT_BLE_TRANSPORT_PROFILE = _PROFILES[ProtocolFamily.TINY]
+
+
+def get_ble_transport_profile(
+    protocol_family: ProtocolFamily | str | None,
+) -> BleTransportProfile:
+    family = ProtocolFamily.from_value(protocol_family)
+    return _PROFILES.get(family, _FALLBACK_PROFILE)

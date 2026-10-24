@@ -1,0 +1,255 @@
+from __future__ import annotations
+
+import asyncio
+import time
+from typing import TYPE_CHECKING
+
+from ..protocol import ProtocolReplyExpectation, ProtocolStep, ProtocolStepOperation
+from ..protocol.steps import reply_matches_expectation
+if TYPE_CHECKING:
+    from .runtime.base import RuntimeSessionApi
+
+
+_MAX_QUERY_REPLY_BYTES = 65536
+
+
+class ProtocolReplyError(RuntimeError):
+    """A required protocol reply was missing or did not satisfy its step."""
+
+    def __init__(self, step: ProtocolStep, reply: bytes | None) -> None:
+        self.step = step
+        self.reply = reply
+        super().__init__(
+            f"Required protocol reply for {step.label!r} was not confirmed: "
+            f"got {bytes_preview(reply)}"
+        )
+
+
+async def execute_protocol_step(
+    session: RuntimeSessionApi,
+    step: ProtocolStep,
+    *,
+    timeout: float,
+    log_prefix: str = "Protocol",
+) -> bytes | None:
+    if step.operation is ProtocolStepOperation.SEND:
+        session.report_debug(f"{log_prefix} send {step.label}: {packet_summary(step.data)}")
+        await session.send_standard_payload(step.data)
+        return None
+    if step.operation is ProtocolStepOperation.WAIT:
+        reply = await _execute_wait_step(
+            session,
+            step,
+            timeout=timeout,
+            log_prefix=log_prefix,
+        )
+    elif step.operation is ProtocolStepOperation.QUERY:
+        reply = await _execute_query_step(
+            session,
+            step,
+            timeout=timeout,
+            log_prefix=log_prefix,
+        )
+    else:
+        raise ValueError(f"Unsupported protocol step operation: {step.operation.value}")
+    if step.reply_required and not reply_matches_for(step, reply):
+        raise ProtocolReplyError(step, reply)
+    return reply
+
+
+async def _execute_wait_step(
+    session: RuntimeSessionApi,
+    step: ProtocolStep,
+    *,
+    timeout: float,
+    log_prefix: str,
+) -> bytes | None:
+    reply_complete = reply_complete_for(step)
+    if reply_complete is None:
+        return None
+    wait_timeout = timeout if step.timeout_sec is None else step.timeout_sec
+    reply = await session.wait_for_reply(
+        step.label,
+        reply_complete,
+        timeout=wait_timeout,
+        required=False,
+    )
+    session.report_debug(f"{log_prefix} wait {step.label}: rx={bytes_preview(reply)}")
+    return reply
+
+
+async def _execute_query_step(
+    session: RuntimeSessionApi,
+    step: ProtocolStep,
+    *,
+    timeout: float,
+    log_prefix: str,
+) -> bytes | None:
+    if step.repeat_interval_sec is None:
+        return await _query_once(
+            session,
+            step,
+            timeout=timeout,
+            log_prefix=log_prefix,
+        )
+
+    budget = step.repeat_timeout_sec if step.repeat_timeout_sec is not None else timeout
+    deadline = time.monotonic() + budget
+    reply: bytes | None = None
+    while True:
+        remaining = min(budget, deadline - time.monotonic())
+        if remaining <= 0:
+            return reply
+        reply = await _query_once(
+            session,
+            step,
+            timeout=min(timeout, remaining),
+            limit_to_call_timeout=True,
+            log_prefix=log_prefix,
+        )
+        if reply_matches_for(step, reply):
+            return reply
+        remaining = min(budget, deadline - time.monotonic())
+        if remaining <= 0:
+            return reply
+        await asyncio.sleep(min(step.repeat_interval_sec, remaining))
+
+
+async def _query_once(
+    session: RuntimeSessionApi,
+    step: ProtocolStep,
+    *,
+    timeout: float,
+    log_prefix: str,
+    limit_to_call_timeout: bool = False,
+) -> bytes | None:
+    if step.timeout_sec is None:
+        query_timeout = timeout
+    elif limit_to_call_timeout:
+        query_timeout = min(step.timeout_sec, timeout)
+    else:
+        query_timeout = step.timeout_sec
+    reply_complete = reply_complete_for(step)
+    if session.can_query_control_packet():
+        reply = await session.query_control_packet(
+            step.data,
+            timeout=query_timeout,
+            reply_complete=reply_complete,
+        )
+    elif reply_complete is None:
+        session.report_debug(f"{log_prefix} send {step.label}: {packet_summary(step.data)}")
+        await session.send_standard_payload(step.data)
+        reply = None
+    else:
+        # Atomic notification queries expose individual fragments, whereas
+        # protocol matchers consume the accumulated reply, just like query_control_packet.
+        buffer = bytearray()
+
+        def complete(fragment: bytes) -> bool:
+            if len(buffer) + len(fragment) > _MAX_QUERY_REPLY_BYTES:
+                raise RuntimeError("Protocol query reply exceeded the reassembly limit")
+            buffer.extend(fragment)
+            return reply_complete(bytes(buffer))
+
+        reply = await session.send_control_packet_wait_notification(
+            step.data,
+            label=step.label,
+            match=complete,
+            timeout=query_timeout,
+            required=False,
+        )
+        if buffer:
+            reply = bytes(buffer)
+    session.report_debug(
+        f"{log_prefix} query {step.label}: "
+        f"tx={bytes_preview(step.data)} rx={bytes_preview(reply)}"
+    )
+    return reply
+
+
+def reply_complete_for(step: ProtocolStep):
+    if step.reply_matcher is not None:
+        return step.reply_matcher.complete
+    if step.expect is ProtocolReplyExpectation.NONE:
+        return None
+    return lambda reply: reply_matches_expectation(step.expect, reply)
+
+
+def reply_matches_for(step: ProtocolStep, reply: bytes | None) -> bool:
+    if step.reply_matcher is not None:
+        if step.reply_matcher.matches is not None:
+            return step.reply_matcher.matches(reply)
+        return bool(reply and step.reply_matcher.complete(reply))
+    return reply_matches_expectation(step.expect, reply)
+
+
+def packet_summary(data: bytes) -> str:
+    if len(data) <= 32:
+        return f"bytes={len(data)} data={data.hex(' ')}"
+    return f"bytes={len(data)} head={data[:16].hex(' ')} tail={data[-16:].hex(' ')}"
+
+
+def bytes_preview(data: bytes | None) -> str:
+    if data is None:
+        return "<none>"
+    if not data:
+        return "<empty>"
+    if len(data) <= 32:
+        return data.hex(" ")
+    return f"{data[:16].hex(' ')} ... {data[-16:].hex(' ')} ({len(data)} bytes)"
+
+
+async def execute_protocol_steps(
+    session: RuntimeSessionApi,
+    steps: tuple[ProtocolStep, ...],
+    *,
+    timeout: float,
+    log_prefix: str = "Protocol",
+) -> bool:
+    if not session.can_send_standard_payload():
+        return False
+    if any(step.operation is ProtocolStepOperation.QUERY for step in steps):
+        if (
+            not session.can_query_control_packet()
+            and not session.can_send_control_packet_wait_notification()
+        ):
+            session.report_warning(
+                short="Protocol query unavailable",
+                detail=(
+                    "This job needs request/response protocol steps, but the current transport "
+                    "cannot query replies or send BLE notification queries. Protocol steps cannot run."
+                ),
+            )
+            return False
+    if any(step.operation is ProtocolStepOperation.WAIT for step in steps):
+        if not session.can_wait_for_reply():
+            session.report_warning(
+                short="Protocol wait unavailable",
+                detail=(
+                    "This job needs a passive protocol reply wait, but the current transport "
+                    "cannot receive protocol replies. Protocol steps cannot run."
+                ),
+            )
+            return False
+
+    for step in steps:
+        reply = await execute_protocol_step(session, step, timeout=timeout, log_prefix=log_prefix)
+        if step.operation is ProtocolStepOperation.WAIT:
+            if not reply_matches_for(step, reply):
+                session.report_warning(
+                    short=f"Protocol {step.label} wait mismatch",
+                    detail=(
+                        f"Protocol wait {step.label!r} did not receive the expected notification, "
+                        f"got {bytes_preview(reply)}. Continuing, but the printer may reject the job."
+                    ),
+                )
+            continue
+        if step.operation is ProtocolStepOperation.QUERY and not reply_matches_for(step, reply):
+            session.report_warning(
+                short=f"Protocol {step.label} reply mismatch",
+                detail=(
+                    f"Protocol step {step.label!r} expected {step.expect.value}, "
+                    f"got {bytes_preview(reply)}. Continuing, but the printer may reject the job."
+                ),
+            )
+    return True
