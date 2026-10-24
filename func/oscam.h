@@ -14,6 +14,7 @@
 #include <linux/videodev2.h>
 
 #define MAX_SIZES 32
+#define WAIT_TIME 3000 // 3 seconds
 
 struct buffer {
 	void *start;

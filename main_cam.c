@@ -5,7 +5,6 @@
 #include <errno.h>
 #include <string.h>
 #include <unistd.h>
-#include <poll.h>
 #include <gpiod.h>
 #include <signal.h>
 #include <sys/ioctl.h>
@@ -13,20 +12,29 @@
 #include <linux/videodev2.h>
 
 #define CHIP_PATH "/dev/gpiochip4" // NOTE: MUST recheck with real environment
+#define N_LEDS 3
+
+typedef enum {
+    GPIO_TYPE_LED,
+    GPIO_TYPE_BUTTON
+} gpio_type_t;
 
 volatile sig_atomic_t keep_running = 1;
+
+struct gpio_hw {
+    struct gpiod_line_request *request;
+    unsigned int offset;
+    gpio_type_t type;
+};
+
+// ---------- inner functions for HW ----------
 
 void handle_sigint(int sig) {
     signal(sig, SIG_IGN);
     keep_running = 0;
 }
 
-struct gpiod_hw {
-    struct gpiod_line_request *request;
-    unsigned int offset;
-};
-
-int led_config(const char *chip_path, const unsigned int *offsets, int count, struct gpiod_hw *out_leds) {
+int led_config(const char *chip_path, const unsigned int offset, struct gpio_hw *out_led) {
 
     // open gpio chip 
     struct gpiod_chip *chip = gpiod_chip_open(CHIP_PATH);
@@ -39,40 +47,36 @@ int led_config(const char *chip_path, const unsigned int *offsets, int count, st
     struct gpiod_request_config *led_req_cfg = gpiod_request_config_new();
     gpiod_request_config_set_consumer(led_req_cfg, "oscam-led");
 
-    for (int i = 0; i < count; i++) {
-        struct gpiod_line_settings *led_settings = gpiod_line_settings_new();
-        gpiod_line_settings_set_direction(led_settings, GPIOD_LINE_DIRECTION_OUTPUT);
-        gpiod_line_settings_set_output_value(led_settings, GPIOD_LINE_VALUE_INACTIVE);
+    struct gpiod_line_settings *led_settings = gpiod_line_settings_new();
+    gpiod_line_settings_set_direction(led_settings, GPIOD_LINE_DIRECTION_OUTPUT);
+    gpiod_line_settings_set_output_value(led_settings, GPIOD_LINE_VALUE_INACTIVE);
 
-        struct gpiod_line_config *led_cfg = gpiod_line_config_new();
-        unsigned int led_offset = offsets[i];
-        gpiod_line_config_add_line_settings(led_cfg, &led_offset, 1, led_settings);
+    struct gpiod_line_config *led_cfg = gpiod_line_config_new();
+    unsigned int led_offset = offset;
+    gpiod_line_config_add_line_settings(led_cfg, &led_offset, 1, led_settings);
 
-        struct gpiod_line_request *led_req = gpiod_chip_request_lines(chip, led_req_cfg, led_cfg);
+    struct gpiod_line_request *led_req = gpiod_chip_request_lines(chip, led_req_cfg, led_cfg);
 
-        gpiod_line_settings_free(led_settings);
-        gpiod_line_config_free(led_cfg);
+    gpiod_line_settings_free(led_settings);
+    gpiod_line_config_free(led_cfg);
 
-        if (!led_req) {
-            fprintf(stderr, "LED line request failed: %s\n", strerror(errno));
-
-            for (int j = 0; j < i; j++) {
-                gpiod_line_request_release(out_leds[j].request);
-            }
-            gpiod_request_config_free(led_req_cfg);
-            gpiod_chip_close(chip);
-            return -1;
-        }
-        out_leds[i].request = led_req;
-        out_leds[i].offset = led_offset;
+    if (!led_req) {
+        fprintf(stderr, "LED line request failed: %s\n", strerror(errno));
+        gpiod_line_request_release(out_led->request);
+        gpiod_request_config_free(led_req_cfg);
+        gpiod_chip_close(chip);
+        return -1;
     }
+    out_led->request = led_req;
+    out_led->offset = led_offset;
+    out_led->type = GPIO_TYPE_LED;
 
     gpiod_request_config_free(led_req_cfg);
     gpiod_chip_close(chip);
     return 0;
 }
 
-int btn_config(const char *chip_path, const unsigned int offset, struct gpiod_hw *out_btn) {
+int btn_config(const char *chip_path, const unsigned int offset, struct gpio_hw *out_btn) {
 
     struct gpiod_chip *chip = gpiod_chip_open(CHIP_PATH);
     if (!chip) {
@@ -101,12 +105,34 @@ int btn_config(const char *chip_path, const unsigned int offset, struct gpiod_hw
         gpiod_chip_close(chip);
         return -1;
     }
-        out_btn->request = btn_req;
-        out_btn->offset = btn_offset;
+    out_btn->request = btn_req;
+    out_btn->offset = btn_offset;
+    out_btn->type = GPIO_TYPE_BUTTON;
 
     gpiod_request_config_free(btn_req_cfg);
     gpiod_chip_close(chip);
     return 0;
+}
+
+int button_is_pressed(struct gpiod_line_request *req, unsigned int offset) {
+    return gpiod_line_request_get_value(req, offset) == GPIOD_LINE_VALUE_ACTIVE;
+}
+
+void led_set(struct gpio_hw *led, int on) {
+
+    if (led->type != GPIO_TYPE_LED) return;   
+    
+    gpiod_line_request_set_value(led->request, led->offset, on ? GPIOD_LINE_VALUE_ACTIVE : GPIOD_LINE_VALUE_INACTIVE);
+}
+
+void open_all_led(struct gpio_hw *led, int n_leds) {
+    if (led->type != GPIO_TYPE_LED) return;
+    // ... wait ...
+}
+
+void close_all_led(struct gpio_hw *led, int n_leds) {
+    if (led->type != GPIO_TYPE_LED) return;
+    // ... wait ...
 }
 
 int main(void) {
@@ -114,19 +140,23 @@ int main(void) {
     /* --------- Button & LED ----------- */
     
     signal(SIGINT, handle_sigint);
-    int led_offsets = {17, 27, 22};
-    int btn_offset = /* */;
+    // Define PIN for leds and button
+    const int led_offsets[N_LEDS] = {17, 27, 22};
+    const int btn_offset = 23;
 
     // led output
-    struct gpiod_hw *leds;
-    memset(&leds, 3, sizeof(*leds));
+    struct gpio_hw *leds;
+    memset(&leds, N_LEDS, sizeof(*leds));
 
-    if (led_config(CHIP_PATH, &led_offsets, 3, leds) == -1) {
-        exit(EXIT_FAILURE);
+    for (int i = 0; i < N_LEDS; i++) {
+        if (led_config(CHIP_PATH, led_offsets[i], &leds[i]) == -1) {
+            for (int j = 0; j < i; j++) gpiod_line_request_release(leds[j].request);
+            exit(EXIT_FAILURE);
+        }
     }
 
     // button input
-    struct gpiod_hw *btn;
+    struct gpio_hw *btn;
     memset(&btn, 1, sizeof(*btn));
 
     if (btn_config(CHIP_PATH, btn_offset, btn) == -1) {
@@ -196,29 +226,29 @@ int main(void) {
 
     // Wait for signal to trigger
     while (keep_running) {
-        struct v4l2_buffer buf;
-
         //    ----- Signal handler -----
-        enum gpiod_line_value current_btn = gpiod_line_request_get_value(btn_req, BTN_PIN);
+        if (button_is_pressed(btn->request, btn_offset)) {
+            while (keep_running && button_is_pressed(btn->request, btn_offset)) {
+                usleep(10000);
+            } 
 
-        if (current_btn == GPIOD_LINE_VALUE_ACTIVE && last_btn_state == 1) {
-            // led_state = !led_state;
-
-            // enum gpiod_line_value new_led_val = led_state ? GPIOD_LINE_VALUE_ACTIVE : GPIOD_LINE_VALUE_INACTIVE;
-        
-
+            countdown_led(leds, N_LEDS);
             // If button pressed -> shoot 4 frames (hope for at least 1 success frame)
             // NOTE: Every frame still in buffers
+            bool success_shoot_flag = false;
+            struct v4l2_buffer buf;
             for (int frame = 0; frame < n_frames; frame++) {
                 if (oscam_capture(fd, buffers, &buf) == -1) {
                     continue;
-                }   
+                }
+                success_shoot_flag = true;
+                break;   
             }
 
-            // Save one of those success frames
-            if (oscam_saveimg_timestramp(fd, buffers, &buf) == -1) {
-                fprintf(stderr, "failed to save an image: %s\n", strerror(errno));
-                // NOTE: If it cannot save the picture, how can we tell user?
+            if (success_shoot_flag) {
+                open_all_led(leds, N_LEDS);
+            } else {
+                close_all_led(leds, N_LEDS);
             }
         }
     }
