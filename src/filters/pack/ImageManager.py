@@ -1726,6 +1726,26 @@ class ImageManager:
         self.data = np.array(result.convert("RGB"))
         data = self.data
 
+    def convertToEmboss(self):
+        global data
+
+        gray = Image.fromarray(np.asarray(self.data[:, :, :3], dtype=np.uint8)).convert("L")
+        emboss = gray.filter(ImageFilter.EMBOSS)
+        emboss = ImageOps.autocontrast(emboss, cutoff=0.5)
+
+        self.data = np.array(emboss.convert("RGB"))
+        data = self.data
+
+    def convertToDither(self):
+        global data
+
+        gray = Image.fromarray(np.asarray(self.data[:, :, :3], dtype=np.uint8)).convert("L")
+        gray = ImageOps.autocontrast(gray, cutoff=0.5)
+        dithered = gray.convert("1", dither=Image.FLOYDSTEINBERG)
+
+        self.data = np.array(dithered.convert("RGB"))
+        data = self.data
+
 class Component:
     def __init__(self, pixels, width, height, minX, maxX, minY, maxY):
         self.pixels = pixels

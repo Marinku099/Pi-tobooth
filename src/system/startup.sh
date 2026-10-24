@@ -6,6 +6,7 @@ case $1 in
                 ;;
         "webcam")
                 echo "running webcam module"
+                exec /usr/local/bin/webcam
                 ;;
         "filter")
                 echo "running filter module"

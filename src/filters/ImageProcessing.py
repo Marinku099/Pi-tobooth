@@ -4,12 +4,14 @@ from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 from pack.ImageManager import ImageManager
 from PIL import Image, UnidentifiedImageError
-#from gpiozero import LED, Button
-from systemd import journal
+from gpiozero import LED, Button
+# from systemd import journal
 
 DIR = os.environ["PHOTOBOOTH_DIR"]
 RAW_DIR = os.environ["RAW"]
 FILTERED_DIR = os.environ["FILTERED"]
+
+IMAGE_EXTS = ('.png', '.jpg', '.jpeg', '.bmp', '.tif', '.tiff', '.webp')
 
 def wait_until_ready(path, timeout=10, interval=0.2):
     """Wait until the file is unlocked and a complete, readable image."""
@@ -23,6 +25,43 @@ def wait_until_ready(path, timeout=10, interval=0.2):
             time.sleep(interval)
     return False
 
+def process_image(src_path):
+    if not wait_until_ready(src_path):
+        # journal.send(f"Skipped (file never became readable): {src_path}")
+        return
+
+    image = ImageManager()
+    image.read(src_path)
+
+    Filter(image)
+
+    filename = os.path.basename(src_path)
+    output_path = os.path.join(FILTERED_DIR, filename)
+
+    image.write(output_path)
+
+    # journal.send(f"Finished processing and saved to filtered_images: {filename}")
+
+def process_pending():
+
+    filtered_names = set(os.listdir(FILTERED_DIR))
+
+    pending = [
+        name for name in sorted(os.listdir(RAW_DIR))
+        if name not in filtered_names
+        and name.lower().endswith(IMAGE_EXTS)
+        and os.path.isfile(os.path.join(RAW_DIR, name))
+    ]
+
+    # journal.send(f"Startup scan: {len(pending)} unprocessed file(s) found")
+
+    for name in pending:
+        try:
+            process_image(os.path.join(RAW_DIR, name))
+        except Exception as e:
+            # journal.send(f"Startup scan failed on {name}: {e}")
+            pass
+
 class ExampleHandler(FileSystemEventHandler):
 
     def on_created(self, event):
@@ -30,23 +69,13 @@ class ExampleHandler(FileSystemEventHandler):
         if event.is_directory:
             return
 
-        journal.send(f"New file detected: {event.src_path}")
+        # journal.send(f"New file detected: {event.src_path}")
 
-        if not wait_until_ready(event.src_path):
-            journal.send(f"Skipped (file never became readable): {event.src_path}")
-            return
-
-        image = ImageManager()
-        image.read(event.src_path)
-
-        Filter(image)
-
-        filename = os.path.basename(event.src_path)
-        output_path = os.path.join(FILTERED_DIR, filename)
-
-        image.write(output_path)
-
-        journal.send("Finished processing and saved to filtered_images.")
+        try:
+            process_image(event.src_path)
+        except Exception as e:
+            # journal.send(f"Failed processing {event.src_path}: {e}")
+            pass
 
 
 observer = Observer()
@@ -83,7 +112,7 @@ def ChangeFilter():
     if Num >= 4:
         Num = 0
 
-    journal.send(f"Current Filter: {Num}")
+    # journal.send(f"Current Filter: {Num}")
 
     # LED_Active(Num)
 
@@ -108,30 +137,28 @@ def ChangeFilter():
 
 def Filter0(image):
 
-    # image.convertToEdgeBinary(50, 0, 100)
     image.convertToGrayscale()
-
-    journal.send("Filter 0")
-
+    
+    # journal.send("Filter 0")
 
 def Filter1(image):
 
-    Filter0(image)
+    image.convertToDither()
 
-    journal.send("Filter 1")
+    # journal.send("Filter 1")
 
 
 def Filter2(image):
 
-    Filter0(image)
+    image.convertToEmboss()
 
-    journal.send("Filter 2")
+    # journal.send("Filter 2")
 
 
 def Filter3(image):
     image.convertToPencilSketch()
 
-    journal.send("Filter 3: Pencil Sketch")
+    # journal.send("Filter 3: Pencil Sketch")
 
 # =========================
 # Main
@@ -142,6 +169,7 @@ def Filter3(image):
 def main():
     # button.when_pressed = ChangeFilter
     observer.start()
+    process_pending()
 
     try:
         journal.send("Start")
@@ -152,7 +180,7 @@ def main():
 
         observer.stop()
 
-        journal.send("Observer stopped.")
+        # journal.send("Observer stopped.")
 
     observer.join()
 
