@@ -1746,6 +1746,33 @@ class ImageManager:
         self.data = np.array(dithered.convert("RGB"))
         data = self.data
 
+    def transpose(self):
+        global data
+        global original
+        global width
+        global height
+
+        # transpose สลับแกน x/y แล้ว flip แกนที่เป็นแถว = หมุนตามเข็ม 90°
+        data = np.ascontiguousarray(np.flip(np.swapaxes(data, 0, 1), axis=1))
+        original = np.ascontiguousarray(np.flip(np.swapaxes(original, 0, 1), axis=1))
+
+        width = data.shape[0]
+        height = data.shape[1]
+
+        self.data = data
+        self.original = original
+        self.width = width
+        self.height = height
+
+    def isLandscape(self):
+        return data.shape[1] > data.shape[0]
+
+    def ensurePortrait(self):
+        if self.isLandscape():
+            self.transpose()
+            return True
+        return False
+    
 class Component:
     def __init__(self, pixels, width, height, minX, maxX, minY, maxY):
         self.pixels = pixels

@@ -35,14 +35,15 @@ def process_image(src_path):
 
     image = ImageManager()
     image.read(src_path)
-
+    image.ensurePortrait()
+    print("1")
     Filter(image)
-
+    print("2")
     filename = os.path.basename(src_path)
     output_path = os.path.join(FILTERED_DIR, filename)
-
+    print("3")
     image.write(output_path)
-
+    print("4")
     # journal.send(f"Finished processing and saved to filtered_images: {filename}")
 
 def process_pending():
@@ -150,13 +151,11 @@ def Filter1(image):
 
     # journal.send("Filter 1")
 
-
 def Filter2(image):
 
     image.convertToEmboss()
 
     # journal.send("Filter 2")
-
 
 def Filter3(image):
     image.convertToPencilSketch()
