@@ -137,7 +137,7 @@ set -a; . /etc/photobooth/config.env; set +a
 sudo cp test.jpg /var/lib/photobooth/raw/
 ls /var/lib/photobooth/filtered
 journalctl -u startup@filter -n 20
-```
+```./
 
 Reboot and run `systemctl status 'startup@*'` to check autostart.
 
