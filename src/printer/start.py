@@ -6,6 +6,7 @@ Type "stop" (then Enter) in this terminal to stop the script gracefully (same as
 """
 
 import asyncio
+import os
 import shutil
 import signal
 import sys
@@ -22,7 +23,7 @@ from timiniprint.printing.errors import PrinterNotReadyError
 # === Config ===
 PRINTER_NAME: Optional[str] = "MXW-W5"  # e.g. "MX-W5" or None to auto-select first supported
 QUEUE_DIR = Path("print_queue")
-PRINTED_DIR = Path("printed")
+# PRINTED_DIR = Path("printed")
 FAILED_DIR = Path("failed")
 
 PRINT_INTERVAL_SECONDS = 3.0
@@ -123,7 +124,7 @@ async def stdin_watcher(stop_event: asyncio.Event):
 
 async def main_loop(stop_event: asyncio.Event):
     QUEUE_DIR.mkdir(exist_ok=True)
-    PRINTED_DIR.mkdir(exist_ok=True)
+    # PRINTED_DIR.mkdir(exist_ok=True)
     FAILED_DIR.mkdir(exist_ok=True)
 
     catalog = PrinterCatalog.load()
@@ -164,9 +165,10 @@ async def main_loop(stop_event: asyncio.Event):
                 success, err = await try_print_with_retries(connected, f)
 
                 if success:
-                    target = PRINTED_DIR / f.name
-                    shutil.move(str(f), str(target))
-                    print(f"[√] Printed -> {target}")
+                    os.remove(os.path.join(QUEUE_DIR, f.name));
+                    # target = PRINTED_DIR / f.name
+                    # shutil.move(str(f), str(target))
+                    print(f"[√] Printed -> {f.name}")
                     if PRINT_INTERVAL_SECONDS > 0:
                         # allow interruption while sleeping
                         try:

@@ -1,15 +1,19 @@
 import time
 import os
+import shutil
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 from pack.ImageManager import ImageManager
 from PIL import Image, UnidentifiedImageError
 from gpiozero import LED, Button
+from pathlib import Path
 # from systemd import journal
 
 DIR = os.environ["PHOTOBOOTH_DIR"]
 RAW_DIR = os.environ["RAW"]
 FILTERED_DIR = os.environ["FILTERED"]
+SRC_DIR = Path(__file__).resolve().parents[1]
+QUEUE_DIR = SRC_DIR / "printer" / "timiniprint" / "print_queue"
 
 IMAGE_EXTS = ('.png', '.jpg', '.jpeg', '.bmp', '.tif', '.tiff', '.webp')
 
@@ -39,7 +43,7 @@ def process_image(src_path):
     output_path = os.path.join(FILTERED_DIR, filename)
 
     image.write(output_path)
-
+    shutil.copy2(output_path, QUEUE_DIR)
     # journal.send(f"Finished processing and saved to filtered_images: {filename}")
 
 def process_pending():
