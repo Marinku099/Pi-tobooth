@@ -127,12 +127,18 @@ void led_set(struct gpio_hw *led, int on) {
 
 void open_all_led(struct gpio_hw *led, int n_leds) {
     if (led->type != GPIO_TYPE_LED) return;
-    // ... wait ...
+    
+    for (int i = 0; i < n_leds; i++) {
+        led_set(&led[i], 1);
+    }
 }
 
 void close_all_led(struct gpio_hw *led, int n_leds) {
     if (led->type != GPIO_TYPE_LED) return;
-    // ... wait ...
+
+    for (int i = 0; i < n_leds; i++) {
+        led_set(&led[i], 0);
+    }
 }
 
 int main(void) {
