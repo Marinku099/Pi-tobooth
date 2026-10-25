@@ -1,0 +1,13 @@
+pypdfium2>=4.0
+bleak>=0.22
+crc8>=0.2.0
+pyserial>=3.5
+platformdirs>=4.0
+packaging>=21.0
+pyobjc-framework-IOBluetooth>=10.0; sys_platform == "darwin"
+winsdk>=1.0.0b10; sys_platform == "win32"
+numpy>=1.24
+Pillow>=10.0
+watchdog>=3.0
+systemd-python; sys_platform == "linux"
+gpiozero>=2.0

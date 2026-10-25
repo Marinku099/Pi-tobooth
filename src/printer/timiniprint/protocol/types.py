@@ -1,0 +1,124 @@
+from __future__ import annotations
+
+from enum import Enum
+from dataclasses import dataclass
+from typing import Tuple
+
+from ..raster import PixelFormat
+
+
+class ImageEncoding(str, Enum):
+    """Wire codec/recipe identifier, distinct from the input raster pixel format."""
+
+    TINY_RAW = "tiny_raw"
+    TINY_RLE = "tiny_rle"
+    LUCK_NORMAL_RAW = "luck_normal_raw"
+    LUCK_NORMAL_COMPRESSED = "luck_normal_compressed"
+    LUCK_NORMAL_GRAY = "luck_normal_gray"
+    V5G_DOT = "v5g_dot"
+    V5G_GRAY = "v5g_gray"
+    V5X_DOT = "v5x_dot"
+    V5X_GRAY = "v5x_gray"
+    V5C_A4 = "v5c_a4"
+    V5C_A5 = "v5c_a5"
+    DCK_DEFAULT = "dck_default"
+    TOPRINT_HPRT_ESC_RASTER = "toprint_hprt_esc_raster"
+    INSTAPRINT_CORE_RASTER = "instaprint_core_raster"
+    NIIMBOT_D110 = "niimbot_d110"
+    ELEPH_TSPL_BITMAP = "eleph_tspl_bitmap"
+    ELEPH_TSPL_ZLIB = "eleph_tspl_zlib"
+    ELEPH_ESC_RAW = "eleph_esc_raw"
+    ELEPH_ESC_ZLIB = "eleph_esc_zlib"
+    TOPRINT_TSPL_BITMAP = "toprint_tspl_bitmap"
+    PHOMEMO_ESC_RASTER = "phomemo_esc_raster"
+    FUNNY_LX_RASTER = "funny_lx_raster"
+    YK_ASTRA_P1_RAW = "yk_astra_p1_raw"
+
+
+class PaperMode(str, Enum):
+    """Low-level medium/recipe selection; user-facing sizes come from paper presets."""
+
+    PLAIN = "plain"
+    DOCUMENT = "document"
+    A4_SHEET = "a4_sheet"
+    TAG = "tag"
+    BLACK_TAG = "black_tag"
+    FOLDER = "folder"
+    TATTOO = "tattoo"
+    CIRCLE_TAG = "circle_tag"
+
+    @property
+    def label(self) -> str:
+        labels = {
+            PaperMode.PLAIN: "Plain roll",
+            PaperMode.DOCUMENT: "Document",
+            PaperMode.A4_SHEET: "A4 sheet",
+            PaperMode.TAG: "Tag",
+            PaperMode.BLACK_TAG: "Black tag",
+            PaperMode.FOLDER: "Folder",
+            PaperMode.TATTOO: "Tattoo",
+            PaperMode.CIRCLE_TAG: "Circle tag",
+        }
+        return labels[self]
+
+
+class PageFlow(str, Enum):
+    """Whether raster pages are independent media pages or one continuous flow.
+
+    ``PAGED`` permits per-page positioning/finalization. ``CONTINUOUS`` marks
+    intermediate fragments of one print flow; it is not a paper-width setting.
+    """
+
+    PAGED = "paged"
+    CONTINUOUS = "continuous"
+
+
+@dataclass(frozen=True)
+class ImagePipelineConfig:
+    """Immutable ordered input formats and the selected wire encoding.
+
+    The first entry in nonempty, unique ``formats`` is the default raster.
+    Construction normalizes formats but does not check hardware or codec
+    compatibility; use ``PrinterProtocol.resolve_image_pipeline()`` for that
+    recipe-level check. Building this object neither converts pixels nor probes.
+    """
+
+    formats: Tuple[PixelFormat, ...]
+    encoding: ImageEncoding
+
+    def __post_init__(self) -> None:
+        if not self.formats:
+            raise ValueError("Image pipeline formats must not be empty")
+        normalized = tuple(
+            value if isinstance(value, PixelFormat) else PixelFormat(str(value))
+            for value in self.formats
+        )
+        if len(set(normalized)) != len(normalized):
+            raise ValueError("Image pipeline formats must be unique")
+        object.__setattr__(self, "formats", normalized)
+
+    @property
+    def default_format(self) -> PixelFormat:
+        """Return the first input format in this pipeline."""
+        return self.formats[0]
+
+    def supports(self, pixel_format: PixelFormat) -> bool:
+        """Test membership in this pipeline, not the printer's full capabilities."""
+        return pixel_format in self.formats
+
+    def with_default_format(self, pixel_format: PixelFormat) -> "ImagePipelineConfig":
+        """Move an existing format to the front, preserving the encoding.
+
+        Returns this object when already selected; raises ``ValueError`` when
+        the format is absent. Does not add a format or choose a different codec.
+        """
+        if pixel_format not in self.formats:
+            raise ValueError(
+                f"Image pipeline does not support raster format {pixel_format.value}"
+            )
+        if pixel_format == self.formats[0]:
+            return self
+        reordered = (pixel_format,) + tuple(
+            value for value in self.formats if value != pixel_format
+        )
+        return ImagePipelineConfig(formats=reordered, encoding=self.encoding)
