@@ -141,6 +141,17 @@ void close_all_led(struct gpio_hw *led, int n_leds) {
     }
 }
 
+void countdown_led(struct gpio_hw *leds, int n_leds, int deley_time){
+    close_all_led(leds, n_leds);
+
+    for (int i = 0; i < n_leds; i++) {
+        sleep(deley_time);
+        led_set(&leds[i], 1);
+    }
+    sleep(deley_time);
+    close_all_led(leds, n_leds);
+}
+
 int main(void) {
 
     /* --------- Button & LED ----------- */
@@ -168,9 +179,6 @@ int main(void) {
     if (btn_config(CHIP_PATH, btn_offset, btn) == -1) {
         exit(EXIT_FAILURE);
     }
-    
-    int led_state = 0;
-    int last_btn_state = 1;
 
     /* ------------ Camera ------------- */
     /*  
@@ -238,7 +246,7 @@ int main(void) {
                 usleep(10000);
             } 
 
-            countdown_led(leds, N_LEDS);
+            countdown_led(leds, N_LEDS, 1);
             // If button pressed -> shoot 4 frames (hope for at least 1 success frame)
             // NOTE: Every frame still in buffers
             bool success_shoot_flag = false;
@@ -253,7 +261,10 @@ int main(void) {
 
             if (success_shoot_flag) {
                 open_all_led(leds, N_LEDS);
+                sleep(1);
+                close_all_led(leds, N_LEDS);
             } else {
+                fprintf(stderr, "Main: failed to capture after %d attempts\n", n_frames);
                 close_all_led(leds, N_LEDS);
             }
         }
