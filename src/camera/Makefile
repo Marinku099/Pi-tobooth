@@ -1,12 +1,11 @@
 CC = gcc
 CFLAGS = -Wall -Wextra -g -Ifunc
 
-# Program that has main(). Swap to main_cam.c once the button (libgpiod) code is ready
-# and add -lgpiod to LDLIBS.
+# Program that has main(). Swap to main_cam.c to build the LED and button (libgpiod) version.
 MAIN = temp_cam.c
 SRCS = $(MAIN) $(wildcard func/*.c)
 OBJS = $(SRCS:.c=.o)
-LDLIBS =
+LDLIBS = -lgpiod
 
 TARGET = webcam
 
