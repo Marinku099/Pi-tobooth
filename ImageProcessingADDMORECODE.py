@@ -1,0 +1,203 @@
+import time
+import os
+from watchdog.observers import Observer
+from watchdog.events import FileSystemEventHandler
+from pack.ImageManager import ImageManager
+from PIL import Image, UnidentifiedImageError
+from gpiozero import LED, Button
+import signal
+
+# from systemd import journal
+
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+RAW_DIR = os.path.join(SCRIPT_DIR, 'raw_images')
+FILTERED_DIR = os.path.join(SCRIPT_DIR, 'filtered_images')
+
+os.makedirs(RAW_DIR, exist_ok=True)
+os.makedirs(FILTERED_DIR, exist_ok=True)
+
+IMAGE_EXTS = ('.png', '.jpg', '.jpeg', '.bmp', '.tif', '.tiff', '.webp')
+
+def wait_until_ready(path, timeout=10, interval=0.2):
+    """Wait until the file is unlocked and a complete, readable image."""
+    deadline = time.time() + timeout
+    while time.time() < deadline:
+        try:
+            with open(path, "rb") as f:
+                Image.open(f).load()
+            return True
+        except (PermissionError, OSError, UnidentifiedImageError):
+            time.sleep(interval)
+    return False
+
+def process_image(src_path):
+    if not wait_until_ready(src_path):
+        # journal.send(f"Skipped (file never became readable): {src_path}")
+        return
+
+    image = ImageManager()
+    image.read(src_path)
+    image.ensurePortrait()
+    print("1")
+    Filter(image)
+    print("2")
+    filename = os.path.basename(src_path)
+    output_path = os.path.join(FILTERED_DIR, filename)
+    print("3")
+    image.write(output_path)
+    print("4")
+    # journal.send(f"Finished processing and saved to filtered_images: {filename}")
+
+def process_pending():
+
+    filtered_names = set(os.listdir(FILTERED_DIR))
+
+    pending = [
+        name for name in sorted(os.listdir(RAW_DIR))
+        if name not in filtered_names
+        and name.lower().endswith(IMAGE_EXTS)
+        and os.path.isfile(os.path.join(RAW_DIR, name))
+    ]
+
+    # journal.send(f"Startup scan: {len(pending)} unprocessed file(s) found")
+
+    for name in pending:
+        try:
+            process_image(os.path.join(RAW_DIR, name))
+        except Exception as e:
+            # journal.send(f"Startup scan failed on {name}: {e}")
+            pass
+
+class ExampleHandler(FileSystemEventHandler):
+
+    def on_created(self, event):
+
+        if event.is_directory:
+            return
+
+        # journal.send(f"New file detected: {event.src_path}")
+
+        try:
+            process_image(event.src_path)
+        except Exception as e:
+            # journal.send(f"Failed processing {event.src_path}: {e}")
+            pass
+
+
+observer = Observer()
+event_handler = ExampleHandler()
+
+observer.schedule(
+    event_handler,
+    path=RAW_DIR,
+    recursive=False
+)
+
+# =========================
+# Filter System
+# =========================
+
+Num = 0
+
+def Filter(image):
+    match Num:
+        case 1:
+            Filter1(image)
+        case 2:
+            Filter2(image)
+        case 3:
+            Filter3(image)
+        case _:
+            Filter0(image)
+
+
+def ChangeFilter():
+    global Num
+    Num += 1
+
+    if Num >= 4:
+        Num = 0
+        
+    # journal.send(f"Current Filter: {Num}")
+
+    # LED_Active(Num)
+
+# Red    = LED(17)
+# Yellow = LED(27)
+# Blue   = LED(22)
+
+# def LED_Active(N):
+#     Red.off()
+#     Yellow.off()
+#     Blue.off()
+
+#     match N:
+#         case 1: Red.on()
+#         case 2: Yellow.on()
+#         case 3: Blue.on()
+
+
+# =========================
+# Filters
+# =========================
+
+def Filter0(image):
+
+    image.convertToGrayscale()
+    
+    # journal.send("Filter 0")
+
+def Filter1(image):
+
+    image.convertToDither()
+
+    # journal.send("Filter 1")
+
+def Filter2(image):
+
+    image.convertToEmboss()
+
+    # journal.send("Filter 2")
+
+def Filter3(image):
+    image.convertToPencilSketch()
+
+    # journal.send("Filter 3: Pencil Sketch")
+
+# =========================
+# Main
+# =========================
+
+# button = Button(5, bounce_time=0.2)
+
+
+# "--------------------------------------- add code ---------------------------------------"
+# can not run on window , can run on linux || set signal to call from OPEC code :C
+signal.signal(signal.SIGUSR1,on_sigusr1)
+
+def on_sigusr1(signum, frame):
+    # just add some more print to notice
+    ChangeFilter()
+    print("Change to Filter to: " , Num)
+# "--------------------------------------- add code ---------------------------------------"
+
+
+def main():
+    # button.when_pressed = ChangeFilter
+    observer.start()
+    process_pending()
+
+    try:
+
+        while True:
+            time.sleep(1)
+
+    except KeyboardInterrupt:
+
+        observer.stop()
+
+        # journal.send("Observer stopped.")
+
+    observer.join()
+
+main()
