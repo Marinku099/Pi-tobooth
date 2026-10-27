@@ -38,7 +38,6 @@ int oscam_capture(int fd, struct buffer *buffers, struct v4l2_buffer *buf) {
 		return -1;  
 	}
 	
-	/*
 	if (oscam_saveimg_timestramp(fd, buffers, &buf) == -1)
 	{
 		fprintf(stderr, "failed to save an image: %s\n", strerror(errno));
@@ -51,7 +50,6 @@ int oscam_capture(int fd, struct buffer *buffers, struct v4l2_buffer *buf) {
 		fprintf(stderr, "QBUF (requeue) failed: %s\n", strerror(errno));
 		return -1;
 	}
-	*/
 
 	return 0;
 }

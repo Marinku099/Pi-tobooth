@@ -243,6 +243,7 @@ int main(void)
 
             // If button pressed -> shoot 4 frames (hope for at least 1 success frame)
             // NOTE: Every frame still in buffers
+            oscam_clearbuf(fd, reqbuf.count);
             for (int frame = 0; frame < n_frames; frame++)
             {
                 if (oscam_capture(fd, buffers, &buf) == -1)
@@ -253,8 +254,9 @@ int main(void)
                 if (oscam_saveimg_timestramp(fd, buffers, &buf) == -1)
                 {
                     fprintf(stderr, "failed to save an image: %s\n", strerror(errno));
-                    exit(EXIT_FAILURE);
+                    // exit(EXIT_FAILURE);
                     // NOTE: If it cannot save the picture, how can we tell user?
+                    continue;
                 }
 
                 if (ioctl(fd, VIDIOC_QBUF, &buf) == -1)

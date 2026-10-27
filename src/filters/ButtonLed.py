@@ -4,8 +4,10 @@ import subprocess
 import platform # just some module that can make me run on window :C
 from gpiozero import LED, Button ,Device
 from time import sleep
-from signal import pause
+# from signal import pause
 from systemd import journal
+import sys
+import signal
 
 # check where you are
 ON_WINDOWS = platform.system() == "Windows"
@@ -21,8 +23,8 @@ ON_WINDOWS = platform.system() == "Windows"
 led1 = LED(17)  # GPIO17 : 11
 led2 = LED(27)  # GPIO27 : 13
 led3 = LED(22)  # GPIO22 : 15
-BT1 = Button(5, bounce_time=0.5)  # GPIO5 : 29
-BT2 = Button(6, bounce_time=0.5)  # GPIO6 : 31
+BT1 = Button(5, bounce_time=0.1)  # GPIO5 : 29
+BT2 = Button(6, bounce_time=0.1)  # GPIO6 : 31
 num = 0
 
 
@@ -32,8 +34,9 @@ def SIGNAL_Send(*command):
     #   print("I am stuck on WINDOWS")
     #    return
     result = subprocess.run(command, capture_output=True, text=True)
-    if result != 0:
+    if result.returncode != 0:
         print("error signal fail :" ," ".join(command))
+        print("error detail : ",result.stderr.strip())
 
 
 # Function to set up LED light(?)
@@ -48,21 +51,23 @@ def LED_Set(a,b,c):
 
 
 def LED_TakeAPic():
-    LED_Set(0,0,0); sleep(0.2)
-    LED_Set(1,0,0); sleep(0.5)
-    LED_Set(1,1,0); sleep(0.5)
-    LED_Set(1,1,1); sleep(0.5)
+    journal.send("Take A pic")
+    LED_Set(0,0,0); sleep(1)
+    LED_Set(1,0,0); sleep(1)
+    LED_Set(1,1,0); sleep(1)
     print("TAKE A PICTURE")
+    # LED_Set(1,1,1); sleep(1)
     # subprocess.run(["pkill","USR1","-X","webcam"]) # run command on terminal to send SUGUSR1
-    SIGNAL_Send("sudo","pkill","USR1","-X","webcam")
+    SIGNAL_Send("pkill","-USR1","-x","webcam")
+    LED_Set(1,1,1); sleep(3)
     sleep(0.2)
-    LED_ChageFilter(num)
+    LED_Show()
     
     
-def LED_ChageFilter():
+def LED_Show():
+    journal.send("SHOW LED")
     # subprocess.run(["pkill","USR1","-f","python3.*ImageProcessing.py"])
-    SIGNAL_Send("sudo","pkill","USR1","-f","ImageProcessing")
-    chageFilter()
+    # chageFilter()
     match num:
         case 0:
             LED_Set(0,0,0)
@@ -81,11 +86,14 @@ def LED_ChageFilter():
     #print(f"  Filter {num}: {int(led1.value)}{int(led2.value)}{int(led3.value)}")
 
 
-def chageFilter():
+def LED_chageFilter():
+    journal.send("now num is")
     global num
     num += 1
     if num>=4:
         num=0
+    LED_Show()
+    SIGNAL_Send("pkill","-USR1","-f","python3.*ImageProcessing.py")
 
 
 # test some on window
@@ -95,16 +103,27 @@ def press(button):
     button.pin.drive_high()
     sleep(0.05)
     
+def shutdown_seq():
+    journal.send("Received SIGTERM, turn off LEDs")
+    BT1.when_pressed = None
+    BT2.when_pressed = None
+    
+    LED_Set(0,0,0)
+    
+def handle_sigterm(signum, frame):
+    shutdown_seq();
+    sys.exit(0)
     
 def main():
     journal.send("start button")
+    signal.signal(signal.SIGTERM, handle_sigterm)
     # set button when pres to call function        
     BT1.when_pressed = LED_TakeAPic
-    BT2.when_pressed = LED_ChageFilter
+    BT2.when_pressed = LED_chageFilter
     
     # set up LED when start
     LED_Set(0,0,0)
-    LED_ChageFilter()
+    # LED_ChageFilter()
     
     # try catch FROM "CLUAD"
     try:
@@ -113,10 +132,10 @@ def main():
         #else :
         while True:             # รอปุ่มไปเรื่อยๆ (gpiozero เรียกฟังก์ชันให้เอง)
             sleep(1)
-    except KeyboardInterrupt:       # กด Ctrl+C
+    except KeyboardInterrupt:  # กด Ctrl+C
         pass
     finally:
         print("end")
-        LED_Set(0,0,0)
-
+        shutdown_seq();
+        
 main()      

@@ -8,11 +8,11 @@ case $1 in
                 ;;
 	"button")
 		echo "button"
-		        
+		exec /home/punchichi/Pi-tobooth/.venv/bin/python3 -u /home/punchichi/Pi-tobooth/src/filters/ButtonLed.py   
 		;;
 	"filter")
                 echo "running filter module"
-		#exec /home/punchichi/Pi-tobooth/.venv/bin/python3 -u /home/punchichi/Pi-tobooth/src/filters/ButtonLed.py
+		
                 exec /home/punchichi/Pi-tobooth/.venv/bin/python3 -u /home/punchichi/Pi-tobooth/src/filters/ImageProcessing.py                ;;
         "printer")
                 echo "running printer module"

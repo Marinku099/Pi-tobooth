@@ -264,6 +264,9 @@ int main(void) {
             pressed = 0;
             bool success_shoot_flag = false;
             struct v4l2_buffer buf;
+            
+            oscam_clearbuf(fd, reqbuf.count);
+            
             for (int frame = 0; frame < n_frames; frame++) {
                 if (oscam_capture(fd, buffers, &buf) == -1) {
                     continue;
