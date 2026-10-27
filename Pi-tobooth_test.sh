@@ -36,8 +36,9 @@ sudo systemctl is-active "\$SERVICE"
 cd ~/Pi-tobooth
 rm -rf /tmp/fr219-src
 mkdir -p /tmp/fr219-src
-git archive origin/system-storage-merge src/storage |
-tar -x-C/tmp/fr219-src
+
+git archive origin/system src/storage | tar -x -C /tmp/fr219-src
+
 make -C/tmp/fr219-src/src/storage
 echo "Build exit code: \$?"
 
