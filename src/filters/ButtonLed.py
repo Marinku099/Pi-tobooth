@@ -5,16 +5,17 @@ import platform # just some module that can make me run on window :C
 from gpiozero import LED, Button ,Device
 from time import sleep
 from signal import pause
+from systemd import journal
 
 # check where you are
 ON_WINDOWS = platform.system() == "Windows"
 
 
 # no need this code when run on RASPBERRY PI
-if ON_WINDOWS :
-    from gpiozero.pins.mock import MockFactory, MockPin
-    Device.pin_factory = MockFactory()
-
+#if ON_WINDOWS :
+ #   from gpiozero.pins.mock import MockFactory, MockPin
+  #  Device.pin_factory = MockFactory()
+  
 
 # Define led and button {logical pin : physical pin}
 led1 = LED(17)  # GPIO17 : 11
@@ -26,13 +27,13 @@ num = 0
 
 
 # ทางผ่านเฉยๆ
-def SIGNAL_Send(command):
-    if ON_WINDOWS:
-        print("I am stuck on WINDOWS")
-        return
-    result = subprocess.run(command, capture_output=True, text=True, runtime = 1)
+def SIGNAL_Send(*command):
+    #if ON_WINDOWS:
+    #   print("I am stuck on WINDOWS")
+    #    return
+    result = subprocess.run(command, capture_output=True, text=True)
     if result != 0:
-        print("error signal fail :" ," ".join(result))
+        print("error signal fail :" ," ".join(command))
 
 
 # Function to set up LED light(?)
@@ -47,18 +48,20 @@ def LED_Set(a,b,c):
 
 
 def LED_TakeAPic():
-    subprocess.run(["sudo","pkill","USR1","-X","webcam"]) # run command on terminal to send SUGUSR1
     LED_Set(0,0,0); sleep(0.2)
     LED_Set(1,0,0); sleep(0.5)
     LED_Set(1,1,0); sleep(0.5)
     LED_Set(1,1,1); sleep(0.5)
     print("TAKE A PICTURE")
+    # subprocess.run(["pkill","USR1","-X","webcam"]) # run command on terminal to send SUGUSR1
+    SIGNAL_Send("sudo","pkill","USR1","-X","webcam")
     sleep(0.2)
     LED_ChageFilter(num)
     
     
 def LED_ChageFilter():
-    subprocess.run(["sudo","pkill","USR1","-f","ImageProcessing"])
+    # subprocess.run(["pkill","USR1","-f","python3.*ImageProcessing.py"])
+    SIGNAL_Send("sudo","pkill","USR1","-f","ImageProcessing")
     chageFilter()
     match num:
         case 0:
@@ -75,7 +78,7 @@ def LED_ChageFilter():
             print("001")
         case _:
             print("unknow")
-    print(f"  Filter {num}: {int(led1.value)}{int(led2.value)}{int(led3.value)}")
+    #print(f"  Filter {num}: {int(led1.value)}{int(led2.value)}{int(led3.value)}")
 
 
 def chageFilter():
@@ -94,28 +97,26 @@ def press(button):
     
     
 def main():
-    print("start")
+    journal.send("start button")
     # set button when pres to call function        
     BT1.when_pressed = LED_TakeAPic
     BT2.when_pressed = LED_ChageFilter
     
     # set up LED when start
     LED_Set(0,0,0)
-    LED_ChageFilter(num)
+    LED_ChageFilter()
     
     # try catch FROM "CLUAD"
     try:
-        if ON_WINDOWS:
-            asdasdasd()
-        else :
-            while True:             # รอปุ่มไปเรื่อยๆ (gpiozero เรียกฟังก์ชันให้เอง)
-                sleep(1)
+        #if ON_WINDOWS:
+        #   press(BT1)
+        #else :
+        while True:             # รอปุ่มไปเรื่อยๆ (gpiozero เรียกฟังก์ชันให้เอง)
+            sleep(1)
     except KeyboardInterrupt:       # กด Ctrl+C
         pass
     finally:
         print("end")
         LED_Set(0,0,0)
 
-
-if __name__ == "__main__":
-    main()      
+main()      

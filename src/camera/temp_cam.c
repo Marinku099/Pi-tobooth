@@ -172,7 +172,7 @@ int main(void)
     */
 
     // Connect to camera
-    const char *dev_name = "/dev/v4l/by-id/usb-046d_0825_4555BF00-video-index0";
+    const char *dev_name = "/dev/v4l/by-id/usb-046d_HD_Pro_Webcam_C920_8B3CD7BF-video-index0";
     const char *raw_dir = getenv("RAW");
 
     // Get into the working dir (to save picture correctly)
@@ -262,10 +262,11 @@ int main(void)
                     fprintf(stderr, "QBUF (requeue) failed: %s\n", strerror(errno));
                     return -1;
                 }
+                break;
             }
 
             // Save one of those success frames
-                }
+        }
     }
 
     // Stop camera capture

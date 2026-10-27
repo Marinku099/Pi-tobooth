@@ -24,9 +24,9 @@ from systemd import journal
 
 # === Config ===
 PRINTER_NAME: Optional[str] = "MXW-W5"  # e.g. "MX-W5" or None to auto-select first supported
-QUEUE_DIR = Path("print_queue")
+QUEUE_DIR = Path("/home/punchichi/Pi-tobooth/src/printer/print_queue")
 # PRINTED_DIR = Path("printed")
-FAILED_DIR = Path("failed")
+FAILED_DIR = Path("/home/punchichi/Pi-tobooth/src/printer/failed")
 
 PRINT_INTERVAL_SECONDS = 3.0
 MAX_RETRIES = 3

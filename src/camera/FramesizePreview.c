@@ -23,7 +23,7 @@ int main(void) {
 	//const char *dev_name = "/dev/video0";
 
 	// Camera name by-id
-	const char *dev_name = "/dev/v4l/by-id/usb-046d_0825_4555BF00-video-index0"; 
+	const char *dev_name = "/dev/v4l/by-id/usb-046d_HD_Pro_Webcam_C920_8B3CD7BF-video-index0"; 
 
 	// Open Camera
 	// O_RDWR is just an open flag

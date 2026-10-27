@@ -8,12 +8,13 @@ from gpiozero import LED, Button
 from pathlib import Path
 import signal
 from systemd import journal
+import shutil
 
 DIR = os.environ["PHOTOBOOTH_DIR"]
 RAW_DIR = os.environ["RAW"]
 FILTERED_DIR = os.environ["FILTERED"]
 SRC_DIR = Path(__file__).resolve().parents[1]
-QUEUE_DIR = SRC_DIR / "printer" / "timiniprint" / "print_queue"
+QUEUE_DIR = SRC_DIR / "printer" / "print_queue"
 
 IMAGE_EXTS = ('.png', '.jpg', '.jpeg', '.bmp', '.tif', '.tiff', '.webp')
 
@@ -173,14 +174,14 @@ def Filter3(image):
 
 # "--------------------------------------- add code ---------------------------------------"
 # can not run on window , can run on linux || set signal to call from OPEC code :C
-signal.signal(signal.SIGUSR1,on_sigusr1)
+
 
 def on_sigusr1(signum, frame):
     # just add some more print to notice
     ChangeFilter()
     print("Change to Filter to: " , Num)
 # "--------------------------------------- add code ---------------------------------------"
-
+signal.signal(signal.SIGUSR1,on_sigusr1)
 
 def main():
     # button.when_pressed = ChangeFilter
