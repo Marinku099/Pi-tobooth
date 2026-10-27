@@ -100,28 +100,28 @@ async def try_print_with_retries(connected, path: Path) -> Tuple[bool, Exception
     return False, last_exc
 
 
-async def stdin_watcher(stop_event: asyncio.Event):
-    """
-    Watch stdin for the word 'stop' (case-insensitive). When seen, set stop_event.
-    Uses a thread to avoid blocking the asyncio event loop.
-    """
-    loop = asyncio.get_event_loop()
-    while not stop_event.is_set():
-        try:
-            # Use blocking readline in a thread so we don't block the event loop
-            line = await asyncio.to_thread(sys.stdin.readline)
-            if not line:
-                # EOF (e.g., stdin closed) -> set stop and break
-                stop_event.set()
-                break
-            if line.strip().lower() == "stop":
-                journal.send("[*] Stop command received via stdin.")
-                stop_event.set()
-                break
-        except Exception:
-            # If anything goes wrong reading stdin, don't crash watcher; set stop and exit
-            stop_event.set()
-            break
+# async def stdin_watcher(stop_event: asyncio.Event):
+#     """
+#     Watch stdin for the word 'stop' (case-insensitive). When seen, set stop_event.
+#     Uses a thread to avoid blocking the asyncio event loop.
+#     """
+#     loop = asyncio.get_event_loop()
+#     while not stop_event.is_set():
+#         try:
+#             # Use blocking readline in a thread so we don't block the event loop
+#             line = await asyncio.to_thread(sys.stdin.readline)
+#             if not line:
+#                 # EOF (e.g., stdin closed) -> set stop and break
+#                 stop_event.set()
+#                 break
+#             if line.strip().lower() == "stop":
+#                 journal.send("[*] Stop command received via stdin.")
+#                 stop_event.set()
+#                 break
+#         except Exception:
+#             # If anything goes wrong reading stdin, don't crash watcher; set stop and exit
+#             stop_event.set()
+#             break
 
 
 async def main_loop(stop_event: asyncio.Event):
@@ -239,10 +239,10 @@ def run():
 
     # create tasks
     main_task = loop.create_task(main_loop(stop_event))
-    stdin_task = loop.create_task(stdin_watcher(stop_event))
+    #stdin_task = loop.create_task(stdin_watcher(stop_event))
 
     try:
-        loop.run_until_complete(asyncio.gather(main_task, stdin_task))
+        loop.run_until_complete(asyncio.gather(main_task))#, stdin_task))
     except KeyboardInterrupt:
         # fallback for platforms where signal handling isn't wired up
         stop_event.set()

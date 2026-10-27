@@ -11,6 +11,7 @@ case $1 in
                 exec /home/punchichi/Pi-tobooth/.venv/bin/python3 -u /home/punchichi/Pi-tobooth/src/filters/ImageProcessing.py                ;;
         "printer")
                 echo "running printer module"
+                cd /home/punchichi/Pi-tobooth/src/printer/timiniprint || exit 1
                 exec /home/punchichi/Pi-tobooth/.venv/bin/python3 -u /home/punchichi/Pi-tobooth/src/printer/start.py
                 ;;
         "file_system")
