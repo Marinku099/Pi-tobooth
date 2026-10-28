@@ -172,7 +172,7 @@ int main(void)
     */
 
     // Connect to camera
-    const char *dev_name = "/dev/v4l/by-id/usb-046d_0825_4555BF00-video-index0";
+    const char *dev_name = "/dev/v4l/by-id/usb-046d_HD_Pro_Webcam_C920_8B3CD7BF-video-index0";
     const char *raw_dir = getenv("RAW");
 
     // Get into the working dir (to save picture correctly)
@@ -243,6 +243,7 @@ int main(void)
 
             // If button pressed -> shoot 4 frames (hope for at least 1 success frame)
             // NOTE: Every frame still in buffers
+            oscam_clearbuf(fd, reqbuf.count);
             for (int frame = 0; frame < n_frames; frame++)
             {
                 if (oscam_capture(fd, buffers, &buf) == -1)
@@ -253,8 +254,9 @@ int main(void)
                 if (oscam_saveimg_timestramp(fd, buffers, &buf) == -1)
                 {
                     fprintf(stderr, "failed to save an image: %s\n", strerror(errno));
-                    exit(EXIT_FAILURE);
+                    // exit(EXIT_FAILURE);
                     // NOTE: If it cannot save the picture, how can we tell user?
+                    continue;
                 }
 
                 if (ioctl(fd, VIDIOC_QBUF, &buf) == -1)
@@ -262,10 +264,11 @@ int main(void)
                     fprintf(stderr, "QBUF (requeue) failed: %s\n", strerror(errno));
                     return -1;
                 }
+                break;
             }
 
             // Save one of those success frames
-                }
+        }
     }
 
     // Stop camera capture

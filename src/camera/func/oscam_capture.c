@@ -37,12 +37,16 @@ int oscam_capture(int fd, struct buffer *buffers, struct v4l2_buffer *buf) {
 		ioctl(fd, VIDIOC_QBUF, buf);
 		return -1;  
 	}
+	
+	if (oscam_saveimg_timestramp(fd, buffers, &buf) == -1)
+	{
+		fprintf(stderr, "failed to save an image: %s\n", strerror(errno));
+		exit(EXIT_FAILURE);
+		// NOTE: If it cannot save the picture, how can we tell user?
+	}
 
-	// Save image as jpg (use timestramp as file name)
-	oscam_saveimg_timestramp(fd, buffers, buf);
-
-	// Put buffer back to queue
-	if (ioctl(fd, VIDIOC_QBUF, buf) == -1) {
+	if (ioctl(fd, VIDIOC_QBUF, &buf) == -1)
+	{
 		fprintf(stderr, "QBUF (requeue) failed: %s\n", strerror(errno));
 		return -1;
 	}

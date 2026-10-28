@@ -33,6 +33,6 @@ int oscam_saveimg_timestramp(int fd, struct buffer *buffers, struct v4l2_buffer 
 		fwrite(buffers[buf->index].start, buf->bytesused, 1, fp);
 		fclose(fp);
 		return 0;
-		printf("save %s\n", filename);
+		fprintf(stdout, "save %s\n", filename);
 	}
 }

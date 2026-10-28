@@ -1,19 +1,20 @@
 import time
 import os
-import shutil
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 from pack.ImageManager import ImageManager
 from PIL import Image, UnidentifiedImageError
 from gpiozero import LED, Button
 from pathlib import Path
-# from systemd import journal
+import signal
+from systemd import journal
+import shutil
 
 DIR = os.environ["PHOTOBOOTH_DIR"]
 RAW_DIR = os.environ["RAW"]
 FILTERED_DIR = os.environ["FILTERED"]
 SRC_DIR = Path(__file__).resolve().parents[1]
-QUEUE_DIR = SRC_DIR / "printer" / "timiniprint" / "print_queue"
+QUEUE_DIR = SRC_DIR / "printer" / "print_queue"
 
 IMAGE_EXTS = ('.png', '.jpg', '.jpeg', '.bmp', '.tif', '.tiff', '.webp')
 
@@ -31,7 +32,7 @@ def wait_until_ready(path, timeout=10, interval=0.2):
 
 def process_image(src_path):
     if not wait_until_ready(src_path):
-        # journal.send(f"Skipped (file never became readable): {src_path}")
+        journal.send(f"Skipped (file never became readable): {src_path}")
         return
 
     image = ImageManager()
@@ -44,7 +45,7 @@ def process_image(src_path):
 
     image.write(output_path)
     shutil.copy2(output_path, QUEUE_DIR)
-    # journal.send(f"Finished processing and saved to filtered_images: {filename}")
+    journal.send(f"Finished processing and saved to filtered_images: {filename}")
 
 def process_pending():
 
@@ -57,13 +58,13 @@ def process_pending():
         and os.path.isfile(os.path.join(RAW_DIR, name))
     ]
 
-    # journal.send(f"Startup scan: {len(pending)} unprocessed file(s) found")
+    journal.send(f"Startup scan: {len(pending)} unprocessed file(s) found")
 
     for name in pending:
         try:
             process_image(os.path.join(RAW_DIR, name))
         except Exception as e:
-            # journal.send(f"Startup scan failed on {name}: {e}")
+            journal.send(f"Startup scan failed on {name}: {e}")
             pass
 
 class ExampleHandler(FileSystemEventHandler):
@@ -73,12 +74,12 @@ class ExampleHandler(FileSystemEventHandler):
         if event.is_directory:
             return
 
-        # journal.send(f"New file detected: {event.src_path}")
+        journal.send(f"New file detected: {event.src_path}")
 
         try:
             process_image(event.src_path)
         except Exception as e:
-            # journal.send(f"Failed processing {event.src_path}: {e}")
+            journal.send(f"Failed processing {event.src_path}: {e}")
             pass
 
 
@@ -116,7 +117,7 @@ def ChangeFilter():
     if Num >= 4:
         Num = 0
 
-    # journal.send(f"Current Filter: {Num}")
+    journal.send(f"Current Filter: {Num}")
 
     # LED_Active(Num)
 
@@ -143,32 +144,44 @@ def Filter0(image):
 
     image.convertToGrayscale()
     
-    # journal.send("Filter 0")
+    journal.send("Filter 0")
 
 def Filter1(image):
 
     image.convertToDither()
 
-    # journal.send("Filter 1")
+    journal.send("Filter 1")
 
 
 def Filter2(image):
 
     image.convertToEmboss()
 
-    # journal.send("Filter 2")
+    journal.send("Filter 2")
 
 
 def Filter3(image):
     image.convertToPencilSketch()
 
-    # journal.send("Filter 3: Pencil Sketch")
+    journal.send("Filter 3: Pencil Sketch")
 
 # =========================
 # Main
 # =========================
 
 # button = Button(5, bounce_time=0.2)
+
+
+# "--------------------------------------- add code ---------------------------------------"
+# can not run on window , can run on linux || set signal to call from OPEC code :C
+
+
+def on_sigusr1(signum, frame):
+    # just add some more print to notice
+    ChangeFilter()
+    print("Change to Filter to: " , Num)
+# "--------------------------------------- add code ---------------------------------------"
+signal.signal(signal.SIGUSR1,on_sigusr1)
 
 def main():
     # button.when_pressed = ChangeFilter
@@ -184,7 +197,7 @@ def main():
 
         observer.stop()
 
-        # journal.send("Observer stopped.")
+        journal.send("Observer stopped.")
 
     observer.join()
 

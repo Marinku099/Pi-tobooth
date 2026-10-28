@@ -20,6 +20,7 @@ typedef enum {
 } gpio_type_t;
 
 volatile sig_atomic_t keep_running = 1;
+volatile sig_atomic_t pressed = 0;
 
 struct gpio_hw {
     struct gpiod_line_request *request;
@@ -32,6 +33,12 @@ struct gpio_hw {
 void handle_sigint(int sig) {
     signal(sig, SIG_IGN);
     keep_running = 0;
+}
+
+void handle_sigusr(int sig) {
+    signal(sig, SIG_IGN);
+    fprintf(stdout,"received sigusr from btn");
+    pressed = 1;
 }
 
 int led_config(const char *chip_path, const unsigned int offset, struct gpio_hw *out_led) {
@@ -157,7 +164,9 @@ int main(void) {
     /* --------- Button & LED ----------- */
     
     signal(SIGINT, handle_sigint);
-    // Define PIN for leds and button
+    signal(SIGUSR1, handle_sigusr);
+    // Define PIN for leds and button  
+    /*
     const int led_offsets[N_LEDS] = {17, 27, 22};
     const int btn_offset = 23;
 
@@ -179,6 +188,7 @@ int main(void) {
     if (btn_config(CHIP_PATH, btn_offset, btn) == -1) {
         exit(EXIT_FAILURE);
     }
+*/
 
     /* ------------ Camera ------------- */
     /*  
@@ -196,7 +206,7 @@ int main(void) {
     */
     
     // Connect to camera
-    const char *dev_name = "/dev/v4l/by-id/usb-046d_0825_4555BF00-video-index0"; 
+    const char *dev_name = "/dev/v4l/by-id/usb-046d_HD_Pro_Webcam_C920_8B3CD7BF-video-index0"; 
 
     int fd = oscam_open(dev_name);
  
@@ -241,16 +251,22 @@ int main(void) {
     // Wait for signal to trigger
     while (keep_running) {
         //    ----- Signal handler -----
-        if (button_is_pressed(btn->request, btn_offset)) {
-            while (keep_running && button_is_pressed(btn->request, btn_offset)) {
+        /**/
+        if ( /*button_is_pressed(btn->request, btn_offset)*/ pressed) {
+            /* while (keep_running && button_is_pressed(btn->request, btn_offset)) {
                 usleep(10000);
-            } 
+            } */
 
-            countdown_led(leds, N_LEDS, 1);
+            // countdown_led(leds, N_LEDS, 1);
+            
             // If button pressed -> shoot 4 frames (hope for at least 1 success frame)
             // NOTE: Every frame still in buffers
+            pressed = 0;
             bool success_shoot_flag = false;
             struct v4l2_buffer buf;
+            
+            oscam_clearbuf(fd, reqbuf.count);
+            
             for (int frame = 0; frame < n_frames; frame++) {
                 if (oscam_capture(fd, buffers, &buf) == -1) {
                     continue;
@@ -259,6 +275,7 @@ int main(void) {
                 break;   
             }
 
+  /*
             if (success_shoot_flag) {
                 open_all_led(leds, N_LEDS);
                 sleep(1);
@@ -266,7 +283,8 @@ int main(void) {
             } else {
                 fprintf(stderr, "Main: failed to capture after %d attempts\n", n_frames);
                 close_all_led(leds, N_LEDS);
-            }
+            } */ 
+            
         }
     }
 

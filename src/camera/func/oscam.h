@@ -31,5 +31,6 @@ int oscam_capture(int fd, struct buffer *buffers, struct v4l2_buffer *buf);
 int oscam_streamoff(int fd, enum v4l2_buf_type *type);
 int oscam_close(int fd, struct buffer *buffers, struct v4l2_requestbuffers *reqbuf);
 int oscam_saveimg_timestramp(int fd, struct buffer *buffers, struct v4l2_buffer *buf);
+void oscam_clearbuf(int fd, int count);
 
 #endif

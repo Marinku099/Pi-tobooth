@@ -11,3 +11,4 @@ Pillow>=10.0
 watchdog>=3.0
 systemd-python; sys_platform == "linux"
 gpiozero>=2.0
+lgpio; sys_platform == "linux"
